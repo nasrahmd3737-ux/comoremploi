@@ -172,7 +172,7 @@ const Jobs = () => {
                       </div>
                       <Badge variant="outline">{job.job_type}</Badge>
                     </div>
-                    <h3 className="mt-3 font-display text-lg font-semibold group-hover:text-primary transition-colors">{job.title}</h3>
+                    <Link to={`/jobs/${job.id}`}><h3 className="mt-3 font-display text-lg font-semibold group-hover:text-primary transition-colors">{job.title}</h3></Link>
                     <p className="mt-1 text-sm text-muted-foreground">{job.company_name}</p>
                     <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{job.location}</span>
