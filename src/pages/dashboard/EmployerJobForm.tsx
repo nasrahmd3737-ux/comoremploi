@@ -38,7 +38,7 @@ export default function EmployerJobForm() {
       title: form.title,
       description: form.description,
       company_name: form.company_name,
-      location: formatLocation(island, city),
+      location: formatLocation(island, effectiveCity),
       category: form.category,
       job_type: form.job_type,
       salary_min: form.salary_min ? parseInt(form.salary_min) : null,
