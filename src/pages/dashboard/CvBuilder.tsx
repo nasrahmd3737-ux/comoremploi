@@ -74,7 +74,7 @@ export default function CvBuilder() {
       .eq("id", profile.id);
     setSaving(false);
     if (error) { toast.error(error.message); return; }
-    toast.success(published ? "CV publié et visible par les entreprises !" : "CV enregistré !");
+    toast.success(published ? "CV publié et visible par les entreprises !" : "CV enregistré sur votre profil !");
   };
 
   const updateEdu = (idx: number, field: keyof Education, value: string) => {
