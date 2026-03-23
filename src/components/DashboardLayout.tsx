@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavLink } from "@/components/NavLink";
 import {
-  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2,
+  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare,
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 
@@ -26,6 +26,7 @@ const candidateLinks = [
   { title: "Tableau de bord", url: "/dashboard", icon: LayoutDashboard },
   { title: "Mes candidatures", url: "/dashboard/applications", icon: FileText },
   { title: "Créer mon CV", url: "/dashboard/cv-builder", icon: FileText },
+  { title: "Messages", url: "/dashboard/messages", icon: MessageSquare },
   { title: "Mon profil", url: "/dashboard/profile", icon: User },
 ];
 
@@ -33,6 +34,7 @@ const employerLinks = [
   { title: "Tableau de bord", url: "/dashboard", icon: LayoutDashboard },
   { title: "Mes offres", url: "/dashboard/jobs", icon: Briefcase },
   { title: "Candidatures reçues", url: "/dashboard/applicants", icon: Users },
+  { title: "Messages", url: "/dashboard/messages", icon: MessageSquare },
   { title: "Vivier de talents", url: "/talents", icon: Users },
   { title: "Publier une offre", url: "/dashboard/jobs/new", icon: Plus },
   { title: "Mon profil", url: "/dashboard/profile", icon: Building2 },
