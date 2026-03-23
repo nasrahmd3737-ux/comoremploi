@@ -246,7 +246,7 @@ export default function JobDetail() {
                 <p className="text-sm font-medium">CV joint automatiquement</p>
                 <p className="text-xs text-muted-foreground">Votre CV sera envoyé avec la candidature</p>
               </div>
-              <Button variant="ghost" size="sm" asChild><a href={profileCvUrl!} target="_blank" rel="noopener noreferrer"><FileText className="h-4 w-4" /></a></Button>
+              <Button variant="ghost" size="sm" onClick={async () => { const { data } = await supabase.storage.from("cvs").createSignedUrl(profileCvUrl!, 3600); if (data?.signedUrl) window.open(data.signedUrl, "_blank"); }}><FileText className="h-4 w-4" /></Button>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Lettre de motivation (optionnelle)</label>
