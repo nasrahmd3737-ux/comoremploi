@@ -79,6 +79,13 @@ export default function JobDetail() {
   const openApply = () => {
     if (!user) { toast.error("Connectez-vous pour postuler", { action: { label: "Connexion", onClick: () => (window.location.href = "/login") } }); return; }
     if (role !== "candidate") { toast.error("Seuls les candidats peuvent postuler"); return; }
+    if (!profileCvUrl) {
+      toast.error("Veuillez d'abord créer votre CV", {
+        action: { label: "Créer mon CV", onClick: () => (window.location.href = "/dashboard/cv-builder") },
+        duration: 6000,
+      });
+      return;
+    }
     setShowApply(true);
     setCoverLetter("");
   };
@@ -233,25 +240,13 @@ export default function JobDetail() {
             <DialogDescription>{job.title} — {job.company_name}</DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-2">
-            <div className={`flex items-center gap-3 rounded-lg border p-3 ${profileCvUrl ? "border-comores-green/30 bg-comores-green/5" : "border-gold/30 bg-gold/5"}`}>
-              {profileCvUrl ? (
-                <>
-                  <CheckCircle className="h-5 w-5 text-comores-green shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">CV joint automatiquement</p>
-                    <p className="text-xs text-muted-foreground">Votre CV sera envoyé avec la candidature</p>
-                  </div>
-                  <Button variant="ghost" size="sm" asChild><a href={profileCvUrl} target="_blank" rel="noopener noreferrer"><FileText className="h-4 w-4" /></a></Button>
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="h-5 w-5 text-gold shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Aucun CV uploadé</p>
-                    <p className="text-xs text-muted-foreground"><Link to="/dashboard/profile" className="text-primary underline">Uploadez votre CV</Link> pour renforcer votre candidature</p>
-                  </div>
-                </>
-              )}
+            <div className="flex items-center gap-3 rounded-lg border p-3 border-comores-green/30 bg-comores-green/5">
+              <CheckCircle className="h-5 w-5 text-comores-green shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium">CV joint automatiquement</p>
+                <p className="text-xs text-muted-foreground">Votre CV sera envoyé avec la candidature</p>
+              </div>
+              <Button variant="ghost" size="sm" asChild><a href={profileCvUrl!} target="_blank" rel="noopener noreferrer"><FileText className="h-4 w-4" /></a></Button>
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Lettre de motivation (optionnelle)</label>
