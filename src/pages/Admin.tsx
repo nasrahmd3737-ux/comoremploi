@@ -64,7 +64,7 @@ const Admin = () => {
     const [profilesRes, jobsRes, appsRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("jobs").select("*").order("created_at", { ascending: false }),
-      supabase.from("applications").select("id, status, created_at, candidate_id, job_id, cover_letter, profiles:candidate_id(full_name, email, phone, location), jobs:job_id(title, company_name, salary_min, salary_max)").order("created_at", { ascending: false }),
+      supabase.from("applications").select("id, status, created_at, candidate_id, job_id, cover_letter, profiles:candidate_id(full_name, email, phone, location), jobs:job_id(title, company_name, salary_min, salary_max, job_type, employer_id)").order("created_at", { ascending: false }),
     ]);
     setProfiles(profilesRes.data ?? []);
     setJobs(jobsRes.data ?? []);
