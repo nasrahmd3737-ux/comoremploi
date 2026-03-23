@@ -78,6 +78,44 @@ export default function CvBuilder() {
     toast.success(published ? "CV publié et visible par les entreprises !" : "CV enregistré sur votre profil !");
   };
 
+  const buildCvData = () => ({
+    full_name: profile.full_name,
+    email: profile.email,
+    phone: profile.phone,
+    location: profile.location,
+    bio: profile.bio,
+    skills: profile.skills,
+    cv_education: education,
+    cv_experience: experience,
+    cv_languages: languages.split(",").map(l => l.trim()).filter(Boolean),
+  });
+
+  const handleDownloadPdf = () => {
+    const doc = generateCvPdf(buildCvData());
+    doc.save(`CV_${profile.full_name.replace(/\s+/g, "_")}.pdf`);
+  };
+
+  const [savingPdf, setSavingPdf] = useState(false);
+  const handleSavePdfToProfile = async () => {
+    if (!user) return;
+    setSavingPdf(true);
+    try {
+      const doc = generateCvPdf(buildCvData());
+      const pdfBlob = doc.output("blob");
+      const filePath = `${user.id}/cv-online-${Date.now()}.pdf`;
+      if (profile.cv_url) await supabase.storage.from("cvs").remove([profile.cv_url]);
+      const { error: upErr } = await supabase.storage.from("cvs").upload(filePath, pdfBlob, { contentType: "application/pdf", upsert: true });
+      if (upErr) throw upErr;
+      await supabase.from("profiles").update({ cv_url: filePath }).eq("id", profile.id);
+      setProfile((p: any) => ({ ...p, cv_url: filePath }));
+      toast.success("CV PDF enregistré dans votre profil !");
+    } catch (err: any) {
+      toast.error(err.message ?? "Erreur");
+    } finally {
+      setSavingPdf(false);
+    }
+  };
+
   const updateEdu = (idx: number, field: keyof Education, value: string) => {
     setEducation(prev => prev.map((e, i) => i === idx ? { ...e, [field]: value } : e));
   };
