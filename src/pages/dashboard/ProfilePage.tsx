@@ -90,8 +90,8 @@ export default function ProfilePage() {
       return;
     }
 
-    const { data: urlData } = supabase.storage.from("cvs").getPublicUrl(filePath);
-    const cvUrl = urlData.publicUrl;
+    // Use path-based reference for private bucket (generate signed URLs when needed)
+    const cvUrl = filePath;
 
     const { error: updateError } = await supabase
       .from("profiles")
