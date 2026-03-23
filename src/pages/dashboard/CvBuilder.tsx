@@ -271,10 +271,17 @@ export default function CvBuilder() {
       </Card>
 
       {/* Save */}
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Button onClick={handleSave} disabled={saving} className="min-w-[160px]">
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {saving ? "Enregistrement..." : published ? "Publier le CV" : "Enregistrer le CV"}
+        </Button>
+        <Button variant="outline" onClick={handleDownloadPdf}>
+          <Download className="mr-2 h-4 w-4" /> Télécharger PDF
+        </Button>
+        <Button variant="secondary" onClick={handleSavePdfToProfile} disabled={savingPdf}>
+          {savingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+          Enregistrer PDF dans profil
         </Button>
       </div>
     </div>
