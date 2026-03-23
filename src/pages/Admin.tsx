@@ -412,9 +412,12 @@ const Admin = () => {
                     <div className="space-y-2"><Label>Entreprise</Label><Input required value={jobForm.company_name} onChange={e => setJobForm(f => ({ ...f, company_name: e.target.value }))} placeholder="Nom de l'entreprise" /></div>
                   </div>
                   <div className="space-y-2"><Label>Description</Label><Textarea required rows={4} value={jobForm.description} onChange={e => setJobForm(f => ({ ...f, description: e.target.value }))} placeholder="Décrivez le poste..." /></div>
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="space-y-2"><Label>Localisation</Label>
-                      <Select value={jobForm.location} onValueChange={v => setJobForm(f => ({ ...f, location: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{LOCATIONS.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent></Select>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="space-y-2"><Label>Île</Label>
+                      <Select value={jobIsland} onValueChange={v => { setJobIsland(v); setJobCity(ISLANDS[v]?.[0] ?? ""); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{Object.keys(ISLANDS).map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}</SelectContent></Select>
+                    </div>
+                    <div className="space-y-2"><Label>Ville</Label>
+                      <Select value={jobCity} onValueChange={setJobCity}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{(ISLANDS[jobIsland] ?? []).map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
                     </div>
                     <div className="space-y-2"><Label>Catégorie</Label>
                       <Select value={jobForm.category} onValueChange={v => setJobForm(f => ({ ...f, category: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
