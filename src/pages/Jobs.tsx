@@ -42,10 +42,11 @@ const Jobs = () => {
 
   // Application state
   const [appliedJobs, setAppliedJobs] = useState<Set<string>>(new Set());
-  const [applyingJobId, setApplyingJobId] = useState<string | null>(null);
   const [coverLetter, setCoverLetter] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [profileCvUrl, setProfileCvUrl] = useState<string | null>(null);
+  const [hasBuiltCv, setHasBuiltCv] = useState(false);
+  const [selectedCvType, setSelectedCvType] = useState<"uploaded" | "built" | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   useEffect(() => {
