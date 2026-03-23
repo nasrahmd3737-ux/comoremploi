@@ -117,8 +117,8 @@ export default function CvBuilder() {
               <p className="font-semibold">{profile.full_name}</p>
               <p className="text-sm text-muted-foreground">{profile.location ?? "—"} • {profile.email ?? "—"}</p>
             </div>
-            <Badge variant={published ? "default" : "secondary"} className="ml-auto">
-              {published ? "Publié" : "Brouillon"}
+            <Badge variant="default" className="ml-auto">
+              {published ? "Publié" : "Enregistré"}
             </Badge>
           </div>
         </CardContent>
