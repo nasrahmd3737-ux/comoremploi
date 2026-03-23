@@ -88,8 +88,8 @@ export default function JobDetail() {
   const openApply = () => {
     if (!user) { toast.error("Connectez-vous pour postuler", { action: { label: "Connexion", onClick: () => (window.location.href = "/login") } }); return; }
     if (role !== "candidate") { toast.error("Seuls les candidats peuvent postuler"); return; }
-    if (!profileCvUrl) {
-      toast.error("Veuillez d'abord créer votre CV", {
+    if (!profileCvUrl && !hasBuiltCv) {
+      toast.error("Veuillez d'abord créer ou uploader votre CV", {
         action: { label: "Créer mon CV", onClick: () => (window.location.href = "/dashboard/cv-builder") },
         duration: 6000,
       });
@@ -97,6 +97,9 @@ export default function JobDetail() {
     }
     setShowApply(true);
     setCoverLetter("");
+    if (profileCvUrl && !hasBuiltCv) setSelectedCvType("uploaded");
+    else if (!profileCvUrl && hasBuiltCv) setSelectedCvType("built");
+    else setSelectedCvType(null);
   };
 
   if (loading) return (
