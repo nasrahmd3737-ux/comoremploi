@@ -30,9 +30,9 @@ const Signup = () => {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!role) return;
-    if (!island || !city) { toast.error("Veuillez sélectionner votre île et ville"); return; }
+    if (!island || !effectiveCity) { toast.error("Veuillez sélectionner votre île et ville"); return; }
     setLoading(true);
-    const location = formatLocation(island, city);
+    const location = formatLocation(island, effectiveCity);
     const { error } = await supabase.auth.signUp({
       email,
       password,
