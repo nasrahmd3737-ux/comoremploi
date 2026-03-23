@@ -81,10 +81,11 @@ const Jobs = () => {
     if (!user || !selectedJob) return;
     setSubmitting(true);
 
+    const cvToSend = selectedCvType === "uploaded" ? profileCvUrl : (selectedCvType === "built" ? "online-cv" : profileCvUrl);
     const { error } = await supabase.from("applications").insert({
       candidate_id: user.id,
       job_id: selectedJob.id,
-      cv_url: profileCvUrl,
+      cv_url: cvToSend,
       cover_letter: coverLetter.trim() || null,
     });
 
