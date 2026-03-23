@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigate, Link } from "react-router-dom";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -57,6 +58,8 @@ const Admin = () => {
     salary_min: "", salary_max: "", requirements: "",
   });
   const [submitting, setSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Profile | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   useEffect(() => {
     if (role === "admin") fetchData();
@@ -75,11 +78,22 @@ const Admin = () => {
     setLoadingData(false);
   };
 
-  const handleDeleteProfile = async (id: string) => {
-    const { error } = await supabase.from("profiles").delete().eq("id", id);
+  const openDeleteDialog = (profile: Profile) => {
+    if (profile.role === "admin") {
+      toast.error("Le compte administrateur ne peut pas être supprimé");
+      return;
+    }
+    setDeleteTarget(profile);
+    setDeleteConfirmText("");
+  };
+
+  const handleDeleteProfile = async () => {
+    if (!deleteTarget || deleteConfirmText !== "oui je veux supprimer mon compte") return;
+    const { error } = await supabase.from("profiles").delete().eq("id", deleteTarget.id);
     if (error) { toast.error("Erreur: " + error.message); return; }
     toast.success("Profil supprimé");
-    setProfiles(prev => prev.filter(p => p.id !== id));
+    setProfiles(prev => prev.filter(p => p.id !== deleteTarget.id));
+    setDeleteTarget(null);
   };
 
   const handleDeleteJob = async (id: string) => {
@@ -211,7 +225,7 @@ const Admin = () => {
                             <TableCell>{p.location ?? "—"}</TableCell>
                             <TableCell>{new Date(p.created_at).toLocaleDateString("fr-FR")}</TableCell>
                             <TableCell className="text-right">
-                              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteProfile(p.id)}><Trash2 className="h-4 w-4" /></Button>
+                              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog(p)} disabled={p.role === "admin"}><Trash2 className="h-4 w-4" /></Button>
                             </TableCell>
                           </TableRow>
                         ))}
@@ -440,6 +454,37 @@ const Admin = () => {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={!!deleteTarget} onOpenChange={open => { if (!open) setDeleteTarget(null); }}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-destructive">Supprimer le compte</DialogTitle>
+            <DialogDescription>
+              Vous êtes sur le point de supprimer le compte de <strong>{deleteTarget?.full_name}</strong> ({deleteTarget?.email}).
+              Cette action est irréversible.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3 py-2">
+            <Label>Pour confirmer, écrivez : <strong className="text-destructive">oui je veux supprimer mon compte</strong></Label>
+            <Input
+              value={deleteConfirmText}
+              onChange={e => setDeleteConfirmText(e.target.value)}
+              placeholder="Tapez la phrase de confirmation..."
+            />
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setDeleteTarget(null)}>Annuler</Button>
+            <Button
+              variant="destructive"
+              disabled={deleteConfirmText !== "oui je veux supprimer mon compte"}
+              onClick={handleDeleteProfile}
+            >
+              Supprimer définitivement
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
