@@ -35,6 +35,7 @@ export default function JobDetail() {
   const [hasApplied, setHasApplied] = useState(false);
   const [profileCvUrl, setProfileCvUrl] = useState<string | null>(null);
   const [hasBuiltCv, setHasBuiltCv] = useState(false);
+  const [profileData, setProfileData] = useState<any>(null);
   const [selectedCvType, setSelectedCvType] = useState<"uploaded" | "built" | null>(null);
   const [showApply, setShowApply] = useState(false);
   const [coverLetter, setCoverLetter] = useState("");
