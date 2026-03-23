@@ -39,7 +39,7 @@ export default function CvBuilder() {
   const [education, setEducation] = useState<Education[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [languages, setLanguages] = useState("");
-  const [published, setPublished] = useState(false);
+  const [published, setPublished] = useState(true);
 
   useEffect(() => {
     if (!user) return;
@@ -74,7 +74,7 @@ export default function CvBuilder() {
       .eq("id", profile.id);
     setSaving(false);
     if (error) { toast.error(error.message); return; }
-    toast.success(published ? "CV publié et visible par les entreprises !" : "CV enregistré !");
+    toast.success(published ? "CV publié et visible par les entreprises !" : "CV enregistré sur votre profil !");
   };
 
   const updateEdu = (idx: number, field: keyof Education, value: string) => {
@@ -117,8 +117,8 @@ export default function CvBuilder() {
               <p className="font-semibold">{profile.full_name}</p>
               <p className="text-sm text-muted-foreground">{profile.location ?? "—"} • {profile.email ?? "—"}</p>
             </div>
-            <Badge variant={published ? "default" : "secondary"} className="ml-auto">
-              {published ? "Publié" : "Brouillon"}
+            <Badge variant="default" className="ml-auto">
+              {published ? "Publié" : "Enregistré"}
             </Badge>
           </div>
         </CardContent>
@@ -235,7 +235,7 @@ export default function CvBuilder() {
       <div className="flex gap-3">
         <Button onClick={handleSave} disabled={saving} className="min-w-[160px]">
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          {saving ? "Enregistrement..." : published ? "Publier le CV" : "Enregistrer le brouillon"}
+          {saving ? "Enregistrement..." : published ? "Publier le CV" : "Enregistrer le CV"}
         </Button>
       </div>
     </div>
