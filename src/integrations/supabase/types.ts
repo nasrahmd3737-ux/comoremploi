@@ -114,6 +114,10 @@ export type Database = {
           company_name: string | null
           company_website: string | null
           created_at: string
+          cv_education: Json | null
+          cv_experience: Json | null
+          cv_languages: string[] | null
+          cv_published: boolean
           cv_url: string | null
           email: string | null
           experience_years: number | null
@@ -133,6 +137,10 @@ export type Database = {
           company_name?: string | null
           company_website?: string | null
           created_at?: string
+          cv_education?: Json | null
+          cv_experience?: Json | null
+          cv_languages?: string[] | null
+          cv_published?: boolean
           cv_url?: string | null
           email?: string | null
           experience_years?: number | null
@@ -152,6 +160,10 @@ export type Database = {
           company_name?: string | null
           company_website?: string | null
           created_at?: string
+          cv_education?: Json | null
+          cv_experience?: Json | null
+          cv_languages?: string[] | null
+          cv_published?: boolean
           cv_url?: string | null
           email?: string | null
           experience_years?: number | null
