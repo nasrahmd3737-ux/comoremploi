@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, User } from "lucide-react";
+import { Loader2, User, Upload, FileText, Trash2, ExternalLink } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
@@ -17,6 +17,8 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!user) return;
@@ -49,6 +51,61 @@ export default function ProfilePage() {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success("Profil mis à jour !");
+  };
+
+  const handleCvUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !user || !profile) return;
+
+    const allowedTypes = ["application/pdf", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error("Format non supporté. Utilisez PDF ou Word.");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Le fichier ne doit pas dépasser 5 Mo.");
+      return;
+    }
+
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const filePath = `${user.id}/cv-${Date.now()}.${ext}`;
+
+    // Delete old CV if exists
+    if (profile.cv_url) {
+      const oldPath = profile.cv_url.split("/cvs/")[1];
+      if (oldPath) await supabase.storage.from("cvs").remove([oldPath]);
+    }
+
+    const { error: uploadError } = await supabase.storage.from("cvs").upload(filePath, file, { upsert: true });
+    if (uploadError) {
+      toast.error("Erreur d'upload: " + uploadError.message);
+      setUploading(false);
+      return;
+    }
+
+    const { data: urlData } = supabase.storage.from("cvs").getPublicUrl(filePath);
+    const cvUrl = urlData.publicUrl;
+
+    const { error: updateError } = await supabase
+      .from("profiles")
+      .update({ cv_url: cvUrl })
+      .eq("id", profile.id);
+
+    setUploading(false);
+    if (updateError) { toast.error(updateError.message); return; }
+    setProfile(p => p ? { ...p, cv_url: cvUrl } : p);
+    toast.success("CV uploadé avec succès !");
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleDeleteCv = async () => {
+    if (!profile?.cv_url || !user) return;
+    const oldPath = profile.cv_url.split("/cvs/")[1];
+    if (oldPath) await supabase.storage.from("cvs").remove([oldPath]);
+    await supabase.from("profiles").update({ cv_url: null }).eq("id", profile.id);
+    setProfile(p => p ? { ...p, cv_url: null } : p);
+    toast.success("CV supprimé");
   };
 
   if (loading) {
@@ -110,6 +167,52 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label>Années d'expérience</Label>
                   <Input type="number" value={profile.experience_years ?? ""} onChange={e => update("experience_years", e.target.value ? parseInt(e.target.value) : null)} />
+                </div>
+
+                {/* CV Upload Section */}
+                <div className="space-y-3 rounded-lg border border-dashed border-primary/30 bg-primary/5 p-4">
+                  <Label className="flex items-center gap-2 text-base font-semibold">
+                    <FileText className="h-5 w-5 text-primary" /> Mon CV
+                  </Label>
+                  {profile.cv_url ? (
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-1 items-center gap-2 rounded-md bg-background px-3 py-2 text-sm">
+                        <FileText className="h-4 w-4 text-primary" />
+                        <span className="truncate">CV uploadé</span>
+                      </div>
+                      <Button type="button" variant="outline" size="sm" asChild>
+                        <a href={profile.cv_url} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="mr-1 h-4 w-4" /> Voir
+                        </a>
+                      </Button>
+                      <Button type="button" variant="ghost" size="sm" className="text-destructive" onClick={handleDeleteCv}>
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">Aucun CV uploadé</p>
+                  )}
+                  <div className="flex items-center gap-3">
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".pdf,.doc,.docx"
+                      onChange={handleCvUpload}
+                      className="hidden"
+                      id="cv-upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      disabled={uploading}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
+                      {uploading ? "Upload en cours..." : profile.cv_url ? "Remplacer le CV" : "Uploader mon CV"}
+                    </Button>
+                    <span className="text-xs text-muted-foreground">PDF ou Word, max 5 Mo</span>
+                  </div>
                 </div>
               </>
             )}
