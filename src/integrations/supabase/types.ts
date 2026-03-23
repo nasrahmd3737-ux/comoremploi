@@ -14,7 +14,176 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      applications: {
+        Row: {
+          candidate_id: string
+          cover_letter: string | null
+          created_at: string
+          cv_url: string | null
+          id: string
+          job_id: string
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+        }
+        Insert: {
+          candidate_id: string
+          cover_letter?: string | null
+          created_at?: string
+          cv_url?: string | null
+          id?: string
+          job_id: string
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Update: {
+          candidate_id?: string
+          cover_letter?: string | null
+          created_at?: string
+          cv_url?: string | null
+          id?: string
+          job_id?: string
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "jobs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      jobs: {
+        Row: {
+          category: string
+          company_name: string
+          created_at: string
+          description: string
+          employer_id: string
+          id: string
+          job_type: Database["public"]["Enums"]["job_type"]
+          location: string
+          requirements: string[] | null
+          salary_max: number | null
+          salary_min: number | null
+          status: Database["public"]["Enums"]["job_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          company_name: string
+          created_at?: string
+          description: string
+          employer_id: string
+          id?: string
+          job_type?: Database["public"]["Enums"]["job_type"]
+          location: string
+          requirements?: string[] | null
+          salary_max?: number | null
+          salary_min?: number | null
+          status?: Database["public"]["Enums"]["job_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          company_name?: string
+          created_at?: string
+          description?: string
+          employer_id?: string
+          id?: string
+          job_type?: Database["public"]["Enums"]["job_type"]
+          location?: string
+          requirements?: string[] | null
+          salary_max?: number | null
+          salary_min?: number | null
+          status?: Database["public"]["Enums"]["job_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          company_description: string | null
+          company_name: string | null
+          company_website: string | null
+          created_at: string
+          cv_url: string | null
+          email: string | null
+          experience_years: number | null
+          full_name: string
+          id: string
+          location: string | null
+          phone: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          skills: string[] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          company_description?: string | null
+          company_name?: string | null
+          company_website?: string | null
+          created_at?: string
+          cv_url?: string | null
+          email?: string | null
+          experience_years?: number | null
+          full_name: string
+          id?: string
+          location?: string | null
+          phone?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          skills?: string[] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          company_description?: string | null
+          company_name?: string | null
+          company_website?: string | null
+          created_at?: string
+          cv_url?: string | null
+          email?: string | null
+          experience_years?: number | null
+          full_name?: string
+          id?: string
+          location?: string | null
+          phone?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          skills?: string[] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +192,15 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      app_role: "candidate" | "employer"
+      application_status:
+        | "pending"
+        | "reviewed"
+        | "shortlisted"
+        | "rejected"
+        | "accepted"
+      job_status: "draft" | "published" | "closed"
+      job_type: "CDI" | "CDD" | "Stage" | "Freelance"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +327,17 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["candidate", "employer"],
+      application_status: [
+        "pending",
+        "reviewed",
+        "shortlisted",
+        "rejected",
+        "accepted",
+      ],
+      job_status: ["draft", "published", "closed"],
+      job_type: ["CDI", "CDD", "Stage", "Freelance"],
+    },
   },
 } as const
