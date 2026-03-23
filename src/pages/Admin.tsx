@@ -60,6 +60,7 @@ const Admin = () => {
   const [submitting, setSubmitting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Profile | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [viewingJob, setViewingJob] = useState<Job | null>(null);
 
   useEffect(() => {
     if (role === "admin") fetchData();
