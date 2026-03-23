@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare } from "lucide-react";
+import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2 } from "lucide-react";
 import ChatWidget from "@/components/ChatWidget";
 import { ISLANDS, formatLocation } from "@/lib/locations";
 import type { Tables } from "@/integrations/supabase/types";
@@ -60,6 +60,7 @@ const Admin = () => {
   const [submitting, setSubmitting] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<Profile | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [viewingJob, setViewingJob] = useState<Job | null>(null);
 
   useEffect(() => {
     if (role === "admin") fetchData();
@@ -252,13 +253,16 @@ const Admin = () => {
                       <TableBody>
                         {jobs.map(j => (
                           <TableRow key={j.id}>
-                            <TableCell className="font-medium">{j.title}</TableCell>
+                            <TableCell className="font-medium">
+                              <button className="text-left hover:text-primary hover:underline transition-colors" onClick={() => setViewingJob(j)}>{j.title}</button>
+                            </TableCell>
                             <TableCell>{j.company_name}</TableCell>
                             <TableCell>{j.location}</TableCell>
                             <TableCell><Badge variant="outline">{j.job_type}</Badge></TableCell>
                             <TableCell><Badge variant={j.status === "published" ? "default" : "secondary"}>{j.status === "published" ? "Publiée" : j.status === "closed" ? "Fermée" : "Brouillon"}</Badge></TableCell>
                             <TableCell>{new Date(j.created_at).toLocaleDateString("fr-FR")}</TableCell>
                             <TableCell className="text-right space-x-1">
+                              <Button variant="ghost" size="icon" onClick={() => setViewingJob(j)}><Eye className="h-4 w-4" /></Button>
                               <Button variant="outline" size="sm" onClick={() => handleToggleJobStatus(j)}>{j.status === "published" ? "Fermer" : "Publier"}</Button>
                               <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteJob(j.id)}><Trash2 className="h-4 w-4" /></Button>
                             </TableCell>
@@ -483,6 +487,97 @@ const Admin = () => {
               Supprimer définitivement
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Job Detail Dialog */}
+      <Dialog open={!!viewingJob} onOpenChange={open => { if (!open) setViewingJob(null); }}>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+          {viewingJob && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2 text-xl">
+                  <Briefcase className="h-5 w-5 text-primary" /> {viewingJob.title}
+                </DialogTitle>
+                <DialogDescription className="flex flex-wrap items-center gap-3 pt-1">
+                  <span className="flex items-center gap-1"><Building2 className="h-4 w-4" /> {viewingJob.company_name}</span>
+                  <Badge variant={viewingJob.status === "published" ? "default" : "secondary"}>
+                    {viewingJob.status === "published" ? "Publiée" : viewingJob.status === "closed" ? "Fermée" : "Brouillon"}
+                  </Badge>
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="space-y-4 py-2">
+                {/* Info grid */}
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div className="flex items-center gap-2 rounded-lg border p-3">
+                    <MapPin className="h-4 w-4 text-primary shrink-0" />
+                    <div><p className="text-muted-foreground text-xs">Localisation</p><p className="font-medium">{viewingJob.location}</p></div>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-lg border p-3">
+                    <Briefcase className="h-4 w-4 text-primary shrink-0" />
+                    <div><p className="text-muted-foreground text-xs">Type de contrat</p><p className="font-medium">{viewingJob.job_type}</p></div>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-lg border p-3">
+                    <FileText className="h-4 w-4 text-primary shrink-0" />
+                    <div><p className="text-muted-foreground text-xs">Catégorie</p><p className="font-medium">{viewingJob.category}</p></div>
+                  </div>
+                  <div className="flex items-center gap-2 rounded-lg border p-3">
+                    <Clock className="h-4 w-4 text-primary shrink-0" />
+                    <div><p className="text-muted-foreground text-xs">Publiée le</p><p className="font-medium">{new Date(viewingJob.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</p></div>
+                  </div>
+                </div>
+
+                {/* Salary */}
+                {(viewingJob.salary_min || viewingJob.salary_max) && (
+                  <div className="flex items-center gap-2 rounded-lg border border-comores-green/30 bg-comores-green/5 p-3">
+                    <Banknote className="h-5 w-5 text-comores-green shrink-0" />
+                    <div>
+                      <p className="text-xs text-muted-foreground">Salaire</p>
+                      <p className="font-semibold text-comores-green">
+                        {viewingJob.salary_min && viewingJob.salary_max
+                          ? `${fmt(viewingJob.salary_min)} – ${fmt(viewingJob.salary_max)} KMF`
+                          : viewingJob.salary_min
+                            ? `À partir de ${fmt(viewingJob.salary_min)} KMF`
+                            : `Jusqu'à ${fmt(viewingJob.salary_max!)} KMF`}
+                      </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Description */}
+                <div>
+                  <h3 className="font-semibold mb-2">Description</h3>
+                  <p className="text-sm text-muted-foreground whitespace-pre-line">{viewingJob.description}</p>
+                </div>
+
+                {/* Requirements */}
+                {viewingJob.requirements && viewingJob.requirements.length > 0 && (
+                  <div>
+                    <h3 className="font-semibold mb-2 flex items-center gap-2"><ListChecks className="h-4 w-4 text-primary" /> Prérequis</h3>
+                    <ul className="space-y-1.5">
+                      {viewingJob.requirements.map((r, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                          <CheckCircle className="h-4 w-4 mt-0.5 text-comores-green shrink-0" />
+                          <span>{r}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {/* Employer info */}
+                <div className="text-xs text-muted-foreground border-t pt-3">
+                  Publiée par : {employerMap.get(viewingJob.employer_id) ?? viewingJob.employer_id}
+                </div>
+              </div>
+
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setViewingJob(null)}>Fermer</Button>
+                <Button asChild><Link to={`/jobs/${viewingJob.id}`}>Voir la page publique</Link></Button>
+              </DialogFooter>
+            </>
+          )}
         </DialogContent>
       </Dialog>
     </div>
