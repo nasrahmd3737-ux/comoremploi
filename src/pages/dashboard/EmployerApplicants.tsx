@@ -53,7 +53,7 @@ export default function EmployerApplicants() {
 
       const { data: appsData } = await supabase
         .from("applications")
-        .select("id, status, created_at, cover_letter, candidate_id, job_id")
+        .select("id, status, created_at, cover_letter, cv_url, candidate_id, job_id")
         .in("job_id", jobs.map(j => j.id))
         .order("created_at", { ascending: false });
 
