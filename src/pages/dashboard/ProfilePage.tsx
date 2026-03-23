@@ -68,8 +68,8 @@ export default function ProfilePage() {
       toast.error("Format non supporté. Utilisez PDF ou Word.");
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Le fichier ne doit pas dépasser 5 Mo.");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Le fichier ne doit pas dépasser 10 Mo.");
       return;
     }
 
