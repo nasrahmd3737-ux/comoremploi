@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { MapPin, Building2, Clock, Banknote, Send, CheckCircle, FileText, AlertCircle, Loader2, ArrowLeft, Briefcase, ListChecks } from "lucide-react";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import { generateCvPdf } from "@/lib/generateCvPdf";
 
 type Job = Tables<"jobs">;
 
