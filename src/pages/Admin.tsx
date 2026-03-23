@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare } from "lucide-react";
 import ChatWidget from "@/components/ChatWidget";
+import { ISLANDS, formatLocation } from "@/lib/locations";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
