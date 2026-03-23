@@ -20,6 +20,7 @@ export default function EmployerJobForm() {
   const [submitting, setSubmitting] = useState(false);
   const [island, setIsland] = useState("Grande Comore");
   const [city, setCity] = useState("Moroni");
+  const [customCity, setCustomCity] = useState("");
   const [form, setForm] = useState({
     title: "", description: "", company_name: "",
     category: "Technologie", job_type: "CDI" as "CDI" | "CDD" | "Stage" | "Freelance",
@@ -27,6 +28,7 @@ export default function EmployerJobForm() {
   });
 
   const cities = ISLANDS[island] ?? [];
+  const effectiveCity = city === "__other__" ? customCity : city;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
