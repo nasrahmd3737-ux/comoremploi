@@ -63,12 +63,17 @@ const Jobs = () => {
     if (!user) return;
     Promise.all([
       supabase.from("applications").select("job_id").eq("candidate_id", user.id),
-      supabase.from("profiles").select("cv_url").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("cv_url, cv_education, cv_experience").eq("user_id", user.id).maybeSingle(),
     ]).then(([appsRes, profileRes]) => {
       if (appsRes.data) {
         setAppliedJobs(new Set(appsRes.data.map(a => a.job_id)));
       }
       setProfileCvUrl(profileRes.data?.cv_url ?? null);
+      const edu = profileRes.data?.cv_education;
+      const exp = profileRes.data?.cv_experience;
+      setHasBuiltCv(
+        (Array.isArray(edu) && edu.length > 0) || (Array.isArray(exp) && exp.length > 0)
+      );
     });
   }, [user]);
 
