@@ -11,7 +11,7 @@ const Footer = () => {
               <Briefcase className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="font-display text-lg font-bold">
-              Kazi <span className="text-primary">Comores</span>
+              Comores <span className="text-primary">Emploi</span>
             </span>
           </div>
 
@@ -23,7 +23,7 @@ const Footer = () => {
           </div>
 
           <p className="text-xs text-muted-foreground">
-            © 2026 Kazi Comores. Tous droits réservés.
+            © 2026 Comores Emploi. Tous droits réservés.
           </p>
         </div>
       </div>

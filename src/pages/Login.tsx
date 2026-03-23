@@ -45,7 +45,7 @@ const Login = () => {
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
             <Briefcase className="h-7 w-7" />
           </div>
-          <span className="font-display text-3xl font-bold">Kazi Comores</span>
+          <span className="font-display text-3xl font-bold">Comores Emploi</span>
         </div>
         <p className="mt-6 max-w-sm text-center text-lg text-white/70">
           Connectez-vous pour accéder à votre tableau de bord et gérer vos candidatures ou offres d'emploi.
@@ -59,7 +59,7 @@ const Login = () => {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
               <Briefcase className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-display text-xl font-bold">Kazi <span className="text-primary">Comores</span></span>
+            <span className="font-display text-xl font-bold">Comores <span className="text-primary">Emploi</span></span>
           </Link>
 
           <h1 className="font-display text-2xl font-bold">Bon retour !</h1>
