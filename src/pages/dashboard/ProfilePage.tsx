@@ -28,7 +28,11 @@ export default function ProfilePage() {
       .select("*")
       .eq("user_id", user.id)
       .maybeSingle()
-      .then(({ data }) => { setProfile(data); setLoading(false); });
+      .then(({ data }) => {
+        setProfile(data);
+        setSkillsText((data?.skills ?? []).join(", "));
+        setLoading(false);
+      });
   }, [user]);
 
   const handleSave = async (e: React.FormEvent) => {
