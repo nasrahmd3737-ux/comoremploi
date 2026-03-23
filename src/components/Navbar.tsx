@@ -51,6 +51,7 @@ const Navbar = () => {
           <div className="flex flex-col gap-3">
             <Link to="/" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Accueil</Link>
             <Link to="/jobs" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Offres d'emploi</Link>
+            <Link to="/talents" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Talents</Link>
             <Button variant="outline" asChild className="w-full">
               <Link to="/login" onClick={() => setMobileOpen(false)}>Se connecter</Link>
             </Button>
