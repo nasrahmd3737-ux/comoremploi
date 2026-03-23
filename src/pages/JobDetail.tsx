@@ -79,6 +79,13 @@ export default function JobDetail() {
   const openApply = () => {
     if (!user) { toast.error("Connectez-vous pour postuler", { action: { label: "Connexion", onClick: () => (window.location.href = "/login") } }); return; }
     if (role !== "candidate") { toast.error("Seuls les candidats peuvent postuler"); return; }
+    if (!profileCvUrl) {
+      toast.error("Veuillez d'abord créer votre CV", {
+        action: { label: "Créer mon CV", onClick: () => (window.location.href = "/dashboard/cv-builder") },
+        duration: 6000,
+      });
+      return;
+    }
     setShowApply(true);
     setCoverLetter("");
   };

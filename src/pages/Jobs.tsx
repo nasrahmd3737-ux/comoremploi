@@ -107,6 +107,13 @@ const Jobs = () => {
       toast.error("Seuls les candidats peuvent postuler");
       return;
     }
+    if (!profileCvUrl) {
+      toast.error("Veuillez d'abord créer votre CV", {
+        action: { label: "Créer mon CV", onClick: () => window.location.href = "/dashboard/cv-builder" },
+        duration: 6000,
+      });
+      return;
+    }
     setSelectedJob(job);
     setCoverLetter("");
   };
