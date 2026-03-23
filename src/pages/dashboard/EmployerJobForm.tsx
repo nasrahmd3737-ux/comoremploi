@@ -81,10 +81,16 @@ export default function EmployerJobForm() {
               </div>
               <div className="space-y-2">
                 <Label>Ville</Label>
-                <Select value={city} onValueChange={setCity}>
+                <Select value={city} onValueChange={v => { setCity(v); if (v !== "__other__") setCustomCity(""); }}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                  <SelectContent>
+                    {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    <SelectItem value="__other__">Autre...</SelectItem>
+                  </SelectContent>
                 </Select>
+                {city === "__other__" && (
+                  <Input placeholder="Nom de la ville" value={customCity} onChange={e => setCustomCity(e.target.value)} required />
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Catégorie</Label>
