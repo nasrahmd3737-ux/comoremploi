@@ -92,6 +92,15 @@ export default function EmployerApplicants() {
     toast.success("Statut mis à jour");
   };
 
+  const viewCv = async (cvPath: string) => {
+    const { data, error } = await supabase.storage.from("cvs").createSignedUrl(cvPath, 300);
+    if (error || !data?.signedUrl) {
+      toast.error("Impossible d'ouvrir le CV");
+      return;
+    }
+    window.open(data.signedUrl, "_blank");
+  };
+
   if (loading) {
     return <div className="flex justify-center py-16"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
