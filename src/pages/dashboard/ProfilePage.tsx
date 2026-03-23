@@ -18,6 +18,7 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [skillsText, setSkillsText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -27,13 +28,18 @@ export default function ProfilePage() {
       .select("*")
       .eq("user_id", user.id)
       .maybeSingle()
-      .then(({ data }) => { setProfile(data); setLoading(false); });
+      .then(({ data }) => {
+        setProfile(data);
+        setSkillsText((data?.skills ?? []).join(", "));
+        setLoading(false);
+      });
   }, [user]);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!profile) return;
     setSaving(true);
+    const skillsArray = skillsText.split(",").map(s => s.trim()).filter(Boolean);
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -41,7 +47,7 @@ export default function ProfilePage() {
         phone: profile.phone,
         location: profile.location,
         bio: profile.bio,
-        skills: profile.skills,
+        skills: skillsArray,
         company_name: profile.company_name,
         company_website: profile.company_website,
         company_description: profile.company_description,
@@ -62,8 +68,8 @@ export default function ProfilePage() {
       toast.error("Format non supporté. Utilisez PDF ou Word.");
       return;
     }
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Le fichier ne doit pas dépasser 5 Mo.");
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("Le fichier ne doit pas dépasser 10 Mo.");
       return;
     }
 
@@ -73,8 +79,7 @@ export default function ProfilePage() {
 
     // Delete old CV if exists
     if (profile.cv_url) {
-      const oldPath = profile.cv_url.split("/cvs/")[1];
-      if (oldPath) await supabase.storage.from("cvs").remove([oldPath]);
+      await supabase.storage.from("cvs").remove([profile.cv_url]);
     }
 
     const { error: uploadError } = await supabase.storage.from("cvs").upload(filePath, file, { upsert: true });
@@ -84,8 +89,8 @@ export default function ProfilePage() {
       return;
     }
 
-    const { data: urlData } = supabase.storage.from("cvs").getPublicUrl(filePath);
-    const cvUrl = urlData.publicUrl;
+    // Use path-based reference for private bucket (generate signed URLs when needed)
+    const cvUrl = filePath;
 
     const { error: updateError } = await supabase
       .from("profiles")
@@ -101,11 +106,22 @@ export default function ProfilePage() {
 
   const handleDeleteCv = async () => {
     if (!profile?.cv_url || !user) return;
-    const oldPath = profile.cv_url.split("/cvs/")[1];
-    if (oldPath) await supabase.storage.from("cvs").remove([oldPath]);
+    await supabase.storage.from("cvs").remove([profile.cv_url]);
     await supabase.from("profiles").update({ cv_url: null }).eq("id", profile.id);
     setProfile(p => p ? { ...p, cv_url: null } : p);
     toast.success("CV supprimé");
+  };
+
+  const getCvSignedUrl = async (path: string) => {
+    const { data } = await supabase.storage.from("cvs").createSignedUrl(path, 3600);
+    return data?.signedUrl ?? null;
+  };
+
+  const handleViewCv = async () => {
+    if (!profile?.cv_url) return;
+    const url = await getCvSignedUrl(profile.cv_url);
+    if (url) window.open(url, "_blank");
+    else toast.error("Impossible de charger le CV");
   };
 
   if (loading) {
@@ -159,8 +175,8 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label>Compétences (séparées par des virgules)</Label>
                   <Input
-                    value={(profile.skills ?? []).join(", ")}
-                    onChange={e => update("skills", e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
+                    value={skillsText}
+                    onChange={e => setSkillsText(e.target.value)}
                     placeholder="JavaScript, React, Communication..."
                   />
                 </div>
@@ -180,10 +196,8 @@ export default function ProfilePage() {
                         <FileText className="h-4 w-4 text-primary" />
                         <span className="truncate">CV uploadé</span>
                       </div>
-                      <Button type="button" variant="outline" size="sm" asChild>
-                        <a href={profile.cv_url} target="_blank" rel="noopener noreferrer">
+                      <Button type="button" variant="outline" size="sm" onClick={handleViewCv}>
                           <ExternalLink className="mr-1 h-4 w-4" /> Voir
-                        </a>
                       </Button>
                       <Button type="button" variant="ghost" size="sm" className="text-destructive" onClick={handleDeleteCv}>
                         <Trash2 className="h-4 w-4" />
@@ -211,7 +225,7 @@ export default function ProfilePage() {
                       {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                       {uploading ? "Upload en cours..." : profile.cv_url ? "Remplacer le CV" : "Uploader mon CV"}
                     </Button>
-                    <span className="text-xs text-muted-foreground">PDF ou Word, max 5 Mo</span>
+                    <span className="text-xs text-muted-foreground">PDF ou Word, max 10 Mo</span>
                   </div>
                 </div>
               </>
