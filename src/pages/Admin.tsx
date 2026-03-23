@@ -225,7 +225,7 @@ const Admin = () => {
                             <TableCell>{p.location ?? "—"}</TableCell>
                             <TableCell>{new Date(p.created_at).toLocaleDateString("fr-FR")}</TableCell>
                             <TableCell className="text-right">
-                              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteProfile(p.id)}><Trash2 className="h-4 w-4" /></Button>
+                              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => openDeleteDialog(p)} disabled={p.role === "admin"}><Trash2 className="h-4 w-4" /></Button>
                             </TableCell>
                           </TableRow>
                         ))}
