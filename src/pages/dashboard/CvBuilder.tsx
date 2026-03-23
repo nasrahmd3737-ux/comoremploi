@@ -39,7 +39,7 @@ export default function CvBuilder() {
   const [education, setEducation] = useState<Education[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [languages, setLanguages] = useState("");
-  const [published, setPublished] = useState(false);
+  const [published, setPublished] = useState(true);
 
   useEffect(() => {
     if (!user) return;
