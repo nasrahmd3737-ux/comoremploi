@@ -12,7 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign } from "lucide-react";
+import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare } from "lucide-react";
+import ChatWidget from "@/components/ChatWidget";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
@@ -183,6 +184,7 @@ const Admin = () => {
             <TabsTrigger value="applications" className="gap-1"><FileText className="h-4 w-4" /> Candidatures</TabsTrigger>
             <TabsTrigger value="hired" className="gap-1"><CheckCircle className="h-4 w-4" /> Embauchés</TabsTrigger>
             <TabsTrigger value="finance" className="gap-1"><DollarSign className="h-4 w-4" /> Finance</TabsTrigger>
+            <TabsTrigger value="messages" className="gap-1"><MessageSquare className="h-4 w-4" /> Messages</TabsTrigger>
             <TabsTrigger value="create" className="gap-1"><Plus className="h-4 w-4" /> Publier</TabsTrigger>
           </TabsList>
 
@@ -384,6 +386,16 @@ const Admin = () => {
                 </CardContent>
               </Card>
             </div>
+          </TabsContent>
+
+          {/* Messages */}
+          <TabsContent value="messages" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><MessageSquare className="h-5 w-5" /> Messagerie</CardTitle></CardHeader>
+              <CardContent>
+                {user && <ChatWidget userId={user.id} height="500px" />}
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Create Job */}
