@@ -35,6 +35,8 @@ const Jobs = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [location, setLocation] = useState("Toutes");
+  const [customLocation, setCustomLocation] = useState("");
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const [category, setCategory] = useState("Toutes");
   const [jobType, setJobType] = useState("Tous");
 
