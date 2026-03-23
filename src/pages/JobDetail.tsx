@@ -66,10 +66,11 @@ export default function JobDetail() {
   const handleApply = async () => {
     if (!user || !job) return;
     setSubmitting(true);
+    const cvToSend = selectedCvType === "uploaded" ? profileCvUrl : (selectedCvType === "built" ? "online-cv" : profileCvUrl);
     const { error } = await supabase.from("applications").insert({
       candidate_id: user.id,
       job_id: job.id,
-      cv_url: profileCvUrl,
+      cv_url: cvToSend,
       cover_letter: coverLetter.trim() || null,
     });
     setSubmitting(false);
