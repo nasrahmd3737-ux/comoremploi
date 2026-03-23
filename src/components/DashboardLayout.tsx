@@ -56,7 +56,7 @@ function SidebarNav() {
           )}
         </div>
 
-        <SidebarGroup defaultOpen>
+        <SidebarGroup>
           <SidebarGroupLabel>
             {role === "employer" ? "Employeur" : "Candidat"}
           </SidebarGroupLabel>
