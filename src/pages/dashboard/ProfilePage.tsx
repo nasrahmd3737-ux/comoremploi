@@ -79,8 +79,7 @@ export default function ProfilePage() {
 
     // Delete old CV if exists
     if (profile.cv_url) {
-      const oldPath = profile.cv_url.split("/cvs/")[1];
-      if (oldPath) await supabase.storage.from("cvs").remove([oldPath]);
+      await supabase.storage.from("cvs").remove([profile.cv_url]);
     }
 
     const { error: uploadError } = await supabase.storage.from("cvs").upload(filePath, file, { upsert: true });
