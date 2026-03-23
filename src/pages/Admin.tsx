@@ -109,7 +109,7 @@ const Admin = () => {
     setSubmitting(true);
     const { error } = await supabase.from("jobs").insert({
       title: jobForm.title, description: jobForm.description, company_name: jobForm.company_name,
-      location: jobForm.location, category: jobForm.category, job_type: jobForm.job_type,
+      location: formatLocation(jobIsland, jobCity), category: jobForm.category, job_type: jobForm.job_type,
       salary_min: jobForm.salary_min ? parseInt(jobForm.salary_min) : null,
       salary_max: jobForm.salary_max ? parseInt(jobForm.salary_max) : null,
       requirements: jobForm.requirements ? jobForm.requirements.split("\n").filter(Boolean) : null,
