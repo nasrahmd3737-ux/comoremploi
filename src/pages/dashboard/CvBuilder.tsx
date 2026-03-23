@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, FileText, GraduationCap, Briefcase, Globe, Eye, EyeOff } from "lucide-react";
+import { Loader2, Plus, Trash2, FileText, GraduationCap, Briefcase, Globe, Eye, EyeOff, Download, Save } from "lucide-react";
+import { generateCvPdf } from "@/lib/generateCvPdf";
 
 interface Education {
   school: string;
