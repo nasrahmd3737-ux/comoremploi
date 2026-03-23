@@ -15,6 +15,7 @@ import DashboardLayout from "./components/DashboardLayout";
 import CandidateDashboard from "./pages/dashboard/CandidateDashboard";
 import CandidateApplications from "./pages/dashboard/CandidateApplications";
 import CvBuilder from "./pages/dashboard/CvBuilder";
+import MessagesPage from "./pages/dashboard/MessagesPage";
 import EmployerDashboard from "./pages/dashboard/EmployerDashboard";
 import EmployerJobs from "./pages/dashboard/EmployerJobs";
 import EmployerJobForm from "./pages/dashboard/EmployerJobForm";
