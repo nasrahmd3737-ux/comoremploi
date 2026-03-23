@@ -30,7 +30,7 @@ const CategoriesSection = () => {
               key={cat.name}
               className="group flex flex-col items-center gap-3 rounded-xl border bg-card p-6 bg-card-hover"
             >
-              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-secondary text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
+              <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-primary-foreground">
                 <cat.icon className="h-6 w-6" />
               </div>
               <span className="text-sm font-semibold text-foreground">{cat.name}</span>
