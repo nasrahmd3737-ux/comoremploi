@@ -39,6 +39,7 @@ export default function ProfilePage() {
     e.preventDefault();
     if (!profile) return;
     setSaving(true);
+    const skillsArray = skillsText.split(",").map(s => s.trim()).filter(Boolean);
     const { error } = await supabase
       .from("profiles")
       .update({
@@ -46,7 +47,7 @@ export default function ProfilePage() {
         phone: profile.phone,
         location: profile.location,
         bio: profile.bio,
-        skills: profile.skills,
+        skills: skillsArray,
         company_name: profile.company_name,
         company_website: profile.company_website,
         company_description: profile.company_description,
