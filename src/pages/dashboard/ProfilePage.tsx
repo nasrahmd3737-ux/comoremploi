@@ -305,9 +305,16 @@ export default function ProfilePage() {
                             <span>{exp.length} expérience{exp.length !== 1 ? "s" : ""}</span>
                             {langs.length > 0 && <><span>·</span><span>{langs.length} langue{langs.length !== 1 ? "s" : ""}</span></>}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             <Button type="button" variant="outline" size="sm" onClick={() => setShowBuiltCv(true)}>
-                              <Eye className="mr-1 h-4 w-4" /> Voir mon CV
+                              <Eye className="mr-1 h-4 w-4" /> Voir
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" onClick={handleDownloadPdf}>
+                              <Download className="mr-1 h-4 w-4" /> Télécharger PDF
+                            </Button>
+                            <Button type="button" variant="default" size="sm" onClick={handleSavePdfToProfile} disabled={generatingPdf}>
+                              {generatingPdf ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
+                              Enregistrer dans profil
                             </Button>
                             <Button type="button" variant="outline" size="sm" asChild>
                               <Link to="/dashboard/cv-builder"><Pencil className="mr-1 h-4 w-4" /> Modifier</Link>
