@@ -113,7 +113,7 @@ const Jobs = () => {
 
   const filtered = jobs.filter(j => {
     if (search && !j.title.toLowerCase().includes(search.toLowerCase()) && !j.company_name.toLowerCase().includes(search.toLowerCase())) return false;
-    if (location !== "Toutes" && j.location !== location) return false;
+    if (location !== "Toutes" && !j.location.toLowerCase().includes(location.toLowerCase())) return false;
     if (category !== "Toutes" && j.category !== category) return false;
     if (jobType !== "Tous" && j.job_type !== jobType) return false;
     return true;
