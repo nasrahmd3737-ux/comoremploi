@@ -10,19 +10,23 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
+import { ISLANDS, formatLocation } from "@/lib/locations";
 
-const LOCATIONS = ["Moroni", "Mutsamudu", "Fomboni", "Mitsamiouli", "Domoni", "Mbéni"];
 const CATEGORIES = ["Technologie", "Tourisme", "Administration", "Construction", "Éducation", "Santé", "Commerce", "Autre"];
 
 export default function EmployerJobForm() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [submitting, setSubmitting] = useState(false);
+  const [island, setIsland] = useState("Grande Comore");
+  const [city, setCity] = useState("Moroni");
   const [form, setForm] = useState({
-    title: "", description: "", company_name: "", location: "Moroni",
+    title: "", description: "", company_name: "",
     category: "Technologie", job_type: "CDI" as "CDI" | "CDD" | "Stage" | "Freelance",
     salary_min: "", salary_max: "", requirements: "",
   });
+
+  const cities = ISLANDS[island] ?? [];
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +36,7 @@ export default function EmployerJobForm() {
       title: form.title,
       description: form.description,
       company_name: form.company_name,
-      location: form.location,
+      location: formatLocation(island, city),
       category: form.category,
       job_type: form.job_type,
       salary_min: form.salary_min ? parseInt(form.salary_min) : null,
@@ -61,25 +65,23 @@ export default function EmployerJobForm() {
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Titre du poste</Label>
-                <Input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Ex: Développeur Web" />
-              </div>
-              <div className="space-y-2">
-                <Label>Entreprise</Label>
-                <Input required value={form.company_name} onChange={e => setForm(f => ({ ...f, company_name: e.target.value }))} placeholder="Nom de l'entreprise" />
-              </div>
+              <div className="space-y-2"><Label>Titre du poste</Label><Input required value={form.title} onChange={e => setForm(f => ({ ...f, title: e.target.value }))} placeholder="Ex: Développeur Web" /></div>
+              <div className="space-y-2"><Label>Entreprise</Label><Input required value={form.company_name} onChange={e => setForm(f => ({ ...f, company_name: e.target.value }))} placeholder="Nom de l'entreprise" /></div>
             </div>
-            <div className="space-y-2">
-              <Label>Description</Label>
-              <Textarea required rows={4} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Décrivez le poste..." />
-            </div>
-            <div className="grid gap-4 sm:grid-cols-3">
+            <div className="space-y-2"><Label>Description</Label><Textarea required rows={4} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Décrivez le poste..." /></div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="space-y-2">
-                <Label>Localisation</Label>
-                <Select value={form.location} onValueChange={v => setForm(f => ({ ...f, location: v }))}>
+                <Label>Île</Label>
+                <Select value={island} onValueChange={v => { setIsland(v); setCity(ISLANDS[v]?.[0] ?? ""); }}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{LOCATIONS.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
+                  <SelectContent>{Object.keys(ISLANDS).map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}</SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <Label>Ville</Label>
+                <Select value={city} onValueChange={setCity}>
+                  <SelectTrigger><SelectValue /></SelectTrigger>
+                  <SelectContent>{cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
@@ -94,31 +96,18 @@ export default function EmployerJobForm() {
                 <Select value={form.job_type} onValueChange={v => setForm(f => ({ ...f, job_type: v as any }))}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="CDI">CDI</SelectItem>
-                    <SelectItem value="CDD">CDD</SelectItem>
-                    <SelectItem value="Stage">Stage</SelectItem>
-                    <SelectItem value="Freelance">Freelance</SelectItem>
+                    <SelectItem value="CDI">CDI</SelectItem><SelectItem value="CDD">CDD</SelectItem>
+                    <SelectItem value="Stage">Stage</SelectItem><SelectItem value="Freelance">Freelance</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="space-y-2">
-                <Label>Salaire min (KMF)</Label>
-                <Input type="number" value={form.salary_min} onChange={e => setForm(f => ({ ...f, salary_min: e.target.value }))} placeholder="150000" />
-              </div>
-              <div className="space-y-2">
-                <Label>Salaire max (KMF)</Label>
-                <Input type="number" value={form.salary_max} onChange={e => setForm(f => ({ ...f, salary_max: e.target.value }))} placeholder="300000" />
-              </div>
+              <div className="space-y-2"><Label>Salaire min (KMF)</Label><Input type="number" value={form.salary_min} onChange={e => setForm(f => ({ ...f, salary_min: e.target.value }))} placeholder="150000" /></div>
+              <div className="space-y-2"><Label>Salaire max (KMF)</Label><Input type="number" value={form.salary_max} onChange={e => setForm(f => ({ ...f, salary_max: e.target.value }))} placeholder="300000" /></div>
             </div>
-            <div className="space-y-2">
-              <Label>Prérequis (un par ligne)</Label>
-              <Textarea rows={3} value={form.requirements} onChange={e => setForm(f => ({ ...f, requirements: e.target.value }))} placeholder={"Bac+3 en informatique\n2 ans d'expérience"} />
-            </div>
-            <Button type="submit" disabled={submitting}>
-              {submitting ? "Publication..." : "Publier l'offre"}
-            </Button>
+            <div className="space-y-2"><Label>Prérequis (un par ligne)</Label><Textarea rows={3} value={form.requirements} onChange={e => setForm(f => ({ ...f, requirements: e.target.value }))} placeholder={"Bac+3 en informatique\n2 ans d'expérience"} /></div>
+            <Button type="submit" disabled={submitting}>{submitting ? "Publication..." : "Publier l'offre"}</Button>
           </form>
         </CardContent>
       </Card>
