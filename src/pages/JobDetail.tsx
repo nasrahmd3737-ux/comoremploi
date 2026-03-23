@@ -51,10 +51,15 @@ export default function JobDetail() {
     if (!user || !id) return;
     Promise.all([
       supabase.from("applications").select("id").eq("candidate_id", user.id).eq("job_id", id).maybeSingle(),
-      supabase.from("profiles").select("cv_url").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("cv_url, cv_education, cv_experience").eq("user_id", user.id).maybeSingle(),
     ]).then(([appRes, profRes]) => {
       setHasApplied(!!appRes.data);
       setProfileCvUrl(profRes.data?.cv_url ?? null);
+      const edu = profRes.data?.cv_education;
+      const exp = profRes.data?.cv_experience;
+      setHasBuiltCv(
+        (Array.isArray(edu) && edu.length > 0) || (Array.isArray(exp) && exp.length > 0)
+      );
     });
   }, [user, id]);
 
