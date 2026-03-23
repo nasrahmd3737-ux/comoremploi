@@ -81,6 +81,7 @@ export default function JobDetail() {
     setHasApplied(true);
     setShowApply(false);
     setCoverLetter("");
+    setSelectedCvType(null);
     toast.success("Candidature envoyée avec succès !");
   };
 
