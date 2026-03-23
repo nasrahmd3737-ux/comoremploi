@@ -340,7 +340,7 @@ const Jobs = () => {
 
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setSelectedJob(null)}>Annuler</Button>
-            <Button onClick={handleQuickApply} disabled={submitting}>
+            <Button onClick={handleQuickApply} disabled={submitting || (profileCvUrl && hasBuiltCv && !selectedCvType)}>
               {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               {submitting ? "Envoi..." : "Envoyer ma candidature"}
             </Button>
