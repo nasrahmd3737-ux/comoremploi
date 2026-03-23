@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavLink } from "@/components/NavLink";
 import {
-  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2,
+  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare,
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 
