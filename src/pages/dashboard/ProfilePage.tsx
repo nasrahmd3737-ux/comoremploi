@@ -165,8 +165,8 @@ export default function ProfilePage() {
                 <div className="space-y-2">
                   <Label>Compétences (séparées par des virgules)</Label>
                   <Input
-                    value={(profile.skills ?? []).join(", ")}
-                    onChange={e => update("skills", e.target.value.split(",").map(s => s.trim()).filter(Boolean))}
+                    value={skillsText}
+                    onChange={e => setSkillsText(e.target.value)}
                     placeholder="JavaScript, React, Communication..."
                   />
                 </div>
