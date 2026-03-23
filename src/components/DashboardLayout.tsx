@@ -180,4 +180,3 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
     </SidebarProvider>
   );
 }
-}
