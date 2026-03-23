@@ -300,7 +300,7 @@ export default function JobDetail() {
           </div>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setShowApply(false)}>Annuler</Button>
-            <Button onClick={handleApply} disabled={submitting}>
+            <Button onClick={handleApply} disabled={submitting || (profileCvUrl && hasBuiltCv && !selectedCvType)}>
               {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               {submitting ? "Envoi..." : "Envoyer"}
             </Button>
