@@ -14,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare } from "lucide-react";
 import ChatWidget from "@/components/ChatWidget";
+import { ISLANDS, formatLocation } from "@/lib/locations";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
@@ -30,7 +31,6 @@ interface ApplicationFull {
   jobs: { title: string; company_name: string; salary_min: number | null; salary_max: number | null; job_type: string; employer_id: string } | null;
 }
 
-const LOCATIONS = ["Moroni", "Mutsamudu", "Fomboni", "Mitsamiouli", "Domoni", "Mbéni"];
 const CATEGORIES = ["Technologie", "Tourisme", "Administration", "Construction", "Éducation", "Santé", "Commerce", "Autre"];
 
 const STATUS_LABELS: Record<string, string> = {
@@ -49,8 +49,10 @@ const Admin = () => {
   const [applications, setApplications] = useState<ApplicationFull[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
+  const [jobIsland, setJobIsland] = useState("Grande Comore");
+  const [jobCity, setJobCity] = useState("Moroni");
   const [jobForm, setJobForm] = useState({
-    title: "", description: "", company_name: "", location: "Moroni",
+    title: "", description: "", company_name: "",
     category: "Technologie", job_type: "CDI" as "CDI" | "CDD" | "Stage" | "Freelance",
     salary_min: "", salary_max: "", requirements: "",
   });
@@ -107,7 +109,7 @@ const Admin = () => {
     setSubmitting(true);
     const { error } = await supabase.from("jobs").insert({
       title: jobForm.title, description: jobForm.description, company_name: jobForm.company_name,
-      location: jobForm.location, category: jobForm.category, job_type: jobForm.job_type,
+      location: formatLocation(jobIsland, jobCity), category: jobForm.category, job_type: jobForm.job_type,
       salary_min: jobForm.salary_min ? parseInt(jobForm.salary_min) : null,
       salary_max: jobForm.salary_max ? parseInt(jobForm.salary_max) : null,
       requirements: jobForm.requirements ? jobForm.requirements.split("\n").filter(Boolean) : null,
@@ -116,7 +118,8 @@ const Admin = () => {
     setSubmitting(false);
     if (error) { toast.error("Erreur: " + error.message); return; }
     toast.success("Offre créée !");
-    setJobForm({ title: "", description: "", company_name: "", location: "Moroni", category: "Technologie", job_type: "CDI", salary_min: "", salary_max: "", requirements: "" });
+    setJobForm({ title: "", description: "", company_name: "", category: "Technologie", job_type: "CDI", salary_min: "", salary_max: "", requirements: "" });
+    setJobIsland("Grande Comore"); setJobCity("Moroni");
     fetchData();
   };
 
@@ -409,9 +412,12 @@ const Admin = () => {
                     <div className="space-y-2"><Label>Entreprise</Label><Input required value={jobForm.company_name} onChange={e => setJobForm(f => ({ ...f, company_name: e.target.value }))} placeholder="Nom de l'entreprise" /></div>
                   </div>
                   <div className="space-y-2"><Label>Description</Label><Textarea required rows={4} value={jobForm.description} onChange={e => setJobForm(f => ({ ...f, description: e.target.value }))} placeholder="Décrivez le poste..." /></div>
-                  <div className="grid gap-4 sm:grid-cols-3">
-                    <div className="space-y-2"><Label>Localisation</Label>
-                      <Select value={jobForm.location} onValueChange={v => setJobForm(f => ({ ...f, location: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{LOCATIONS.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent></Select>
+                  <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                    <div className="space-y-2"><Label>Île</Label>
+                      <Select value={jobIsland} onValueChange={v => { setJobIsland(v); setJobCity(ISLANDS[v]?.[0] ?? ""); }}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{Object.keys(ISLANDS).map(i => <SelectItem key={i} value={i}>{i}</SelectItem>)}</SelectContent></Select>
+                    </div>
+                    <div className="space-y-2"><Label>Ville</Label>
+                      <Select value={jobCity} onValueChange={setJobCity}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{(ISLANDS[jobIsland] ?? []).map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
                     </div>
                     <div className="space-y-2"><Label>Catégorie</Label>
                       <Select value={jobForm.category} onValueChange={v => setJobForm(f => ({ ...f, category: v }))}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent></Select>
