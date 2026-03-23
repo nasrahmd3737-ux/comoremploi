@@ -71,11 +71,24 @@ const Admin = () => {
     const [profilesRes, jobsRes, appsRes] = await Promise.all([
       supabase.from("profiles").select("*").order("created_at", { ascending: false }),
       supabase.from("jobs").select("*").order("created_at", { ascending: false }),
-      supabase.from("applications").select("id, status, created_at, candidate_id, job_id, cover_letter, profiles:candidate_id(full_name, email, phone, location), jobs:job_id(title, company_name, salary_min, salary_max, job_type, employer_id)").order("created_at", { ascending: false }),
+      supabase.from("applications").select("id, status, created_at, candidate_id, job_id, cover_letter").order("created_at", { ascending: false }),
     ]);
-    setProfiles(profilesRes.data ?? []);
-    setJobs(jobsRes.data ?? []);
-    setApplications((appsRes.data as unknown as ApplicationFull[]) ?? []);
+    const allProfiles = profilesRes.data ?? [];
+    const allJobs = jobsRes.data ?? [];
+    setProfiles(allProfiles);
+    setJobs(allJobs);
+
+    // Build applications with client-side lookups
+    const enrichedApps: ApplicationFull[] = (appsRes.data ?? []).map(a => {
+      const profile = allProfiles.find(p => p.user_id === a.candidate_id);
+      const job = allJobs.find(j => j.id === a.job_id);
+      return {
+        ...a,
+        profiles: profile ? { full_name: profile.full_name, email: profile.email, phone: profile.phone, location: profile.location } : null,
+        jobs: job ? { title: job.title, company_name: job.company_name, salary_min: job.salary_min, salary_max: job.salary_max, job_type: job.job_type, employer_id: job.employer_id } : null,
+      };
+    });
+    setApplications(enrichedApps);
     setLoadingData(false);
   };
 
