@@ -235,7 +235,7 @@ export default function CvBuilder() {
       <div className="flex gap-3">
         <Button onClick={handleSave} disabled={saving} className="min-w-[160px]">
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
-          {saving ? "Enregistrement..." : published ? "Publier le CV" : "Enregistrer le brouillon"}
+          {saving ? "Enregistrement..." : published ? "Publier le CV" : "Enregistrer le CV"}
         </Button>
       </div>
     </div>
