@@ -22,7 +22,7 @@ export default function ProfilePage() {
   const [uploading, setUploading] = useState(false);
   const [skillsText, setSkillsText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const [showBuiltCv, setShowBuiltCv] = useState(false);
   useEffect(() => {
     if (!user) return;
     supabase
