@@ -58,6 +58,8 @@ const Admin = () => {
     salary_min: "", salary_max: "", requirements: "",
   });
   const [submitting, setSubmitting] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Profile | null>(null);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
 
   useEffect(() => {
     if (role === "admin") fetchData();
