@@ -9,7 +9,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-import { Loader2, Plus, Trash2, FileText, GraduationCap, Briefcase, Globe, Eye, EyeOff } from "lucide-react";
+import { Loader2, Plus, Trash2, FileText, GraduationCap, Briefcase, Globe, Eye, EyeOff, Download, Save } from "lucide-react";
+import { generateCvPdf } from "@/lib/generateCvPdf";
 
 interface Education {
   school: string;
@@ -75,6 +76,44 @@ export default function CvBuilder() {
     setSaving(false);
     if (error) { toast.error(error.message); return; }
     toast.success(published ? "CV publié et visible par les entreprises !" : "CV enregistré sur votre profil !");
+  };
+
+  const buildCvData = () => ({
+    full_name: profile.full_name,
+    email: profile.email,
+    phone: profile.phone,
+    location: profile.location,
+    bio: profile.bio,
+    skills: profile.skills,
+    cv_education: education,
+    cv_experience: experience,
+    cv_languages: languages.split(",").map(l => l.trim()).filter(Boolean),
+  });
+
+  const handleDownloadPdf = () => {
+    const doc = generateCvPdf(buildCvData());
+    doc.save(`CV_${profile.full_name.replace(/\s+/g, "_")}.pdf`);
+  };
+
+  const [savingPdf, setSavingPdf] = useState(false);
+  const handleSavePdfToProfile = async () => {
+    if (!user) return;
+    setSavingPdf(true);
+    try {
+      const doc = generateCvPdf(buildCvData());
+      const pdfBlob = doc.output("blob");
+      const filePath = `${user.id}/cv-online-${Date.now()}.pdf`;
+      if (profile.cv_url) await supabase.storage.from("cvs").remove([profile.cv_url]);
+      const { error: upErr } = await supabase.storage.from("cvs").upload(filePath, pdfBlob, { contentType: "application/pdf", upsert: true });
+      if (upErr) throw upErr;
+      await supabase.from("profiles").update({ cv_url: filePath }).eq("id", profile.id);
+      setProfile((p: any) => ({ ...p, cv_url: filePath }));
+      toast.success("CV PDF enregistré dans votre profil !");
+    } catch (err: any) {
+      toast.error(err.message ?? "Erreur");
+    } finally {
+      setSavingPdf(false);
+    }
   };
 
   const updateEdu = (idx: number, field: keyof Education, value: string) => {
@@ -232,10 +271,17 @@ export default function CvBuilder() {
       </Card>
 
       {/* Save */}
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <Button onClick={handleSave} disabled={saving} className="min-w-[160px]">
           {saving ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {saving ? "Enregistrement..." : published ? "Publier le CV" : "Enregistrer le CV"}
+        </Button>
+        <Button variant="outline" onClick={handleDownloadPdf}>
+          <Download className="mr-2 h-4 w-4" /> Télécharger PDF
+        </Button>
+        <Button variant="secondary" onClick={handleSavePdfToProfile} disabled={savingPdf}>
+          {savingPdf ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
+          Enregistrer PDF dans profil
         </Button>
       </div>
     </div>

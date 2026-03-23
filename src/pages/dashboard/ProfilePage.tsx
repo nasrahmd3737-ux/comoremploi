@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, User, Upload, FileText, Trash2, ExternalLink, GraduationCap, Briefcase, Globe, Eye, Pencil } from "lucide-react";
+import { Loader2, User, Upload, FileText, Trash2, ExternalLink, GraduationCap, Briefcase, Globe, Eye, Pencil, Download, Save } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
+import { generateCvPdf } from "@/lib/generateCvPdf";
 
 type Profile = Tables<"profiles">;
 
@@ -23,6 +24,60 @@ export default function ProfilePage() {
   const [skillsText, setSkillsText] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showBuiltCv, setShowBuiltCv] = useState(false);
+  const [generatingPdf, setGeneratingPdf] = useState(false);
+
+  const buildCvData = () => {
+    if (!profile) return null;
+    return {
+      full_name: profile.full_name,
+      email: profile.email,
+      phone: profile.phone,
+      location: profile.location,
+      bio: profile.bio,
+      skills: profile.skills,
+      cv_education: Array.isArray(profile.cv_education) ? (profile.cv_education as any[]) : [],
+      cv_experience: Array.isArray(profile.cv_experience) ? (profile.cv_experience as any[]) : [],
+      cv_languages: profile.cv_languages ?? [],
+    };
+  };
+
+  const handleDownloadPdf = () => {
+    const cvData = buildCvData();
+    if (!cvData) return;
+    const doc = generateCvPdf(cvData);
+    doc.save(`CV_${profile!.full_name.replace(/\s+/g, "_")}.pdf`);
+  };
+
+  const handleSavePdfToProfile = async () => {
+    const cvData = buildCvData();
+    if (!cvData || !user || !profile) return;
+    setGeneratingPdf(true);
+    try {
+      const doc = generateCvPdf(cvData);
+      const pdfBlob = doc.output("blob");
+      const filePath = `${user.id}/cv-online-${Date.now()}.pdf`;
+
+      if (profile.cv_url) {
+        await supabase.storage.from("cvs").remove([profile.cv_url]);
+      }
+
+      const { error: upErr } = await supabase.storage.from("cvs").upload(filePath, pdfBlob, {
+        contentType: "application/pdf",
+        upsert: true,
+      });
+      if (upErr) throw upErr;
+
+      const { error: updErr } = await supabase.from("profiles").update({ cv_url: filePath }).eq("id", profile.id);
+      if (updErr) throw updErr;
+
+      setProfile((p: Profile | null) => p ? { ...p, cv_url: filePath } : p);
+      toast.success("CV PDF enregistré dans votre profil !");
+    } catch (err: any) {
+      toast.error(err.message ?? "Erreur lors de la génération du PDF");
+    } finally {
+      setGeneratingPdf(false);
+    }
+  };
   useEffect(() => {
     if (!user) return;
     supabase
@@ -250,9 +305,16 @@ export default function ProfilePage() {
                             <span>{exp.length} expérience{exp.length !== 1 ? "s" : ""}</span>
                             {langs.length > 0 && <><span>·</span><span>{langs.length} langue{langs.length !== 1 ? "s" : ""}</span></>}
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
                             <Button type="button" variant="outline" size="sm" onClick={() => setShowBuiltCv(true)}>
-                              <Eye className="mr-1 h-4 w-4" /> Voir mon CV
+                              <Eye className="mr-1 h-4 w-4" /> Voir
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" onClick={handleDownloadPdf}>
+                              <Download className="mr-1 h-4 w-4" /> Télécharger PDF
+                            </Button>
+                            <Button type="button" variant="default" size="sm" onClick={handleSavePdfToProfile} disabled={generatingPdf}>
+                              {generatingPdf ? <Loader2 className="mr-1 h-4 w-4 animate-spin" /> : <Save className="mr-1 h-4 w-4" />}
+                              Enregistrer dans profil
                             </Button>
                             <Button type="button" variant="outline" size="sm" asChild>
                               <Link to="/dashboard/cv-builder"><Pencil className="mr-1 h-4 w-4" /> Modifier</Link>
