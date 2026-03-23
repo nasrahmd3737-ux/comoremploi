@@ -103,6 +103,7 @@ const Jobs = () => {
     toast.success("Candidature envoyée avec succès !");
     setSelectedJob(null);
     setCoverLetter("");
+    setSelectedCvType(null);
   };
 
   const openApplyDialog = (job: Job) => {
