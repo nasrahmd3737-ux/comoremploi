@@ -230,6 +230,46 @@ export default function ProfilePage() {
                     <span className="text-xs text-muted-foreground">PDF ou Word, max 10 Mo</span>
                   </div>
                 </div>
+
+                {/* Built CV Section */}
+                {(() => {
+                  const edu = Array.isArray(profile.cv_education) ? profile.cv_education as any[] : [];
+                  const exp = Array.isArray(profile.cv_experience) ? profile.cv_experience as any[] : [];
+                  const langs = profile.cv_languages ?? [];
+                  const hasBuiltCv = edu.length > 0 || exp.length > 0;
+                  return (
+                    <div className="space-y-3 rounded-lg border border-dashed border-comores-green/30 bg-comores-green/5 p-4">
+                      <Label className="flex items-center gap-2 text-base font-semibold">
+                        <GraduationCap className="h-5 w-5 text-comores-green" /> CV créé en ligne
+                      </Label>
+                      {hasBuiltCv ? (
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>{edu.length} formation{edu.length !== 1 ? "s" : ""}</span>
+                            <span>·</span>
+                            <span>{exp.length} expérience{exp.length !== 1 ? "s" : ""}</span>
+                            {langs.length > 0 && <><span>·</span><span>{langs.length} langue{langs.length !== 1 ? "s" : ""}</span></>}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Button type="button" variant="outline" size="sm" onClick={() => setShowBuiltCv(true)}>
+                              <Eye className="mr-1 h-4 w-4" /> Voir mon CV
+                            </Button>
+                            <Button type="button" variant="outline" size="sm" asChild>
+                              <Link to="/dashboard/cv-builder"><Pencil className="mr-1 h-4 w-4" /> Modifier</Link>
+                            </Button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <p className="text-sm text-muted-foreground">Aucun CV créé en ligne</p>
+                          <Button type="button" variant="outline" size="sm" asChild>
+                            <Link to="/dashboard/cv-builder"><Pencil className="mr-1 h-4 w-4" /> Créer mon CV</Link>
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
               </>
             )}
 
