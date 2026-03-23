@@ -50,7 +50,7 @@ const Signup = () => {
           <span className="font-display text-xl font-bold">Comores <span className="text-primary">Emploi</span></span>
         </Link>
 
-        <h1 className="font-display text-2xl font-bold md:text-3xl">Comment souhaitez-vous utiliser Kazi ?</h1>
+        <h1 className="font-display text-2xl font-bold md:text-3xl">Comment souhaitez-vous utiliser Comores Emploi ?</h1>
         <p className="mt-2 text-muted-foreground">Choisissez votre profil pour commencer</p>
 
         <div className="mt-10 grid w-full max-w-lg gap-4 sm:grid-cols-2">
