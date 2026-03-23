@@ -11,7 +11,7 @@ const Footer = () => {
               <Briefcase className="h-4 w-4 text-primary-foreground" />
             </div>
             <span className="font-display text-lg font-bold">
-              Kazi <span className="text-primary">Comores</span>
+              Comores <span className="text-primary">Emploi</span>
             </span>
           </div>
 
