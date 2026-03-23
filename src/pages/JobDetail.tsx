@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { MapPin, Building2, Clock, Banknote, Send, CheckCircle, FileText, AlertCircle, Loader2, ArrowLeft, Briefcase, ListChecks } from "lucide-react";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
+import { generateCvPdf } from "@/lib/generateCvPdf";
 
 type Job = Tables<"jobs">;
 
@@ -34,6 +35,7 @@ export default function JobDetail() {
   const [hasApplied, setHasApplied] = useState(false);
   const [profileCvUrl, setProfileCvUrl] = useState<string | null>(null);
   const [hasBuiltCv, setHasBuiltCv] = useState(false);
+  const [profileData, setProfileData] = useState<any>(null);
   const [selectedCvType, setSelectedCvType] = useState<"uploaded" | "built" | null>(null);
   const [showApply, setShowApply] = useState(false);
   const [coverLetter, setCoverLetter] = useState("");
@@ -51,9 +53,10 @@ export default function JobDetail() {
     if (!user || !id) return;
     Promise.all([
       supabase.from("applications").select("id").eq("candidate_id", user.id).eq("job_id", id).maybeSingle(),
-      supabase.from("profiles").select("cv_url, cv_education, cv_experience").eq("user_id", user.id).maybeSingle(),
+      supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
     ]).then(([appRes, profRes]) => {
       setHasApplied(!!appRes.data);
+      setProfileData(profRes.data);
       setProfileCvUrl(profRes.data?.cv_url ?? null);
       const edu = profRes.data?.cv_education;
       const exp = profRes.data?.cv_experience;
@@ -66,7 +69,39 @@ export default function JobDetail() {
   const handleApply = async () => {
     if (!user || !job) return;
     setSubmitting(true);
-    const cvToSend = selectedCvType === "uploaded" ? profileCvUrl : (selectedCvType === "built" ? "online-cv" : profileCvUrl);
+
+    let cvToSend = profileCvUrl;
+    const useBuiltCv = selectedCvType === "built" || (!profileCvUrl && hasBuiltCv);
+
+    // Auto-generate PDF from built CV data
+    if (useBuiltCv && profileData) {
+      try {
+        const doc = generateCvPdf({
+          full_name: profileData.full_name,
+          email: profileData.email,
+          phone: profileData.phone,
+          location: profileData.location,
+          bio: profileData.bio,
+          skills: profileData.skills,
+          cv_education: Array.isArray(profileData.cv_education) ? profileData.cv_education : [],
+          cv_experience: Array.isArray(profileData.cv_experience) ? profileData.cv_experience : [],
+          cv_languages: profileData.cv_languages ?? [],
+        });
+        const pdfBlob = doc.output("blob");
+        const filePath = `${user.id}/cv-candidature-${Date.now()}.pdf`;
+        const { error: upErr } = await supabase.storage.from("cvs").upload(filePath, pdfBlob, {
+          contentType: "application/pdf",
+          upsert: true,
+        });
+        if (upErr) throw upErr;
+        cvToSend = filePath;
+      } catch (err: any) {
+        toast.error("Erreur lors de la génération du CV PDF");
+        setSubmitting(false);
+        return;
+      }
+    }
+
     const { error } = await supabase.from("applications").insert({
       candidate_id: user.id,
       job_id: job.id,
