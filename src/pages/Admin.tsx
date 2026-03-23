@@ -32,7 +32,6 @@ interface ApplicationFull {
 }
 
 const CATEGORIES = ["Technologie", "Tourisme", "Administration", "Construction", "Éducation", "Santé", "Commerce", "Autre"];
-const CATEGORIES = ["Technologie", "Tourisme", "Administration", "Construction", "Éducation", "Santé", "Commerce", "Autre"];
 
 const STATUS_LABELS: Record<string, string> = {
   pending: "En attente", reviewed: "Examinée", shortlisted: "Présélectionné", accepted: "Acceptée", rejected: "Refusée",
