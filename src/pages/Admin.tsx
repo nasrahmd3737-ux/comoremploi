@@ -253,7 +253,9 @@ const Admin = () => {
                       <TableBody>
                         {jobs.map(j => (
                           <TableRow key={j.id}>
-                            <TableCell className="font-medium">{j.title}</TableCell>
+                            <TableCell className="font-medium">
+                              <button className="text-left hover:text-primary hover:underline transition-colors" onClick={() => setViewingJob(j)}>{j.title}</button>
+                            </TableCell>
                             <TableCell>{j.company_name}</TableCell>
                             <TableCell>{j.location}</TableCell>
                             <TableCell><Badge variant="outline">{j.job_type}</Badge></TableCell>
