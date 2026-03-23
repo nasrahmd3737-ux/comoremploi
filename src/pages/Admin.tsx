@@ -388,6 +388,16 @@ const Admin = () => {
             </div>
           </TabsContent>
 
+          {/* Messages */}
+          <TabsContent value="messages" className="mt-6">
+            <Card>
+              <CardHeader><CardTitle className="flex items-center gap-2"><MessageSquare className="h-5 w-5" /> Messagerie</CardTitle></CardHeader>
+              <CardContent>
+                {user && <ChatWidget userId={user.id} height="500px" />}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           {/* Create Job */}
           <TabsContent value="create" className="mt-6">
             <Card className="max-w-2xl">
