@@ -21,9 +21,11 @@ const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [island, setIsland] = useState("");
   const [city, setCity] = useState("");
+  const [customCity, setCustomCity] = useState("");
   const [loading, setLoading] = useState(false);
 
   const cities = island ? ISLANDS[island] ?? [] : [];
+  const effectiveCity = city === "__other__" ? customCity : city;
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
