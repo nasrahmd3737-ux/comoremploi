@@ -118,7 +118,8 @@ const Admin = () => {
     setSubmitting(false);
     if (error) { toast.error("Erreur: " + error.message); return; }
     toast.success("Offre créée !");
-    setJobForm({ title: "", description: "", company_name: "", location: "Moroni", category: "Technologie", job_type: "CDI", salary_min: "", salary_max: "", requirements: "" });
+    setJobForm({ title: "", description: "", company_name: "", category: "Technologie", job_type: "CDI", salary_min: "", salary_max: "", requirements: "" });
+    setJobIsland("Grande Comore"); setJobCity("Moroni");
     fetchData();
   };
 
