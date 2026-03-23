@@ -26,7 +26,7 @@ interface ApplicationFull {
   job_id: string;
   cover_letter: string | null;
   profiles: { full_name: string; email: string | null; phone: string | null; location: string | null } | null;
-  jobs: { title: string; company_name: string; salary_min: number | null; salary_max: number | null } | null;
+  jobs: { title: string; company_name: string; salary_min: number | null; salary_max: number | null; job_type: string; employer_id: string } | null;
 }
 
 const LOCATIONS = ["Moroni", "Mutsamudu", "Fomboni", "Mitsamiouli", "Domoni", "Mbéni"];
