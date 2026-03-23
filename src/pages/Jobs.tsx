@@ -273,31 +273,17 @@ const Jobs = () => {
 
           <div className="space-y-4 py-2">
             {/* CV Status */}
-            <div className={`flex items-center gap-3 rounded-lg border p-3 ${profileCvUrl ? "border-comores-green/30 bg-comores-green/5" : "border-gold/30 bg-gold/5"}`}>
-              {profileCvUrl ? (
-                <>
-                  <CheckCircle className="h-5 w-5 text-comores-green shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">CV joint automatiquement</p>
-                    <p className="text-xs text-muted-foreground">Votre CV sera envoyé avec la candidature</p>
-                  </div>
-                  <Button variant="ghost" size="sm" asChild>
-                    <a href={profileCvUrl} target="_blank" rel="noopener noreferrer">
-                      <FileText className="h-4 w-4" />
-                    </a>
-                  </Button>
-                </>
-              ) : (
-                <>
-                  <AlertCircle className="h-5 w-5 text-gold shrink-0" />
-                  <div className="flex-1">
-                    <p className="text-sm font-medium">Aucun CV uploadé</p>
-                    <p className="text-xs text-muted-foreground">
-                      <Link to="/dashboard/profile" className="text-primary underline">Uploadez votre CV</Link> pour renforcer votre candidature
-                    </p>
-                  </div>
-                </>
-              )}
+            <div className="flex items-center gap-3 rounded-lg border p-3 border-comores-green/30 bg-comores-green/5">
+              <CheckCircle className="h-5 w-5 text-comores-green shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm font-medium">CV joint automatiquement</p>
+                <p className="text-xs text-muted-foreground">Votre CV sera envoyé avec la candidature</p>
+              </div>
+              <Button variant="ghost" size="sm" asChild>
+                <a href={profileCvUrl!} target="_blank" rel="noopener noreferrer">
+                  <FileText className="h-4 w-4" />
+                </a>
+              </Button>
             </div>
 
             {/* Cover Letter (optional) */}
