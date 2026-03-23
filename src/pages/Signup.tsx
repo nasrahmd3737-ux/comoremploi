@@ -21,16 +21,18 @@ const Signup = () => {
   const [fullName, setFullName] = useState("");
   const [island, setIsland] = useState("");
   const [city, setCity] = useState("");
+  const [customCity, setCustomCity] = useState("");
   const [loading, setLoading] = useState(false);
 
   const cities = island ? ISLANDS[island] ?? [] : [];
+  const effectiveCity = city === "__other__" ? customCity : city;
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!role) return;
-    if (!island || !city) { toast.error("Veuillez sélectionner votre île et ville"); return; }
+    if (!island || !effectiveCity) { toast.error("Veuillez sélectionner votre île et ville"); return; }
     setLoading(true);
-    const location = formatLocation(island, city);
+    const location = formatLocation(island, effectiveCity);
     const { error } = await supabase.auth.signUp({
       email,
       password,
@@ -130,12 +132,16 @@ const Signup = () => {
               </div>
               <div className="space-y-2">
                 <Label>Ville</Label>
-                <Select value={city} onValueChange={setCity} disabled={!island}>
+                <Select value={city} onValueChange={v => { setCity(v); if (v !== "__other__") setCustomCity(""); }} disabled={!island}>
                   <SelectTrigger><SelectValue placeholder="Choisir la ville" /></SelectTrigger>
                   <SelectContent>
                     {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    <SelectItem value="__other__">Autre...</SelectItem>
                   </SelectContent>
                 </Select>
+                {city === "__other__" && (
+                  <Input placeholder="Nom de la ville" value={customCity} onChange={e => setCustomCity(e.target.value)} required />
+                )}
               </div>
             </div>
 

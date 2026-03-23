@@ -20,6 +20,7 @@ export default function EmployerJobForm() {
   const [submitting, setSubmitting] = useState(false);
   const [island, setIsland] = useState("Grande Comore");
   const [city, setCity] = useState("Moroni");
+  const [customCity, setCustomCity] = useState("");
   const [form, setForm] = useState({
     title: "", description: "", company_name: "",
     category: "Technologie", job_type: "CDI" as "CDI" | "CDD" | "Stage" | "Freelance",
@@ -27,6 +28,7 @@ export default function EmployerJobForm() {
   });
 
   const cities = ISLANDS[island] ?? [];
+  const effectiveCity = city === "__other__" ? customCity : city;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ export default function EmployerJobForm() {
       title: form.title,
       description: form.description,
       company_name: form.company_name,
-      location: formatLocation(island, city),
+      location: formatLocation(island, effectiveCity),
       category: form.category,
       job_type: form.job_type,
       salary_min: form.salary_min ? parseInt(form.salary_min) : null,
@@ -79,10 +81,16 @@ export default function EmployerJobForm() {
               </div>
               <div className="space-y-2">
                 <Label>Ville</Label>
-                <Select value={city} onValueChange={setCity}>
+                <Select value={city} onValueChange={v => { setCity(v); if (v !== "__other__") setCustomCity(""); }}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
-                  <SelectContent>{cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
+                  <SelectContent>
+                    {cities.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+                    <SelectItem value="__other__">Autre...</SelectItem>
+                  </SelectContent>
                 </Select>
+                {city === "__other__" && (
+                  <Input placeholder="Nom de la ville" value={customCity} onChange={e => setCustomCity(e.target.value)} required />
+                )}
               </div>
               <div className="space-y-2">
                 <Label>Catégorie</Label>
