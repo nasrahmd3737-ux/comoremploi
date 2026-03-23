@@ -262,6 +262,7 @@ const Admin = () => {
                             <TableCell><Badge variant={j.status === "published" ? "default" : "secondary"}>{j.status === "published" ? "Publiée" : j.status === "closed" ? "Fermée" : "Brouillon"}</Badge></TableCell>
                             <TableCell>{new Date(j.created_at).toLocaleDateString("fr-FR")}</TableCell>
                             <TableCell className="text-right space-x-1">
+                              <Button variant="ghost" size="icon" onClick={() => setViewingJob(j)}><Eye className="h-4 w-4" /></Button>
                               <Button variant="outline" size="sm" onClick={() => handleToggleJobStatus(j)}>{j.status === "published" ? "Fermer" : "Publier"}</Button>
                               <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteJob(j.id)}><Trash2 className="h-4 w-4" /></Button>
                             </TableCell>
