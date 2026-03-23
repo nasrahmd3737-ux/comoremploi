@@ -50,8 +50,10 @@ const Admin = () => {
   const [applications, setApplications] = useState<ApplicationFull[]>([]);
   const [loadingData, setLoadingData] = useState(true);
 
+  const [jobIsland, setJobIsland] = useState("Grande Comore");
+  const [jobCity, setJobCity] = useState("Moroni");
   const [jobForm, setJobForm] = useState({
-    title: "", description: "", company_name: "", location: "Moroni",
+    title: "", description: "", company_name: "",
     category: "Technologie", job_type: "CDI" as "CDI" | "CDD" | "Stage" | "Freelance",
     salary_min: "", salary_max: "", requirements: "",
   });
