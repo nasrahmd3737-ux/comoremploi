@@ -115,7 +115,7 @@ const Signup = () => {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
               <Briefcase className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-display text-xl font-bold">Kazi <span className="text-primary">Comores</span></span>
+            <span className="font-display text-xl font-bold">Comores <span className="text-primary">Emploi</span></span>
           </Link>
 
           <button onClick={() => setRole(null)} className="mb-4 text-sm text-muted-foreground hover:text-foreground transition-colors">

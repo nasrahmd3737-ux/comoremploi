@@ -23,7 +23,7 @@ const Footer = () => {
           </div>
 
           <p className="text-xs text-muted-foreground">
-            © 2026 Kazi Comores. Tous droits réservés.
+            © 2026 Comores Emploi. Tous droits réservés.
           </p>
         </div>
       </div>

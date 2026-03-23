@@ -14,7 +14,7 @@ const Navbar = () => {
             <Briefcase className="h-5 w-5 text-primary-foreground" />
           </div>
           <span className="font-display text-xl font-bold text-foreground">
-            Kazi <span className="text-primary">Comores</span>
+            Comores <span className="text-primary">Emploi</span>
           </span>
         </Link>
 

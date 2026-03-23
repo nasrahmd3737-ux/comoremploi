@@ -10,7 +10,7 @@ const CTASection = () => {
             Prêt à commencer ?
           </h2>
           <p className="mx-auto mt-4 max-w-lg text-white/80">
-            Que vous soyez candidat ou employeur, rejoignez la communauté Kazi Comores et connectez-vous aux meilleures opportunités.
+            Que vous soyez candidat ou employeur, rejoignez la communauté Comores Emploi et connectez-vous aux meilleures opportunités.
           </p>
           <div className="mt-8 flex flex-col items-center gap-4 sm:flex-row sm:justify-center">
             <Button size="lg" variant="secondary" asChild>

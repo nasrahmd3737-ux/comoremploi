@@ -59,7 +59,7 @@ const Login = () => {
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
               <Briefcase className="h-5 w-5 text-primary-foreground" />
             </div>
-            <span className="font-display text-xl font-bold">Kazi <span className="text-primary">Comores</span></span>
+            <span className="font-display text-xl font-bold">Comores <span className="text-primary">Emploi</span></span>
           </Link>
 
           <h1 className="font-display text-2xl font-bold">Bon retour !</h1>
