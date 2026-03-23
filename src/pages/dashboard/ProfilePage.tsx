@@ -8,9 +8,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, User, Upload, FileText, Trash2, ExternalLink, GraduationCap, Briefcase, Globe, Eye, Pencil } from "lucide-react";
+import { Loader2, User, Upload, FileText, Trash2, ExternalLink, GraduationCap, Briefcase, Globe, Eye, Pencil, Download, Save } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
+import { generateCvPdf } from "@/lib/generateCvPdf";
 
 type Profile = Tables<"profiles">;
 
