@@ -13,6 +13,7 @@ interface ApplicationWithDetails {
   status: string;
   created_at: string;
   cover_letter: string | null;
+  cv_url: string | null;
   candidate_id: string;
   job_id: string;
   profiles: { full_name: string; email: string | null; phone: string | null; location: string | null } | null;
