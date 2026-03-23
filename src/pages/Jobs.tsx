@@ -284,19 +284,47 @@ const Jobs = () => {
           </DialogHeader>
 
           <div className="space-y-4 py-2">
-            {/* CV Status */}
-            <div className="flex items-center gap-3 rounded-lg border p-3 border-comores-green/30 bg-comores-green/5">
-              <CheckCircle className="h-5 w-5 text-comores-green shrink-0" />
-              <div className="flex-1">
-                <p className="text-sm font-medium">CV joint automatiquement</p>
-                <p className="text-xs text-muted-foreground">Votre CV sera envoyé avec la candidature</p>
+            {/* CV Selection */}
+            {profileCvUrl && hasBuiltCv ? (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Choisissez le CV à envoyer</label>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${selectedCvType === "uploaded" ? "border-primary bg-primary/5" : "border-muted hover:border-primary/50"}`}
+                    onClick={() => setSelectedCvType("uploaded")}
+                  >
+                    <FileText className="h-6 w-6 text-primary" />
+                    <span className="text-sm font-medium">CV uploadé</span>
+                    <span className="text-xs text-muted-foreground">Fichier PDF</span>
+                  </button>
+                  <button
+                    type="button"
+                    className={`flex flex-col items-center gap-2 rounded-lg border-2 p-4 transition-colors ${selectedCvType === "built" ? "border-primary bg-primary/5" : "border-muted hover:border-primary/50"}`}
+                    onClick={() => setSelectedCvType("built")}
+                  >
+                    <FileText className="h-6 w-6 text-comores-green" />
+                    <span className="text-sm font-medium">CV créé en ligne</span>
+                    <span className="text-xs text-muted-foreground">Depuis le CV Builder</span>
+                  </button>
+                </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={async () => { const { data } = await supabase.storage.from("cvs").createSignedUrl(profileCvUrl!, 3600); if (data?.signedUrl) window.open(data.signedUrl, "_blank"); }}>
-                  <FileText className="h-4 w-4" />
-              </Button>
-            </div>
+            ) : (
+              <div className="flex items-center gap-3 rounded-lg border p-3 border-comores-green/30 bg-comores-green/5">
+                <CheckCircle className="h-5 w-5 text-comores-green shrink-0" />
+                <div className="flex-1">
+                  <p className="text-sm font-medium">{profileCvUrl ? "CV uploadé joint" : "CV créé en ligne joint"}</p>
+                  <p className="text-xs text-muted-foreground">Votre CV sera envoyé avec la candidature</p>
+                </div>
+                {profileCvUrl && (
+                  <Button variant="ghost" size="sm" onClick={async () => { const { data } = await supabase.storage.from("cvs").createSignedUrl(profileCvUrl, 3600); if (data?.signedUrl) window.open(data.signedUrl, "_blank"); }}>
+                    <FileText className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            )}
 
-            {/* Cover Letter (optional) */}
+            {/* Cover Letter */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Lettre de motivation (optionnelle)</label>
               <Textarea
