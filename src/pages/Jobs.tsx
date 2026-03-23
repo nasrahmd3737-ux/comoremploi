@@ -115,8 +115,8 @@ const Jobs = () => {
       toast.error("Seuls les candidats peuvent postuler");
       return;
     }
-    if (!profileCvUrl) {
-      toast.error("Veuillez d'abord créer votre CV", {
+    if (!profileCvUrl && !hasBuiltCv) {
+      toast.error("Veuillez d'abord créer ou uploader votre CV", {
         action: { label: "Créer mon CV", onClick: () => window.location.href = "/dashboard/cv-builder" },
         duration: 6000,
       });
@@ -124,6 +124,10 @@ const Jobs = () => {
     }
     setSelectedJob(job);
     setCoverLetter("");
+    // Auto-select if only one option
+    if (profileCvUrl && !hasBuiltCv) setSelectedCvType("uploaded");
+    else if (!profileCvUrl && hasBuiltCv) setSelectedCvType("built");
+    else setSelectedCvType(null);
   };
 
   const filtered = jobs.filter(j => {
