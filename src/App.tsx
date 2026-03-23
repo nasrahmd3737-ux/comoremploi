@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
 import Jobs from "./pages/Jobs";
+import Talents from "./pages/Talents";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
@@ -12,6 +13,7 @@ import Admin from "./pages/Admin";
 import DashboardLayout from "./components/DashboardLayout";
 import CandidateDashboard from "./pages/dashboard/CandidateDashboard";
 import CandidateApplications from "./pages/dashboard/CandidateApplications";
+import CvBuilder from "./pages/dashboard/CvBuilder";
 import EmployerDashboard from "./pages/dashboard/EmployerDashboard";
 import EmployerJobs from "./pages/dashboard/EmployerJobs";
 import EmployerJobForm from "./pages/dashboard/EmployerJobForm";
@@ -36,11 +38,13 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/jobs" element={<Jobs />} />
+          <Route path="/talents" element={<Talents />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/dashboard" element={<DashboardLayout><DashboardRouter /></DashboardLayout>} />
           <Route path="/dashboard/applications" element={<DashboardLayout><CandidateApplications /></DashboardLayout>} />
+          <Route path="/dashboard/cv-builder" element={<DashboardLayout><CvBuilder /></DashboardLayout>} />
           <Route path="/dashboard/jobs" element={<DashboardLayout allowedRoles={["employer"]}><EmployerJobs /></DashboardLayout>} />
           <Route path="/dashboard/jobs/new" element={<DashboardLayout allowedRoles={["employer"]}><EmployerJobForm /></DashboardLayout>} />
           <Route path="/dashboard/applicants" element={<DashboardLayout allowedRoles={["employer"]}><EmployerApplicants /></DashboardLayout>} />
