@@ -40,7 +40,6 @@ function SidebarNav() {
   const { role } = useAuth();
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
-  const location = useLocation();
   const links = role === "employer" ? employerLinks : candidateLinks;
 
   return (
