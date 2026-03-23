@@ -45,17 +45,36 @@ export default function EmployerApplicants() {
       // Get employer's jobs first
       const { data: jobs } = await supabase
         .from("jobs")
-        .select("id")
+        .select("id, title, company_name")
         .eq("employer_id", user.id);
       if (!jobs || jobs.length === 0) { setLoading(false); return; }
 
-      const { data } = await supabase
+      const { data: appsData } = await supabase
         .from("applications")
-        .select("id, status, created_at, cover_letter, candidate_id, job_id, profiles:candidate_id(full_name, email, phone, location), jobs:job_id(title, company_name)")
+        .select("id, status, created_at, cover_letter, candidate_id, job_id")
         .in("job_id", jobs.map(j => j.id))
         .order("created_at", { ascending: false });
 
-      setApplications((data as unknown as ApplicationWithDetails[]) ?? []);
+      if (!appsData) { setLoading(false); return; }
+
+      // Fetch candidate profiles
+      const candidateIds = [...new Set(appsData.map(a => a.candidate_id))];
+      const { data: profiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, email, phone, location")
+        .in("user_id", candidateIds);
+
+      const enriched: ApplicationWithDetails[] = appsData.map(a => {
+        const profile = profiles?.find(p => p.user_id === a.candidate_id);
+        const job = jobs.find(j => j.id === a.job_id);
+        return {
+          ...a,
+          profiles: profile ? { full_name: profile.full_name, email: profile.email, phone: profile.phone, location: profile.location } : null,
+          jobs: job ? { title: job.title, company_name: job.company_name } : null,
+        };
+      });
+
+      setApplications(enriched);
       setLoading(false);
     };
     fetchApps();
