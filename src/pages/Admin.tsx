@@ -125,6 +125,11 @@ const Admin = () => {
   if (!user || role !== "admin") return <Navigate to="/" replace />;
 
   const acceptedApps = applications.filter(a => a.status === "accepted");
+
+  // Build employer map from profiles
+  const employerMap = new Map<string, string>();
+  profiles.forEach(p => { employerMap.set(p.user_id, p.full_name); });
+
   const totalSalary = acceptedApps.reduce((sum, a) => {
     const salary = a.jobs?.salary_max ?? a.jobs?.salary_min ?? 0;
     return sum + salary;
