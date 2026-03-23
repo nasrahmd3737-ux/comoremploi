@@ -106,11 +106,22 @@ export default function ProfilePage() {
 
   const handleDeleteCv = async () => {
     if (!profile?.cv_url || !user) return;
-    const oldPath = profile.cv_url.split("/cvs/")[1];
-    if (oldPath) await supabase.storage.from("cvs").remove([oldPath]);
+    await supabase.storage.from("cvs").remove([profile.cv_url]);
     await supabase.from("profiles").update({ cv_url: null }).eq("id", profile.id);
     setProfile(p => p ? { ...p, cv_url: null } : p);
     toast.success("CV supprimé");
+  };
+
+  const getCvSignedUrl = async (path: string) => {
+    const { data } = await supabase.storage.from("cvs").createSignedUrl(path, 3600);
+    return data?.signedUrl ?? null;
+  };
+
+  const handleViewCv = async () => {
+    if (!profile?.cv_url) return;
+    const url = await getCvSignedUrl(profile.cv_url);
+    if (url) window.open(url, "_blank");
+    else toast.error("Impossible de charger le CV");
   };
 
   if (loading) {
