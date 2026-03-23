@@ -359,19 +359,24 @@ const Admin = () => {
                     <div className="overflow-x-auto">
                       <Table>
                         <TableHeader><TableRow>
-                          <TableHead>Employé</TableHead><TableHead>Poste</TableHead><TableHead>Entreprise</TableHead><TableHead>Salaire min</TableHead><TableHead>Salaire max</TableHead><TableHead>Statut</TableHead>
+                          <TableHead>Employé</TableHead><TableHead>Poste</TableHead><TableHead>Employeur</TableHead><TableHead>Type de contrat</TableHead><TableHead>Salaire min</TableHead><TableHead>Salaire max</TableHead><TableHead>Statut</TableHead>
                         </TableRow></TableHeader>
                         <TableBody>
-                          {acceptedApps.map(a => (
-                            <TableRow key={a.id}>
-                              <TableCell className="font-medium">{a.profiles?.full_name ?? "—"}</TableCell>
-                              <TableCell>{a.jobs?.title ?? "—"}</TableCell>
-                              <TableCell>{a.jobs?.company_name ?? "—"}</TableCell>
-                              <TableCell>{a.jobs?.salary_min ? `${fmt(a.jobs.salary_min)} KMF` : "—"}</TableCell>
-                              <TableCell>{a.jobs?.salary_max ? `${fmt(a.jobs.salary_max)} KMF` : "—"}</TableCell>
-                              <TableCell><Badge variant="default">Embauché</Badge></TableCell>
-                            </TableRow>
-                          ))}
+                          {acceptedApps.map(a => {
+                            const employerName = a.jobs?.employer_id ? (employerMap.get(a.jobs.employer_id) ?? a.jobs.company_name ?? "—") : (a.jobs?.company_name ?? "—");
+                            const contractType = a.jobs?.job_type ?? "—";
+                            return (
+                              <TableRow key={a.id}>
+                                <TableCell className="font-medium">{a.profiles?.full_name ?? "—"}</TableCell>
+                                <TableCell>{a.jobs?.title ?? "—"}</TableCell>
+                                <TableCell>{employerName}</TableCell>
+                                <TableCell><Badge variant="outline">{contractType}</Badge></TableCell>
+                                <TableCell>{a.jobs?.salary_min ? `${fmt(a.jobs.salary_min)} KMF` : "—"}</TableCell>
+                                <TableCell>{a.jobs?.salary_max ? `${fmt(a.jobs.salary_max)} KMF` : "—"}</TableCell>
+                                <TableCell><Badge variant="default">Embauché</Badge></TableCell>
+                              </TableRow>
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     </div>
