@@ -29,6 +29,7 @@ import { Navigate } from "react-router-dom";
 
 const candidateLinks = [
   { title: "Tableau de bord", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Voir les offres", url: "/jobs", icon: Search },
   { title: "Mes candidatures", url: "/dashboard/applications", icon: FileText },
   { title: "Créer mon CV", url: "/dashboard/cv-builder", icon: FileText },
   { title: "Messages", url: "/dashboard/messages", icon: MessageSquare },
