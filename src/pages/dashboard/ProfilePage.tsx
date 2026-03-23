@@ -298,6 +298,90 @@ export default function ProfilePage() {
           </form>
         </CardContent>
       </Card>
+
+      {/* Built CV Preview Dialog */}
+      <Dialog open={showBuiltCv} onOpenChange={setShowBuiltCv}>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="h-5 w-5 text-primary" /> Mon CV en ligne
+            </DialogTitle>
+          </DialogHeader>
+          {profile && (
+            <div className="space-y-6 py-2">
+              {/* Header */}
+              <div className="text-center border-b pb-4">
+                <h2 className="text-xl font-bold">{profile.full_name}</h2>
+                <p className="text-sm text-muted-foreground">
+                  {[profile.email, profile.phone, profile.location].filter(Boolean).join(" · ")}
+                </p>
+                {profile.bio && <p className="mt-2 text-sm">{profile.bio}</p>}
+              </div>
+
+              {/* Skills */}
+              {profile.skills && profile.skills.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-2 flex items-center gap-2"><Briefcase className="h-4 w-4 text-primary" /> Compétences</h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {profile.skills.map((s, i) => (
+                      <span key={i} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">{s}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Education */}
+              {Array.isArray(profile.cv_education) && (profile.cv_education as any[]).length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2"><GraduationCap className="h-4 w-4 text-primary" /> Formation</h3>
+                  <div className="space-y-3">
+                    {(profile.cv_education as any[]).map((edu: any, i: number) => (
+                      <div key={i} className="rounded-lg border p-3">
+                        <p className="font-medium">{edu.degree} {edu.field && `— ${edu.field}`}</p>
+                        <p className="text-sm text-muted-foreground">{edu.school}</p>
+                        <p className="text-xs text-muted-foreground">{edu.start_year} – {edu.end_year || "En cours"}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Experience */}
+              {Array.isArray(profile.cv_experience) && (profile.cv_experience as any[]).length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-3 flex items-center gap-2"><Briefcase className="h-4 w-4 text-primary" /> Expérience professionnelle</h3>
+                  <div className="space-y-3">
+                    {(profile.cv_experience as any[]).map((exp: any, i: number) => (
+                      <div key={i} className="rounded-lg border p-3">
+                        <p className="font-medium">{exp.position}</p>
+                        <p className="text-sm text-muted-foreground">{exp.company}</p>
+                        <p className="text-xs text-muted-foreground">{exp.start_date} – {exp.current ? "Présent" : exp.end_date}</p>
+                        {exp.description && <p className="mt-1 text-sm">{exp.description}</p>}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Languages */}
+              {profile.cv_languages && profile.cv_languages.length > 0 && (
+                <div>
+                  <h3 className="font-semibold mb-2 flex items-center gap-2"><Globe className="h-4 w-4 text-primary" /> Langues</h3>
+                  <div className="flex flex-wrap gap-1.5">
+                    {profile.cv_languages.map((l, i) => (
+                      <span key={i} className="rounded-full bg-muted px-3 py-1 text-xs font-medium">{l}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="outline" onClick={() => setShowBuiltCv(false)}>Fermer</Button>
+            <Button asChild><Link to="/dashboard/cv-builder"><Pencil className="mr-1 h-4 w-4" /> Modifier</Link></Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
