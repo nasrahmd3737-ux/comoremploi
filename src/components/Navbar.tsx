@@ -26,6 +26,9 @@ const Navbar = () => {
           <Link to="/jobs" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
             Offres d'emploi
           </Link>
+          <Link to="/talents" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">
+            Talents
+          </Link>
           <div className="flex items-center gap-3">
             <Button variant="ghost" asChild>
               <Link to="/login">Se connecter</Link>
