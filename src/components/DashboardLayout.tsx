@@ -102,6 +102,14 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children, allowedRoles }: DashboardLayoutProps) {
   const { user, role, loading } = useAuth();
+  const navigate = useNavigate();
+  const [profile, setProfile] = useState<{ full_name: string; email: string | null; location: string | null } | null>(null);
+
+  useEffect(() => {
+    if (!user) return;
+    supabase.from("profiles").select("full_name, email, location").eq("user_id", user.id).maybeSingle()
+      .then(({ data }) => setProfile(data));
+  }, [user]);
 
   if (loading) {
     return (
@@ -115,6 +123,13 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
   if (role === "admin") return <Navigate to="/admin" replace />;
   if (allowedRoles && role && !allowedRoles.includes(role)) return <Navigate to="/dashboard" replace />;
 
+  const roleLabel = role === "employer" ? "Employeur" : "Candidat";
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/");
+  };
+
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full">
@@ -122,22 +137,47 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
         <div className="flex-1 flex flex-col">
           <header className="h-14 flex items-center justify-between border-b bg-card/80 backdrop-blur-md px-4">
             <SidebarTrigger className="ml-0" />
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="capitalize">{role}</Badge>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="gap-1"
-                onClick={() => { supabase.auth.signOut(); window.location.href = "/"; }}
-              >
-                <LogOut className="h-4 w-4" />
-                <span className="hidden sm:inline">Déconnexion</span>
-              </Button>
-            </div>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
+                    {profile?.full_name?.charAt(0).toUpperCase() ?? "U"}
+                  </div>
+                  <span className="hidden sm:inline text-sm font-medium">{profile?.full_name ?? "Mon compte"}</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col gap-1">
+                    <p className="font-semibold">{profile?.full_name}</p>
+                    <p className="text-xs text-muted-foreground">{profile?.email}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <Badge variant="secondary" className="text-xs">{roleLabel}</Badge>
+                      {profile?.location && <span className="text-xs text-muted-foreground">{profile.location}</span>}
+                    </div>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/dashboard")}>
+                  <LayoutDashboard className="mr-2 h-4 w-4" /> Tableau de bord
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
+                  <User className="mr-2 h-4 w-4" /> Mon profil
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => navigate("/dashboard/messages")}>
+                  <MessageSquare className="mr-2 h-4 w-4" /> Messages
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" /> Se déconnecter
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </header>
           <main className="flex-1 p-4 md:p-6 lg:p-8">{children}</main>
         </div>
       </div>
     </SidebarProvider>
   );
+}
 }
