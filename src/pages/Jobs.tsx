@@ -136,10 +136,42 @@ const Jobs = () => {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input placeholder="Rechercher un poste..." className="pl-10" value={search} onChange={e => setSearch(e.target.value)} />
           </div>
-          <Select value={location} onValueChange={setLocation}>
-            <SelectTrigger><SelectValue placeholder="Localisation" /></SelectTrigger>
-            <SelectContent>{LOCATIONS.map(l => <SelectItem key={l} value={l}>{l}</SelectItem>)}</SelectContent>
-          </Select>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              placeholder="Ville ou localisation..."
+              className="pl-10"
+              value={location === "Toutes" ? "" : location}
+              onChange={e => {
+                const val = e.target.value;
+                setLocation(val || "Toutes");
+                setShowLocationSuggestions(val.length > 0);
+              }}
+              onFocus={() => setShowLocationSuggestions(true)}
+              onBlur={() => setTimeout(() => setShowLocationSuggestions(false), 150)}
+            />
+            {showLocationSuggestions && (
+              <div className="absolute z-50 mt-1 w-full rounded-md border bg-popover shadow-md max-h-48 overflow-auto">
+                <button
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-accent"
+                  onMouseDown={() => { setLocation("Toutes"); setShowLocationSuggestions(false); }}
+                >
+                  Toutes les villes
+                </button>
+                {LOCATIONS.filter(l => l !== "Toutes").filter(l =>
+                  location === "Toutes" || l.toLowerCase().includes(location.toLowerCase())
+                ).map(l => (
+                  <button
+                    key={l}
+                    className="w-full px-3 py-2 text-left text-sm hover:bg-accent"
+                    onMouseDown={() => { setLocation(l); setShowLocationSuggestions(false); }}
+                  >
+                    {l}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
           <Select value={category} onValueChange={setCategory}>
             <SelectTrigger><SelectValue placeholder="Catégorie" /></SelectTrigger>
             <SelectContent>{CATEGORIES.map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}</SelectContent>
