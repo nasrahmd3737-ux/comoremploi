@@ -157,6 +157,18 @@ export default function EmployerApplicants() {
                         <p className="whitespace-pre-line">{app.cover_letter}</p>
                       </div>
                     )}
+                    {app.cv_url && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 gap-1.5"
+                        onClick={() => viewCv(app.cv_url!)}
+                      >
+                        <FileText className="h-4 w-4" />
+                        Voir le CV
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
+                    )}
                   </div>
                   <div className="shrink-0">
                     <Select value={app.status} onValueChange={(v) => updateStatus(app.id, v)}>
