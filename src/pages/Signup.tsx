@@ -99,7 +99,7 @@ const Signup = () => {
           <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20">
             <Briefcase className="h-7 w-7" />
           </div>
-          <span className="font-display text-3xl font-bold">Kazi Comores</span>
+          <span className="font-display text-3xl font-bold">Comores Emploi</span>
         </div>
         <p className="mt-6 max-w-sm text-center text-lg text-white/70">
           {role === "candidate"
