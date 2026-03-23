@@ -196,10 +196,8 @@ export default function ProfilePage() {
                         <FileText className="h-4 w-4 text-primary" />
                         <span className="truncate">CV uploadé</span>
                       </div>
-                      <Button type="button" variant="outline" size="sm" asChild>
-                        <a href={profile.cv_url} target="_blank" rel="noopener noreferrer">
+                      <Button type="button" variant="outline" size="sm" onClick={handleViewCv}>
                           <ExternalLink className="mr-1 h-4 w-4" /> Voir
-                        </a>
                       </Button>
                       <Button type="button" variant="ghost" size="sm" className="text-destructive" onClick={handleDeleteCv}>
                         <Trash2 className="h-4 w-4" />
