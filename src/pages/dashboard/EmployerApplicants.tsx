@@ -3,15 +3,17 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
-import { Users, Loader2, Mail, Calendar } from "lucide-react";
+import { Users, Loader2, Mail, Calendar, FileText, ExternalLink } from "lucide-react";
 
 interface ApplicationWithDetails {
   id: string;
   status: string;
   created_at: string;
   cover_letter: string | null;
+  cv_url: string | null;
   candidate_id: string;
   job_id: string;
   profiles: { full_name: string; email: string | null; phone: string | null; location: string | null } | null;
@@ -51,7 +53,7 @@ export default function EmployerApplicants() {
 
       const { data: appsData } = await supabase
         .from("applications")
-        .select("id, status, created_at, cover_letter, candidate_id, job_id")
+        .select("id, status, created_at, cover_letter, cv_url, candidate_id, job_id")
         .in("job_id", jobs.map(j => j.id))
         .order("created_at", { ascending: false });
 
@@ -88,6 +90,15 @@ export default function EmployerApplicants() {
     if (error) { toast.error(error.message); return; }
     setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: newStatus } : a));
     toast.success("Statut mis à jour");
+  };
+
+  const viewCv = async (cvPath: string) => {
+    const { data, error } = await supabase.storage.from("cvs").createSignedUrl(cvPath, 300);
+    if (error || !data?.signedUrl) {
+      toast.error("Impossible d'ouvrir le CV");
+      return;
+    }
+    window.open(data.signedUrl, "_blank");
   };
 
   if (loading) {
@@ -145,6 +156,18 @@ export default function EmployerApplicants() {
                         <p className="mb-1 text-xs font-medium text-muted-foreground">Lettre de motivation</p>
                         <p className="whitespace-pre-line">{app.cover_letter}</p>
                       </div>
+                    )}
+                    {app.cv_url && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="mt-2 gap-1.5"
+                        onClick={() => viewCv(app.cv_url!)}
+                      >
+                        <FileText className="h-4 w-4" />
+                        Voir le CV
+                        <ExternalLink className="h-3 w-3" />
+                      </Button>
                     )}
                   </div>
                   <div className="shrink-0">
