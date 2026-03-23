@@ -78,11 +78,22 @@ const Admin = () => {
     setLoadingData(false);
   };
 
-  const handleDeleteProfile = async (id: string) => {
-    const { error } = await supabase.from("profiles").delete().eq("id", id);
+  const openDeleteDialog = (profile: Profile) => {
+    if (profile.role === "admin") {
+      toast.error("Le compte administrateur ne peut pas être supprimé");
+      return;
+    }
+    setDeleteTarget(profile);
+    setDeleteConfirmText("");
+  };
+
+  const handleDeleteProfile = async () => {
+    if (!deleteTarget || deleteConfirmText !== "oui je veux supprimer mon compte") return;
+    const { error } = await supabase.from("profiles").delete().eq("id", deleteTarget.id);
     if (error) { toast.error("Erreur: " + error.message); return; }
     toast.success("Profil supprimé");
-    setProfiles(prev => prev.filter(p => p.id !== id));
+    setProfiles(prev => prev.filter(p => p.id !== deleteTarget.id));
+    setDeleteTarget(null);
   };
 
   const handleDeleteJob = async (id: string) => {
