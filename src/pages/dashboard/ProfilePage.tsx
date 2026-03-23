@@ -217,7 +217,7 @@ export default function ProfilePage() {
                       {uploading ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Upload className="mr-2 h-4 w-4" />}
                       {uploading ? "Upload en cours..." : profile.cv_url ? "Remplacer le CV" : "Uploader mon CV"}
                     </Button>
-                    <span className="text-xs text-muted-foreground">PDF ou Word, max 5 Mo</span>
+                    <span className="text-xs text-muted-foreground">PDF ou Word, max 10 Mo</span>
                   </div>
                 </div>
               </>
