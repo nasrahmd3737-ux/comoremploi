@@ -27,8 +27,8 @@ const Navbar = () => {
     navigate("/");
   };
 
-  const dashboardUrl = role === "admin" ? "/admin" : "/dashboard";
-  const roleLabel = role === "employer" ? "Employeur" : role === "admin" ? "Admin" : "Candidat";
+  const dashboardUrl = role === "admin" || role === "moderator" ? "/admin" : "/dashboard";
+  const roleLabel = role === "employer" ? "Employeur" : role === "admin" ? "Admin" : role === "moderator" ? "Modérateur" : "Candidat";
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
