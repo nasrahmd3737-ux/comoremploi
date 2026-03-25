@@ -11,7 +11,7 @@ export default function MessagesPage() {
     <div className="space-y-4">
       <div>
         <h1 className="font-display text-2xl font-bold">Messages</h1>
-        <p className="text-muted-foreground text-sm">Communiquez avec les candidats et employeurs</p>
+        <p className="text-muted-foreground text-sm">Contactez l'administration pour toute communication</p>
       </div>
       <ChatWidget userId={user.id} userRole={role ?? undefined} />
     </div>
