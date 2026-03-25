@@ -44,10 +44,11 @@ const formatTime = (d: string) => {
 
 interface Props {
   userId: string;
+  userRole?: string;
   height?: string;
 }
 
-export default function ChatWidget({ userId, height = "calc(100vh - 300px)" }: Props) {
+export default function ChatWidget({ userId, userRole, height = "calc(100vh - 300px)" }: Props) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [activeConv, setActiveConv] = useState<Conversation | null>(null);
@@ -127,7 +128,12 @@ export default function ChatWidget({ userId, height = "calc(100vh - 300px)" }: P
   const handleSearchUsers = async (q: string) => {
     setSearchQuery(q);
     if (q.length < 2) { setSearchResults([]); return; }
-    const { data } = await supabase.from("profiles").select("user_id, full_name, role").neq("user_id", userId).ilike("full_name", `%${q}%`).limit(10);
+    let query = supabase.from("profiles").select("user_id, full_name, role").neq("user_id", userId).ilike("full_name", `%${q}%`).limit(10);
+    // Candidates and employers can only message admins; admins can message anyone
+    if (userRole && userRole !== "admin" && userRole !== "moderator") {
+      query = query.in("role", ["admin" as any]);
+    }
+    const { data } = await query;
     setSearchResults((data as Profile[]) ?? []);
   };
 

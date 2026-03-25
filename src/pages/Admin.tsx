@@ -667,7 +667,7 @@ const Admin = () => {
               <Card>
                 <CardHeader><CardTitle className="flex items-center gap-2"><MessageSquare className="h-5 w-5" /> Messagerie</CardTitle></CardHeader>
                 <CardContent>
-                  {user && <ChatWidget userId={user.id} height="500px" />}
+                  {user && <ChatWidget userId={user.id} userRole={role ?? undefined} height="500px" />}
                 </CardContent>
               </Card>
             </TabsContent>
