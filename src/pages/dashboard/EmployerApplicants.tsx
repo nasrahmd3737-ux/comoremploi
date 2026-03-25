@@ -91,6 +91,18 @@ export default function EmployerApplicants() {
     if (error) { toast.error(error.message); return; }
     setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: newStatus } : a));
     toast.success("Statut mis à jour");
+
+    // Notify admin when application is accepted
+    if (newStatus === "accepted" && user) {
+      const app = applications.find(a => a.id === appId);
+      if (app) {
+        notifyAdminOnAccepted({
+          senderId: user.id,
+          candidateName: app.profiles?.full_name ?? "Candidat",
+          jobTitle: app.jobs?.title ?? "Poste",
+        });
+      }
+    }
   };
 
   const viewCv = async (cvPath: string) => {
