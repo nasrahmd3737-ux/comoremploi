@@ -179,6 +179,18 @@ const Admin = () => {
     if (error) { toast.error(error.message); return; }
     setApplications(prev => prev.map(a => a.id === appId ? { ...a, status: newStatus } : a));
     toast.success("Statut mis à jour");
+
+    // Notify admin when application is accepted (by a non-admin, e.g. moderator)
+    if (newStatus === "accepted" && user && !isAdmin) {
+      const app = applications.find(a => a.id === appId);
+      if (app) {
+        notifyAdminOnAccepted({
+          senderId: user.id,
+          candidateName: app.profiles?.full_name ?? "Candidat",
+          jobTitle: app.jobs?.title ?? "Poste",
+        });
+      }
+    }
   };
 
   const handleCreateJob = async (e: React.FormEvent) => {
