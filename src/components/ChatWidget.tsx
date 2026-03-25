@@ -44,6 +44,7 @@ const formatTime = (d: string) => {
 
 interface Props {
   userId: string;
+  userRole?: string;
   height?: string;
 }
 
