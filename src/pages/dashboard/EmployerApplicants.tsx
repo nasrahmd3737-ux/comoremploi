@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Users, Loader2, Mail, Calendar, FileText, ExternalLink } from "lucide-react";
+import { notifyAdminOnAccepted } from "@/lib/notifyAdmin";
 
 interface ApplicationWithDetails {
   id: string;
