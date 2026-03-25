@@ -48,7 +48,7 @@ interface Props {
   height?: string;
 }
 
-export default function ChatWidget({ userId, height = "calc(100vh - 300px)" }: Props) {
+export default function ChatWidget({ userId, userRole, height = "calc(100vh - 300px)" }: Props) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [activeConv, setActiveConv] = useState<Conversation | null>(null);
