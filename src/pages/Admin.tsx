@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList } from "lucide-react";
 import ChatWidget from "@/components/ChatWidget";
 import { ISLANDS, formatLocation } from "@/lib/locations";
+import { notifyAdminOnAccepted } from "@/lib/notifyAdmin";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Profile = Tables<"profiles">;
