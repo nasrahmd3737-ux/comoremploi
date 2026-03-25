@@ -13,7 +13,7 @@ export default function MessagesPage() {
         <h1 className="font-display text-2xl font-bold">Messages</h1>
         <p className="text-muted-foreground text-sm">Communiquez avec les candidats et employeurs</p>
       </div>
-      <ChatWidget userId={user.id} />
+      <ChatWidget userId={user.id} userRole={role ?? undefined} />
     </div>
   );
 }
