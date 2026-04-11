@@ -5,7 +5,8 @@ import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
   DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Briefcase, Menu, X, User, LogOut, LayoutDashboard, Shield, MessageSquare } from "lucide-react";
+import { Menu, X, User, LogOut, LayoutDashboard, Shield, MessageSquare } from "lucide-react";
+import Logo from "@/components/Logo";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -33,14 +34,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between px-4">
-        <Link to="/" className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Briefcase className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="font-display text-xl font-bold text-foreground">
-            Comores <span className="text-primary">Emploi</span>
-          </span>
-        </Link>
+        <Logo />
 
         {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
