@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Briefcase, User, Building2, Mail, Lock, ArrowRight, MapPin } from "lucide-react";
+import { User, Building2, Mail, Lock, ArrowRight, MapPin } from "lucide-react";
+import Logo from "@/components/Logo";
+import logoImg from "@/assets/logo.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { ISLANDS, formatLocation } from "@/lib/locations";
@@ -52,12 +54,7 @@ const Signup = () => {
   if (!role) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-        <Link to="/" className="mb-10 flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-            <Briefcase className="h-5 w-5 text-primary-foreground" />
-          </div>
-          <span className="font-display text-xl font-bold">Comores <span className="text-primary">Emploi</span></span>
-        </Link>
+        <Logo className="mb-10" />
         <h1 className="font-display text-2xl font-bold md:text-3xl">Comment souhaitez-vous utiliser Comores Emploi ?</h1>
         <p className="mt-2 text-muted-foreground">Choisissez votre profil pour commencer</p>
         <div className="mt-10 grid w-full max-w-lg gap-4 sm:grid-cols-2">
@@ -81,7 +78,7 @@ const Signup = () => {
     <div className="flex min-h-screen">
       <div className="hidden w-1/2 bg-hero-gradient lg:flex lg:flex-col lg:items-center lg:justify-center lg:p-12">
         <div className="flex items-center gap-3 text-white">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white/20"><Briefcase className="h-7 w-7" /></div>
+          <img src={logoImg} alt="Comores Emploi" className="h-14 w-14 rounded-full object-cover object-left" />
           <span className="font-display text-3xl font-bold">Comores Emploi</span>
         </div>
         <p className="mt-6 max-w-sm text-center text-lg text-white/70">
@@ -91,10 +88,7 @@ const Signup = () => {
 
       <div className="flex w-full flex-col items-center justify-center px-6 lg:w-1/2">
         <div className="w-full max-w-sm">
-          <Link to="/" className="mb-8 flex items-center gap-2 lg:hidden">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary"><Briefcase className="h-5 w-5 text-primary-foreground" /></div>
-            <span className="font-display text-xl font-bold">Comores <span className="text-primary">Emploi</span></span>
-          </Link>
+          <Logo className="mb-8 lg:hidden" />
           <button onClick={() => setRole(null)} className="mb-4 text-sm text-muted-foreground hover:text-foreground transition-colors">← Changer de profil</button>
           <h1 className="font-display text-2xl font-bold">{role === "candidate" ? "Créer un compte candidat" : "Créer un compte employeur"}</h1>
           <p className="mt-2 text-sm text-muted-foreground">Remplissez les informations ci-dessous</p>
