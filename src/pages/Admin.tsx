@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList } from "lucide-react";
+import Logo from "@/components/Logo";
 import ChatWidget from "@/components/ChatWidget";
 import { ISLANDS, formatLocation } from "@/lib/locations";
 import { notifyAdminOnAccepted } from "@/lib/notifyAdmin";
@@ -271,12 +272,7 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/80 backdrop-blur-md">
         <div className="container flex h-16 items-center justify-between px-4">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary">
-              <Briefcase className="h-5 w-5 text-primary-foreground" />
-            </div>
-            <span className="font-display text-xl font-bold">Comores <span className="text-primary">Emploi</span></span>
-          </Link>
+          <Logo />
           <div className="flex items-center gap-3">
             <Badge variant="outline" className="gap-1">
               <Shield className="h-3 w-3" /> {isAdmin ? "Admin" : "Modérateur"}
