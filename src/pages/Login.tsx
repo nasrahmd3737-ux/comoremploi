@@ -44,7 +44,7 @@ const Login = () => {
       {/* Left panel */}
       <div className="hidden w-1/2 bg-hero-gradient lg:flex lg:flex-col lg:items-center lg:justify-center lg:p-12">
         <div className="flex items-center gap-3 text-white">
-          <img src={logoImg} alt="Comores Emploi" className="h-14 w-14 rounded-full object-cover object-left" />
+          <img src={logoImg} alt="Comores Emploi" className="h-14 w-14 rounded-full object-cover" style={{ objectPosition: '25% center' }} />
           <span className="font-display text-3xl font-bold">Comores Emploi</span>
         </div>
         <p className="mt-6 max-w-sm text-center text-lg text-white/70">
