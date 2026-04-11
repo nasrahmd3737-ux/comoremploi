@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -19,36 +19,38 @@ async function fetchRole(userId: string): Promise<string | null> {
 
 export function useAuth() {
   const [state, setState] = useState<AuthState>({ user: null, role: null, loading: true });
-  const initializedRef = useRef(false);
 
   useEffect(() => {
-    // 1. Set up the listener first
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      // Skip events until getSession has initialized
-      if (!initializedRef.current) return;
+    let cancelled = false;
 
-      const user = session?.user ?? null;
-      if (user) {
-        const role = await fetchRole(user.id);
-        setState({ user, role, loading: false });
-      } else {
-        setState({ user: null, role: null, loading: false });
-      }
-    });
-
-    // 2. Then get the initial session
+    // 1. Get the initial session first
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (cancelled) return;
       const user = session?.user ?? null;
       if (user) {
         const role = await fetchRole(user.id);
-        setState({ user, role, loading: false });
+        if (!cancelled) setState({ user, role, loading: false });
+      } else {
+        if (!cancelled) setState({ user: null, role: null, loading: false });
+      }
+    });
+
+    // 2. Listen for subsequent auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (cancelled) return;
+      const user = session?.user ?? null;
+      if (user) {
+        const role = await fetchRole(user.id);
+        if (!cancelled) setState({ user, role, loading: false });
       } else {
         setState({ user: null, role: null, loading: false });
       }
-      initializedRef.current = true;
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
   }, []);
 
   return state;
