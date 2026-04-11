@@ -24,7 +24,7 @@ import {
 import { NavLink } from "@/components/NavLink";
 import Logo from "@/components/Logo";
 import {
-  LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare, Search,
+  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare, Search,
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 
