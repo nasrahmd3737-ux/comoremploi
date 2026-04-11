@@ -19,7 +19,8 @@ const Logo = ({ size = "md", showText = true, className = "" }: LogoProps) => {
       <img
         src={logoImg}
         alt="Comores Emploi"
-        className={`${sizeMap[size]} rounded-full object-cover object-left`}
+        className={`${sizeMap[size]} rounded-full object-cover`}
+        style={{ objectPosition: '25% center' }}
       />
       {showText && (
         <span className="font-display text-lg font-bold text-foreground">
