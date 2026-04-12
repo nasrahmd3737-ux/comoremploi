@@ -41,6 +41,7 @@ const Navbar = () => {
           <Link to="/" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Accueil</Link>
           <Link to="/jobs" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Offres d'emploi</Link>
           <Link to="/talents" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Talents</Link>
+          <Link to="/about" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">À propos</Link>
 
           {user && profile ? (
             <DropdownMenu>
@@ -105,6 +106,7 @@ const Navbar = () => {
             <Link to="/" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Accueil</Link>
             <Link to="/jobs" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Offres d'emploi</Link>
             <Link to="/talents" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Talents</Link>
+            <Link to="/about" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>À propos</Link>
 
             {user && profile ? (
               <>
