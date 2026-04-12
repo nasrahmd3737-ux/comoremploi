@@ -34,7 +34,7 @@ const Navbar = () => {
   return (
     <nav className="sticky top-0 z-50 border-b bg-primary backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between px-4">
-        <Logo />
+        <Logo variant="light" />
 
         {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
@@ -94,7 +94,7 @@ const Navbar = () => {
 
         {/* Mobile toggle */}
         <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
-          {mobileOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {mobileOpen ? <X className="h-6 w-6 text-primary-foreground" /> : <Menu className="h-6 w-6 text-primary-foreground" />}
         </button>
       </div>
 
