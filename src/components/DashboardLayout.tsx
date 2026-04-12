@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/sidebar";
 import { NavLink } from "@/components/NavLink";
 import Logo from "@/components/Logo";
+import { toast } from "sonner";
 import {
   Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare, Search,
 } from "lucide-react";
@@ -95,7 +96,7 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout({ children, allowedRoles }: DashboardLayoutProps) {
-  const { user, role, loading } = useAuth();
+  const { user, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<{ full_name: string; email: string | null; location: string | null } | null>(null);
 
@@ -120,8 +121,15 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
   const roleLabel = role === "employer" ? "Employeur" : "Candidat";
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    const { error } = await signOut();
+
+    if (error) {
+      toast.error("La déconnexion a échoué, veuillez réessayer.");
+      return;
+    }
+
+    navigate("/", { replace: true });
+    toast.success("Déconnexion réussie");
   };
 
   return (

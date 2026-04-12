@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,36 +8,43 @@ import Logo from "@/components/Logo";
 import logoImg from "@/assets/logo.jpg";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { user, role, loading: authLoading } = useAuth();
+
+  useEffect(() => {
+    if (authLoading || !user) return;
+    navigate(role === "admin" || role === "moderator" ? "/admin" : "/dashboard", { replace: true });
+  }, [authLoading, navigate, role, user]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
+
     setLoading(true);
+
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+
       if (error) {
-        toast.error(error.message === "Invalid login credentials" ? "Email ou mot de passe incorrect" : error.message);
+        toast.error(
+          error.message === "Invalid login credentials"
+            ? "Email ou mot de passe incorrect"
+            : error.message === "Email not confirmed"
+              ? "Veuillez confirmer votre email avant de vous connecter"
+              : error.message,
+        );
         return;
       }
-      // Check role
-      const { data: roleData } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", data.user.id)
-        .maybeSingle();
 
       toast.success("Connexion réussie !");
-      if (roleData?.role === "admin" || roleData?.role === "moderator") {
-        navigate("/admin");
-      } else {
-        navigate("/dashboard");
-      }
-    } catch (err) {
+      navigate("/dashboard", { replace: true });
+    } catch {
       toast.error("Erreur de connexion, veuillez réessayer");
     } finally {
       setLoading(false);

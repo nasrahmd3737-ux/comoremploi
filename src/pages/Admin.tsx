@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -65,12 +65,13 @@ const TASK_PRIORITY_LABELS: Record<string, string> = {
 const fmt = (n: number) => new Intl.NumberFormat("fr-FR").format(n);
 
 const Admin = () => {
-  const { user, role, loading: authLoading } = useAuth();
+  const { user, role, loading: authLoading, signOut } = useAuth();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [applications, setApplications] = useState<ApplicationFull[]>([]);
   const [adminTasks, setAdminTasks] = useState<AdminTask[]>([]);
   const [loadingData, setLoadingData] = useState(true);
+  const navigate = useNavigate();
 
   const isAdmin = role === "admin";
   const isModerator = role === "moderator";
@@ -247,6 +248,17 @@ const Admin = () => {
     toast.success("Tâche supprimée");
   };
 
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      toast.error("La déconnexion a échoué, veuillez réessayer.");
+      return;
+    }
+
+    navigate("/", { replace: true });
+    toast.success("Déconnexion réussie");
+  };
+
   if (authLoading) {
     return <div className="flex min-h-screen items-center justify-center"><Loader2 className="h-8 w-8 animate-spin text-primary" /></div>;
   }
@@ -277,7 +289,7 @@ const Admin = () => {
             <Badge variant="outline" className="gap-1">
               <Shield className="h-3 w-3" /> {isAdmin ? "Admin" : "Modérateur"}
             </Badge>
-            <Button variant="ghost" size="sm" onClick={() => { supabase.auth.signOut(); window.location.href = "/"; }}>Déconnexion</Button>
+            <Button variant="ghost" size="sm" onClick={handleLogout}>Déconnexion</Button>
           </div>
         </div>
       </header>
