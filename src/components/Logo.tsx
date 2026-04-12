@@ -23,8 +23,8 @@ const Logo = ({ size = "md", showText = true, className = "" }: LogoProps) => {
         style={{ objectPosition: '25% center' }}
       />
       {showText && (
-        <span className="font-display text-lg font-bold text-foreground">
-          Comores <span className="text-primary">Emploi</span>
+        <span className="font-display text-lg font-bold text-primary-foreground">
+          Comores <span className="text-primary-foreground/80">Emploi</span>
         </span>
       )}
     </Link>

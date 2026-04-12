@@ -38,7 +38,7 @@ const HeroSection = () => {
                 Chercher un emploi
               </Link>
             </Button>
-            <Button size="lg" variant="outline" className="w-full gap-2 border-white/30 text-base text-white hover:bg-white/10 sm:w-auto" asChild>
+            <Button size="lg" className="w-full gap-2 text-base bg-accent text-accent-foreground hover:bg-accent/90 sm:w-auto" asChild>
               <Link to="/signup?role=employer">
                 Publier une offre
                 <ArrowRight className="h-4 w-4" />

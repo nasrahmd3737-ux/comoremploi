@@ -32,21 +32,21 @@ const Navbar = () => {
   const roleLabel = role === "employer" ? "Employeur" : role === "admin" ? "Admin" : role === "moderator" ? "Modérateur" : "Candidat";
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-card/80 backdrop-blur-md">
+    <nav className="sticky top-0 z-50 border-b bg-primary backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between px-4">
         <Logo />
 
         {/* Desktop */}
         <div className="hidden items-center gap-6 md:flex">
-          <Link to="/" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Accueil</Link>
-          <Link to="/jobs" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Offres d'emploi</Link>
-          <Link to="/talents" className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors">Talents</Link>
+          <Link to="/" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Accueil</Link>
+          <Link to="/jobs" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Offres d'emploi</Link>
+          <Link to="/talents" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Talents</Link>
 
           {user && profile ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="gap-2">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
+                <Button variant="ghost" className="gap-2 text-primary-foreground hover:bg-primary-foreground/10">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20 text-primary-foreground font-bold text-sm">
                     {profile.full_name.charAt(0).toUpperCase()}
                   </div>
                   <span className="hidden lg:inline text-sm font-medium">{profile.full_name}</span>
@@ -86,8 +86,8 @@ const Navbar = () => {
             </DropdownMenu>
           ) : (
             <div className="flex items-center gap-3">
-              <Button variant="ghost" asChild><Link to="/login">Se connecter</Link></Button>
-              <Button asChild><Link to="/signup">S'inscrire</Link></Button>
+              <Button variant="ghost" className="text-primary-foreground hover:bg-primary-foreground/10" asChild><Link to="/login">Se connecter</Link></Button>
+              <Button variant="secondary" asChild><Link to="/signup">S'inscrire</Link></Button>
             </div>
           )}
         </div>
