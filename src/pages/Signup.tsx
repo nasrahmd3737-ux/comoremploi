@@ -35,7 +35,7 @@ const Signup = () => {
     if (!island || !effectiveCity) { toast.error("Veuillez sélectionner votre île et ville"); return; }
     setLoading(true);
     const location = formatLocation(island, effectiveCity);
-    const { error } = await supabase.auth.signUp({
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -46,6 +46,11 @@ const Signup = () => {
     setLoading(false);
     if (error) {
       toast.error(error.message);
+    } else if (data.user && (!data.user.identities || data.user.identities.length === 0)) {
+      toast.error("Un compte avec cet email existe déjà. Veuillez vous connecter.", {
+        action: { label: "Se connecter", onClick: () => window.location.href = "/login" },
+        duration: 6000,
+      });
     } else {
       toast.success("Inscription réussie ! Vérifiez votre email pour confirmer votre compte.");
     }
