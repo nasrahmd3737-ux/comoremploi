@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import type { User } from "@supabase/supabase-js";
 
@@ -20,38 +20,62 @@ async function fetchRole(userId: string): Promise<string | null> {
 export function useAuth() {
   const [state, setState] = useState<AuthState>({ user: null, role: null, loading: true });
 
+  const signOut = useCallback(async () => {
+    const { error } = await supabase.auth.signOut();
+
+    if (!error) {
+      setState({ user: null, role: null, loading: false });
+    }
+
+    return { error };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
+    let hydrated = false;
+    let requestId = 0;
 
-    // 1. Get the initial session first
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (cancelled) return;
-      const user = session?.user ?? null;
-      if (user) {
-        const role = await fetchRole(user.id);
-        if (!cancelled) setState({ user, role, loading: false });
-      } else {
-        if (!cancelled) setState({ user: null, role: null, loading: false });
+    const resolveAuthState = (user: User | null) => {
+      const currentRequestId = ++requestId;
+
+      if (!user) {
+        if (!cancelled) {
+          setState({ user: null, role: null, loading: false });
+        }
+        return;
       }
+
+      if (!cancelled) {
+        setState((current) => ({
+          user,
+          role: current.user?.id === user.id ? current.role : null,
+          loading: true,
+        }));
+      }
+
+      void fetchRole(user.id).then((role) => {
+        if (cancelled || currentRequestId !== requestId) return;
+        setState({ user, role, loading: false });
+      });
+    };
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!hydrated) return;
+      resolveAuthState(session?.user ?? null);
     });
 
-    // 2. Listen for subsequent auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (_event, session) => {
+    void supabase.auth.getSession().then(({ data: { session } }) => {
       if (cancelled) return;
-      const user = session?.user ?? null;
-      if (user) {
-        const role = await fetchRole(user.id);
-        if (!cancelled) setState({ user, role, loading: false });
-      } else {
-        setState({ user: null, role: null, loading: false });
-      }
+      hydrated = true;
+      resolveAuthState(session?.user ?? null);
     });
 
     return () => {
       cancelled = true;
+      requestId += 1;
       subscription.unsubscribe();
     };
   }, []);
 
-  return state;
+  return { ...state, signOut };
 }

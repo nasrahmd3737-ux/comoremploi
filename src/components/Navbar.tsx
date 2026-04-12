@@ -10,10 +10,11 @@ import Logo from "@/components/Logo";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const { user, role } = useAuth();
+  const { user, role, loading, signOut } = useAuth();
   const [profile, setProfile] = useState<{ full_name: string; email: string | null; location: string | null } | null>(null);
   const navigate = useNavigate();
 
@@ -24,12 +25,24 @@ const Navbar = () => {
   }, [user]);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
+    const { error } = await signOut();
+
+    if (error) {
+      toast.error("La déconnexion a échoué, veuillez réessayer.");
+      return;
+    }
+
+    setProfile(null);
+    setMobileOpen(false);
+    navigate("/", { replace: true });
+    toast.success("Déconnexion réussie");
   };
 
   const dashboardUrl = role === "admin" || role === "moderator" ? "/admin" : "/dashboard";
   const roleLabel = role === "employer" ? "Employeur" : role === "admin" ? "Admin" : role === "moderator" ? "Modérateur" : "Candidat";
+  const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Mon compte";
+  const displayEmail = profile?.email ?? user?.email ?? null;
+  const displayLocation = profile?.location ?? null;
 
   return (
     <nav className="sticky top-0 z-50 border-b bg-primary backdrop-blur-md">
@@ -42,25 +55,28 @@ const Navbar = () => {
           <Link to="/jobs" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Offres d'emploi</Link>
           <Link to="/talents" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">Talents</Link>
           <Link to="/about" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">À propos</Link>
+          <Link to="/cgu" className="text-sm font-medium text-primary-foreground/80 hover:text-primary-foreground transition-colors">CGU</Link>
 
-          {user && profile ? (
+          {loading ? (
+            <div className="h-10 w-28 rounded-md bg-primary-foreground/10" />
+          ) : user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="gap-2 text-primary-foreground hover:bg-primary-foreground/10">
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20 text-primary-foreground font-bold text-sm">
-                    {profile.full_name.charAt(0).toUpperCase()}
+                    {displayName.charAt(0).toUpperCase()}
                   </div>
-                  <span className="hidden lg:inline text-sm font-medium">{profile.full_name}</span>
+                  <span className="hidden lg:inline text-sm font-medium">{displayName}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col gap-1">
-                    <p className="font-semibold">{profile.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{profile.email}</p>
+                    <p className="font-semibold">{displayName}</p>
+                    <p className="text-xs text-muted-foreground">{displayEmail}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="secondary" className="text-xs">{roleLabel}</Badge>
-                      {profile.location && <span className="text-xs text-muted-foreground">{profile.location}</span>}
+                      {displayLocation && <span className="text-xs text-muted-foreground">{displayLocation}</span>}
                     </div>
                   </div>
                 </DropdownMenuLabel>
@@ -107,23 +123,26 @@ const Navbar = () => {
             <Link to="/jobs" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Offres d'emploi</Link>
             <Link to="/talents" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Talents</Link>
             <Link to="/about" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>À propos</Link>
+            <Link to="/cgu" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>CGU</Link>
 
-            {user && profile ? (
+            {loading ? (
+              <div className="h-10 w-full rounded-md bg-muted" />
+            ) : user ? (
               <>
                 <div className="border-t pt-3 mt-1">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary font-bold">
-                      {profile.full_name.charAt(0).toUpperCase()}
+                      {displayName.charAt(0).toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold">{profile.full_name}</p>
-                      <p className="text-xs text-muted-foreground">{profile.email}</p>
+                      <p className="text-sm font-semibold">{displayName}</p>
+                      <p className="text-xs text-muted-foreground">{displayEmail}</p>
                     </div>
                   </div>
                   <Button variant="outline" asChild className="w-full mb-2" onClick={() => setMobileOpen(false)}>
                     <Link to={dashboardUrl}>{role === "admin" ? "Admin" : "Tableau de bord"}</Link>
                   </Button>
-                  <Button variant="ghost" className="w-full text-destructive" onClick={() => { handleLogout(); setMobileOpen(false); }}>
+                  <Button variant="ghost" className="w-full text-destructive" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" /> Se déconnecter
                   </Button>
                 </div>
