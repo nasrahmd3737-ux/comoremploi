@@ -18,24 +18,29 @@ const Login = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        toast.error(error.message === "Invalid login credentials" ? "Email ou mot de passe incorrect" : error.message);
+        return;
+      }
+      // Check role
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+
+      toast.success("Connexion réussie !");
+      if (roleData?.role === "admin" || roleData?.role === "moderator") {
+        navigate("/admin");
+      } else {
+        navigate("/dashboard");
+      }
+    } catch (err) {
+      toast.error("Erreur de connexion, veuillez réessayer");
+    } finally {
       setLoading(false);
-      toast.error(error.message);
-      return;
-    }
-    // Check if user is admin
-    const { data: roleData } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", data.user.id)
-      .maybeSingle();
-    setLoading(false);
-    toast.success("Connexion réussie !");
-    if (roleData?.role === "admin") {
-      navigate("/admin");
-    } else {
-      navigate("/dashboard");
     }
   };
 

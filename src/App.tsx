@@ -10,6 +10,7 @@ import JobDetail from "./pages/JobDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import NotFound from "./pages/NotFound";
+import About from "./pages/About";
 import Admin from "./pages/Admin";
 import DashboardLayout from "./components/DashboardLayout";
 import CandidateDashboard from "./pages/dashboard/CandidateDashboard";
