@@ -122,6 +122,10 @@ export type Database = {
         Row: {
           category: string
           company_name: string
+          contact_address: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
           description: string
           employer_id: string
@@ -134,10 +138,15 @@ export type Database = {
           status: Database["public"]["Enums"]["job_status"]
           title: string
           updated_at: string
+          views_count: number
         }
         Insert: {
           category: string
           company_name: string
+          contact_address?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           description: string
           employer_id: string
@@ -150,10 +159,15 @@ export type Database = {
           status?: Database["public"]["Enums"]["job_status"]
           title: string
           updated_at?: string
+          views_count?: number
         }
         Update: {
           category?: string
           company_name?: string
+          contact_address?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           description?: string
           employer_id?: string
@@ -166,6 +180,7 @@ export type Database = {
           status?: Database["public"]["Enums"]["job_status"]
           title?: string
           updated_at?: string
+          views_count?: number
         }
         Relationships: []
       }
@@ -306,6 +321,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_job_views: { Args: { _job_id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "candidate" | "employer" | "admin" | "moderator"
