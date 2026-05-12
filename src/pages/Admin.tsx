@@ -810,9 +810,15 @@ const Admin = () => {
                 </DialogTitle>
                 <DialogDescription className="flex flex-wrap items-center gap-3 pt-1">
                   <span className="flex items-center gap-1"><Building2 className="h-4 w-4" /> {viewingJob.company_name}</span>
-                  <Badge variant={viewingJob.status === "published" ? "default" : "secondary"}>
-                    {viewingJob.status === "published" ? "Publiée" : viewingJob.status === "closed" ? "Fermée" : "Brouillon"}
-                  </Badge>
+                  {(() => {
+                    const st = viewingJob.status as string;
+                    return (
+                      <Badge variant={st === "published" ? "default" : st === "draft" ? "destructive" : "secondary"}>
+                        {st === "published" ? "Publiée" : st === "draft" ? "À valider" : "Fermée"}
+                      </Badge>
+                    );
+                  })()}
+                  <span className="flex items-center gap-1 text-xs"><Eye className="h-3.5 w-3.5" /> {(viewingJob as any).views_count ?? 0} vue{((viewingJob as any).views_count ?? 0) !== 1 ? "s" : ""}</span>
                 </DialogDescription>
               </DialogHeader>
 
@@ -840,7 +846,7 @@ const Admin = () => {
                   <div className="flex items-center gap-2 rounded-lg border border-comores-green/30 bg-comores-green/5 p-3">
                     <Banknote className="h-5 w-5 text-comores-green shrink-0" />
                     <div>
-                      <p className="text-xs text-muted-foreground">Salaire</p>
+                      <p className="text-xs text-muted-foreground">Salaire (admin uniquement, masqué publiquement)</p>
                       <p className="font-semibold text-comores-green">
                         {viewingJob.salary_min && viewingJob.salary_max
                           ? `${fmt(viewingJob.salary_min)} – ${fmt(viewingJob.salary_max)} KMF`
@@ -848,6 +854,19 @@ const Admin = () => {
                             ? `À partir de ${fmt(viewingJob.salary_min)} KMF`
                             : `Jusqu'à ${fmt(viewingJob.salary_max!)} KMF`}
                       </p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Coordonnées employeur — admin uniquement */}
+                {(((viewingJob as any).contact_name) || ((viewingJob as any).contact_phone) || ((viewingJob as any).contact_email) || ((viewingJob as any).contact_address)) && (
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-2">
+                    <h3 className="font-semibold text-sm flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Coordonnées employeur (admin uniquement)</h3>
+                    <div className="grid gap-2 sm:grid-cols-2 text-sm">
+                      {(viewingJob as any).contact_name && <p className="flex items-center gap-2"><UserIcon className="h-3.5 w-3.5 text-muted-foreground" /> {(viewingJob as any).contact_name}</p>}
+                      {(viewingJob as any).contact_phone && <p className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-muted-foreground" /> {(viewingJob as any).contact_phone}</p>}
+                      {(viewingJob as any).contact_email && <p className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-muted-foreground" /> {(viewingJob as any).contact_email}</p>}
+                      {(viewingJob as any).contact_address && <p className="flex items-center gap-2"><MapPinned className="h-3.5 w-3.5 text-muted-foreground" /> {(viewingJob as any).contact_address}</p>}
                     </div>
                   </div>
                 )}
