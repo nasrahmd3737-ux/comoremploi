@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { MapPin, Building2, Clock, Search, Briefcase, Loader2, Banknote, Send, CheckCircle, FileText, AlertCircle } from "lucide-react";
+import { MapPin, Building2, Clock, Search, Briefcase, Loader2, Eye, Send, CheckCircle, FileText, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -214,8 +214,8 @@ const Jobs = () => {
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map(job => {
-              const salary = formatSalary(job.salary_min, job.salary_max);
               const hasApplied = appliedJobs.has(job.id);
+              const views = (job as any).views_count ?? 0;
               return (
                 <Card key={job.id} className="group transition-shadow hover:shadow-lg">
                   <CardContent className="p-5">
@@ -231,11 +231,9 @@ const Jobs = () => {
                       <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{job.location}</span>
                       <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{new Date(job.created_at).toLocaleDateString("fr-FR")}</span>
                     </div>
-                    {salary && (
-                      <p className="mt-2 flex items-center gap-1 text-sm font-medium text-comores-green">
-                        <Banknote className="h-3.5 w-3.5" />{salary}
-                      </p>
-                    )}
+                    <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
+                      <Eye className="h-3.5 w-3.5" />{views} vue{views !== 1 ? "s" : ""}
+                    </div>
                     <Badge variant="secondary" className="mt-3">{job.category}</Badge>
                     <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{job.description}</p>
 

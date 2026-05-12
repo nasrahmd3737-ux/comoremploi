@@ -153,10 +153,9 @@ export default function Talents() {
 
                       {isExpanded && (
                         <div className="mt-4 space-y-4 border-t pt-4">
-                          {/* Contact */}
-                          <div className="grid gap-2 text-sm sm:grid-cols-2">
-                            {c.email && <p><span className="font-medium">Email:</span> {c.email}</p>}
-                            {c.phone && <p><span className="font-medium">Tél:</span> {c.phone}</p>}
+                          {/* Contact masqué — visible uniquement par l'admin */}
+                          <div className="rounded-md border border-dashed bg-muted/30 p-3 text-xs italic text-muted-foreground">
+                            🔒 Les coordonnées (email, téléphone) du candidat sont visibles uniquement par l'administrateur.
                           </div>
 
                           {/* Education */}
