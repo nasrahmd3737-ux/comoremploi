@@ -462,7 +462,14 @@ const Admin = () => {
                       <TableBody>
                         {applications.map(a => (
                           <TableRow key={a.id}>
-                            <TableCell className="font-medium">{a.profiles?.full_name ?? "—"}</TableCell>
+                            <TableCell className="font-medium">
+                              {a.profiles ? (
+                                <button className="text-left hover:text-primary hover:underline transition-colors" onClick={() => {
+                                  const p = profiles.find(pr => pr.user_id === a.candidate_id);
+                                  if (p) setViewingProfile(p);
+                                }}>{a.profiles.full_name}</button>
+                              ) : "—"}
+                            </TableCell>
                             <TableCell>{a.profiles?.email ?? "—"}</TableCell>
                             <TableCell>{a.jobs?.title ?? "—"}</TableCell>
                             <TableCell>{a.jobs?.company_name ?? "—"}</TableCell>
