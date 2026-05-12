@@ -903,6 +903,124 @@ const Admin = () => {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Profile Detail Dialog — Admin sees all info */}
+      <Dialog open={!!viewingProfile} onOpenChange={open => { if (!open) setViewingProfile(null); }}>
+        <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
+          {viewingProfile && (() => {
+            const p = viewingProfile;
+            const edu = Array.isArray(p.cv_education) ? p.cv_education as any[] : [];
+            const exp = Array.isArray(p.cv_experience) ? p.cv_experience as any[] : [];
+            const langs = p.cv_languages ?? [];
+            const isEmployer = p.role === "employer";
+            const userJobs = jobs.filter(j => j.employer_id === p.user_id);
+            const userApps = applications.filter(a => a.candidate_id === p.user_id);
+            return (
+              <>
+                <DialogHeader>
+                  <DialogTitle className="flex items-center gap-2 text-xl">
+                    <UserIcon className="h-5 w-5 text-primary" /> {p.full_name}
+                  </DialogTitle>
+                  <DialogDescription className="flex flex-wrap items-center gap-2 pt-1">
+                    <Badge variant={isEmployer ? "default" : p.role === "admin" ? "default" : (p.role as any) === "moderator" ? "outline" : "secondary"}>
+                      {isEmployer ? "Employeur" : p.role === "admin" ? "Admin" : (p.role as any) === "moderator" ? "Modérateur" : "Candidat"}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">Inscrit le {new Date(p.created_at).toLocaleDateString("fr-FR")}</span>
+                  </DialogDescription>
+                </DialogHeader>
+
+                <div className="space-y-4 py-2">
+                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-4 space-y-2">
+                    <h3 className="font-semibold text-sm flex items-center gap-2"><Shield className="h-4 w-4 text-primary" /> Coordonnées (admin uniquement)</h3>
+                    <div className="grid gap-2 sm:grid-cols-2 text-sm">
+                      {p.email && <p className="flex items-center gap-2"><Mail className="h-3.5 w-3.5 text-muted-foreground" /> {p.email}</p>}
+                      {p.phone && <p className="flex items-center gap-2"><Phone className="h-3.5 w-3.5 text-muted-foreground" /> {p.phone}</p>}
+                      {p.location && <p className="flex items-center gap-2"><MapPinned className="h-3.5 w-3.5 text-muted-foreground" /> {p.location}</p>}
+                    </div>
+                  </div>
+
+                  {p.bio && (
+                    <div>
+                      <h3 className="font-semibold text-sm mb-1">Bio</h3>
+                      <p className="text-sm text-muted-foreground whitespace-pre-line">{p.bio}</p>
+                    </div>
+                  )}
+
+                  {isEmployer && (
+                    <div className="rounded-lg border p-4 space-y-2">
+                      <h3 className="font-semibold text-sm flex items-center gap-2"><Building2 className="h-4 w-4 text-primary" /> Entreprise</h3>
+                      <div className="text-sm space-y-1">
+                        {p.company_name && <p><strong>Nom :</strong> {p.company_name}</p>}
+                        {p.company_website && <p><strong>Site :</strong> <a href={p.company_website} target="_blank" rel="noopener" className="text-primary hover:underline">{p.company_website}</a></p>}
+                        {p.company_description && <p className="text-muted-foreground">{p.company_description}</p>}
+                      </div>
+                      <div className="text-xs text-muted-foreground border-t pt-2 mt-2">
+                        {userJobs.length} offre{userJobs.length !== 1 ? "s" : ""} publiée{userJobs.length !== 1 ? "s" : ""} · {userJobs.reduce((s, j) => s + ((j as any).views_count ?? 0), 0)} vue{userJobs.reduce((s, j) => s + ((j as any).views_count ?? 0), 0) !== 1 ? "s" : ""} totales
+                      </div>
+                    </div>
+                  )}
+
+                  {!isEmployer && (
+                    <>
+                      {p.skills && p.skills.length > 0 && (
+                        <div>
+                          <h3 className="font-semibold text-sm mb-2">Compétences</h3>
+                          <div className="flex flex-wrap gap-1.5">
+                            {p.skills.map((s, i) => <Badge key={i} variant="secondary">{s}</Badge>)}
+                          </div>
+                        </div>
+                      )}
+                      {p.experience_years != null && (
+                        <p className="text-sm"><strong>Années d'expérience :</strong> {p.experience_years}</p>
+                      )}
+                      {edu.length > 0 && (
+                        <div>
+                          <h3 className="font-semibold text-sm mb-2">Formation</h3>
+                          <div className="space-y-2">
+                            {edu.map((e, i) => (
+                              <div key={i} className="rounded-md bg-muted/40 p-2 text-sm">
+                                <p className="font-medium">{e.degree} — {e.field}</p>
+                                <p className="text-xs text-muted-foreground">{e.school} · {e.start_year}–{e.end_year || "en cours"}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {exp.length > 0 && (
+                        <div>
+                          <h3 className="font-semibold text-sm mb-2">Expérience</h3>
+                          <div className="space-y-2">
+                            {exp.map((e, i) => (
+                              <div key={i} className="rounded-md bg-muted/40 p-2 text-sm">
+                                <p className="font-medium">{e.position}</p>
+                                <p className="text-xs text-muted-foreground">{e.company} · {e.start_date}–{e.current ? "Présent" : e.end_date}</p>
+                                {e.description && <p className="mt-1 text-muted-foreground">{e.description}</p>}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {langs.length > 0 && (
+                        <div>
+                          <h3 className="font-semibold text-sm mb-2">Langues</h3>
+                          <div className="flex flex-wrap gap-1.5">{langs.map((l, i) => <Badge key={i} variant="outline">{l}</Badge>)}</div>
+                        </div>
+                      )}
+                      <div className="text-xs text-muted-foreground border-t pt-2">
+                        {userApps.length} candidature{userApps.length !== 1 ? "s" : ""} envoyée{userApps.length !== 1 ? "s" : ""}
+                      </div>
+                    </>
+                  )}
+                </div>
+
+                <DialogFooter>
+                  <Button variant="outline" onClick={() => setViewingProfile(null)}>Fermer</Button>
+                </DialogFooter>
+              </>
+            );
+          })()}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
