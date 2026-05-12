@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { MapPin, Building2, Clock, Banknote, Send, CheckCircle, FileText, AlertCircle, Loader2, ArrowLeft, Briefcase, ListChecks } from "lucide-react";
+import { MapPin, Building2, Clock, Eye, Send, CheckCircle, FileText, AlertCircle, Loader2, ArrowLeft, Briefcase, ListChecks } from "lucide-react";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import { generateCvPdf } from "@/lib/generateCvPdf";
@@ -47,6 +47,8 @@ export default function JobDetail() {
       setJob(data);
       setLoading(false);
     });
+    // Increment view counter (fire and forget)
+    supabase.rpc("increment_job_views" as any, { _job_id: id });
   }, [id]);
 
   useEffect(() => {
@@ -155,9 +157,9 @@ export default function JobDetail() {
     </div>
   );
 
-  const salary = formatSalary(job.salary_min, job.salary_max);
   const postedAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / 86400000);
   const postedLabel = postedAgo === 0 ? "Aujourd'hui" : postedAgo === 1 ? "Hier" : `Il y a ${postedAgo} jours`;
+  const views = (job as any).views_count ?? 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -247,12 +249,10 @@ export default function JobDetail() {
                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10"><Building2 className="h-4 w-4 text-primary" /></div>
                     <div><p className="text-muted-foreground">Entreprise</p><p className="font-medium">{job.company_name}</p></div>
                   </div>
-                  {salary && (
-                    <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-comores-green/10"><Banknote className="h-4 w-4 text-comores-green" /></div>
-                      <div><p className="text-muted-foreground">Salaire</p><p className="font-medium text-comores-green">{salary}</p></div>
-                    </div>
-                  )}
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10"><Eye className="h-4 w-4 text-primary" /></div>
+                    <div><p className="text-muted-foreground">Consultations</p><p className="font-medium">{views} vue{views !== 1 ? "s" : ""}</p></div>
+                  </div>
                   <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10"><Clock className="h-4 w-4 text-primary" /></div>
                     <div><p className="text-muted-foreground">Publiée le</p><p className="font-medium">{new Date(job.created_at).toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</p></div>
