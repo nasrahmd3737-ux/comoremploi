@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList } from "lucide-react";
+import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList, Phone, Mail, MapPinned, User as UserIcon } from "lucide-react";
 import Logo from "@/components/Logo";
 import ChatWidget from "@/components/ChatWidget";
 import { ISLANDS, formatLocation } from "@/lib/locations";
@@ -87,6 +87,7 @@ const Admin = () => {
   const [deleteTarget, setDeleteTarget] = useState<Profile | null>(null);
   const [deleteConfirmText, setDeleteConfirmText] = useState("");
   const [viewingJob, setViewingJob] = useState<Job | null>(null);
+  const [viewingProfile, setViewingProfile] = useState<Profile | null>(null);
 
   // Task form state
   const [taskForm, setTaskForm] = useState({ title: "", description: "", assigned_to: "", priority: "medium", due_date: "" });
@@ -170,10 +171,19 @@ const Admin = () => {
   };
 
   const handleToggleJobStatus = async (job: Job) => {
-    const newStatus = job.status === "published" ? "closed" : "published";
-    const { error } = await supabase.from("jobs").update({ status: newStatus }).eq("id", job.id);
+    const current = job.status as string;
+    const newStatus = current === "published" ? "closed" : "published";
+    const { error } = await supabase.from("jobs").update({ status: newStatus as any }).eq("id", job.id);
     if (error) { toast.error("Erreur: " + error.message); return; }
-    setJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: newStatus } : j));
+    setJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: newStatus as any } : j));
+    toast.success(newStatus === "published" ? "Offre validée et publiée" : "Offre fermée");
+  };
+
+  const handleValidateJob = async (job: Job) => {
+    const { error } = await supabase.from("jobs").update({ status: "published" as any }).eq("id", job.id);
+    if (error) { toast.error("Erreur: " + error.message); return; }
+    setJobs(prev => prev.map(j => j.id === job.id ? { ...j, status: "published" as any } : j));
+    toast.success(`Offre "${job.title}" validée et publiée !`);
   };
 
   const handleUpdateAppStatus = async (appId: string, newStatus: string) => {
