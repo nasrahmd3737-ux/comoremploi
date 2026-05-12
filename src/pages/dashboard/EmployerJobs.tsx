@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { toast } from "sonner";
 import { Link } from "react-router-dom";
-import { Briefcase, Plus, Trash2, Loader2 } from "lucide-react";
+import { Briefcase, Plus, Trash2, Loader2, Eye } from "lucide-react";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Job = Tables<"jobs">;
@@ -72,33 +72,38 @@ export default function EmployerJobs() {
                     <TableHead>Titre</TableHead>
                     <TableHead>Lieu</TableHead>
                     <TableHead>Type</TableHead>
+                    <TableHead>Vues</TableHead>
                     <TableHead>Statut</TableHead>
                     <TableHead>Date</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {jobs.map(j => (
+                  {jobs.map(j => {
+                    const status = j.status as string;
+                    const statusLabel = status === "published" ? "Publiée" : status === "draft" ? "En attente de validation" : "Fermée";
+                    const statusVariant: "default" | "secondary" | "outline" = status === "published" ? "default" : status === "draft" ? "outline" : "secondary";
+                    return (
                     <TableRow key={j.id}>
                       <TableCell className="font-medium">{j.title}</TableCell>
                       <TableCell>{j.location}</TableCell>
                       <TableCell><Badge variant="outline">{j.job_type}</Badge></TableCell>
+                      <TableCell><span className="flex items-center gap-1 text-sm text-muted-foreground"><Eye className="h-3.5 w-3.5" />{(j as any).views_count ?? 0}</span></TableCell>
                       <TableCell>
-                        <Badge variant={j.status === "published" ? "default" : "secondary"}>
-                          {j.status === "published" ? "Active" : "Fermée"}
-                        </Badge>
+                        <Badge variant={statusVariant}>{statusLabel}</Badge>
                       </TableCell>
                       <TableCell>{new Date(j.created_at).toLocaleDateString("fr-FR")}</TableCell>
                       <TableCell className="text-right space-x-1">
-                        <Button variant="outline" size="sm" onClick={() => toggleStatus(j)}>
-                          {j.status === "published" ? "Fermer" : "Publier"}
-                        </Button>
+                        {status === "published" && (
+                          <Button variant="outline" size="sm" onClick={() => toggleStatus(j)}>Fermer</Button>
+                        )}
                         <Button variant="ghost" size="icon" className="text-destructive" onClick={() => deleteJob(j.id)}>
                           <Trash2 className="h-4 w-4" />
                         </Button>
                       </TableCell>
                     </TableRow>
-                  ))}
+                    );
+                  })}
                 </TableBody>
               </Table>
             </div>
