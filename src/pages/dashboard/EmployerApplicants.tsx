@@ -150,15 +150,12 @@ export default function EmployerApplicants() {
                       Poste : {app.jobs?.title ?? "—"}
                     </p>
                     <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-                      {app.profiles?.email && (
-                        <span className="flex items-center gap-1"><Mail className="h-3.5 w-3.5" />{app.profiles.email}</span>
-                      )}
-                      {app.profiles?.phone && (
-                        <span>{app.profiles.phone}</span>
-                      )}
                       {app.profiles?.location && (
                         <span>{app.profiles.location}</span>
                       )}
+                      <span className="flex items-center gap-1 text-xs italic">
+                        <Mail className="h-3.5 w-3.5" /> Coordonnées visibles uniquement par l'admin
+                      </span>
                     </div>
                     <p className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Calendar className="h-3 w-3" />
