@@ -359,7 +359,9 @@ const Admin = () => {
                         <TableBody>
                           {profiles.map(p => (
                             <TableRow key={p.id}>
-                              <TableCell className="font-medium">{p.full_name}</TableCell>
+                              <TableCell className="font-medium">
+                                <button className="text-left hover:text-primary hover:underline transition-colors" onClick={() => setViewingProfile(p)}>{p.full_name}</button>
+                              </TableCell>
                               <TableCell>{p.email ?? "—"}</TableCell>
                               <TableCell>
                                 <Badge variant={p.role === "employer" ? "default" : p.role === "moderator" as any ? "outline" : "secondary"}>
