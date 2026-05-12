@@ -404,27 +404,40 @@ const Admin = () => {
                   <div className="overflow-x-auto">
                     <Table>
                       <TableHeader><TableRow>
-                        <TableHead>Titre</TableHead><TableHead>Entreprise</TableHead><TableHead>Lieu</TableHead><TableHead>Type</TableHead><TableHead>Statut</TableHead><TableHead>Date</TableHead><TableHead className="text-right">Actions</TableHead>
+                        <TableHead>Titre</TableHead><TableHead>Entreprise</TableHead><TableHead>Lieu</TableHead><TableHead>Type</TableHead><TableHead>Vues</TableHead><TableHead>Statut</TableHead><TableHead>Date</TableHead><TableHead className="text-right">Actions</TableHead>
                       </TableRow></TableHeader>
                       <TableBody>
-                        {jobs.map(j => (
-                          <TableRow key={j.id}>
+                        {jobs.map(j => {
+                          const status = j.status as string;
+                          const statusLabel = status === "published" ? "Publiée" : status === "draft" ? "À valider" : "Fermée";
+                          const statusVariant: "default" | "secondary" | "outline" | "destructive" = status === "published" ? "default" : status === "draft" ? "destructive" : "secondary";
+                          return (
+                          <TableRow key={j.id} className={status === "draft" ? "bg-destructive/5" : ""}>
                             <TableCell className="font-medium">
                               <button className="text-left hover:text-primary hover:underline transition-colors" onClick={() => setViewingJob(j)}>{j.title}</button>
                             </TableCell>
                             <TableCell>{j.company_name}</TableCell>
                             <TableCell>{j.location}</TableCell>
                             <TableCell><Badge variant="outline">{j.job_type}</Badge></TableCell>
-                            <TableCell><Badge variant={j.status === "published" ? "default" : "secondary"}>{j.status === "published" ? "Publiée" : j.status === "closed" ? "Fermée" : "Brouillon"}</Badge></TableCell>
+                            <TableCell><span className="flex items-center gap-1 text-sm text-muted-foreground"><Eye className="h-3.5 w-3.5" />{(j as any).views_count ?? 0}</span></TableCell>
+                            <TableCell><Badge variant={statusVariant}>{statusLabel}</Badge></TableCell>
                             <TableCell>{new Date(j.created_at).toLocaleDateString("fr-FR")}</TableCell>
                             <TableCell className="text-right space-x-1">
                               <Button variant="ghost" size="icon" onClick={() => setViewingJob(j)}><Eye className="h-4 w-4" /></Button>
-                              <Button variant="outline" size="sm" onClick={() => handleToggleJobStatus(j)}>{j.status === "published" ? "Fermer" : "Publier"}</Button>
+                              {status === "draft" && (
+                                <Button variant="default" size="sm" onClick={() => handleValidateJob(j)} className="gap-1">
+                                  <CheckCircle className="h-3.5 w-3.5" /> Valider
+                                </Button>
+                              )}
+                              {status !== "draft" && (
+                                <Button variant="outline" size="sm" onClick={() => handleToggleJobStatus(j)}>{status === "published" ? "Fermer" : "Rouvrir"}</Button>
+                              )}
                               <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDeleteJob(j.id)}><Trash2 className="h-4 w-4" /></Button>
                             </TableCell>
                           </TableRow>
-                        ))}
-                        {jobs.length === 0 && <TableRow><TableCell colSpan={7} className="text-center text-muted-foreground py-8">Aucune offre</TableCell></TableRow>}
+                          );
+                        })}
+                        {jobs.length === 0 && <TableRow><TableCell colSpan={8} className="text-center text-muted-foreground py-8">Aucune offre</TableCell></TableRow>}
                       </TableBody>
                     </Table>
                   </div>
