@@ -25,7 +25,7 @@ import { NavLink } from "@/components/NavLink";
 import Logo from "@/components/Logo";
 import { toast } from "sonner";
 import {
-  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare, Search,
+  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare, Search, DollarSign,
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 
@@ -33,6 +33,7 @@ const candidateLinks = [
   { title: "Tableau de bord", url: "/dashboard", icon: LayoutDashboard },
   { title: "Voir les offres", url: "/jobs", icon: Search },
   { title: "Mes candidatures", url: "/dashboard/applications", icon: FileText },
+  { title: "Mon salaire", url: "/dashboard/salary", icon: DollarSign },
   { title: "Créer mon CV", url: "/dashboard/cv-builder", icon: FileText },
   { title: "Messages", url: "/dashboard/messages", icon: MessageSquare },
   { title: "Mon profil", url: "/dashboard/profile", icon: User },

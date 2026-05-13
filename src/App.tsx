@@ -16,6 +16,7 @@ import Admin from "./pages/Admin";
 import DashboardLayout from "./components/DashboardLayout";
 import CandidateDashboard from "./pages/dashboard/CandidateDashboard";
 import CandidateApplications from "./pages/dashboard/CandidateApplications";
+import CandidateSalary from "./pages/dashboard/CandidateSalary";
 import CvBuilder from "./pages/dashboard/CvBuilder";
 import MessagesPage from "./pages/dashboard/MessagesPage";
 import EmployerDashboard from "./pages/dashboard/EmployerDashboard";
@@ -51,6 +52,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/dashboard" element={<DashboardLayout><DashboardRouter /></DashboardLayout>} />
           <Route path="/dashboard/applications" element={<DashboardLayout><CandidateApplications /></DashboardLayout>} />
+          <Route path="/dashboard/salary" element={<DashboardLayout><CandidateSalary /></DashboardLayout>} />
           <Route path="/dashboard/cv-builder" element={<DashboardLayout><CvBuilder /></DashboardLayout>} />
           <Route path="/dashboard/messages" element={<DashboardLayout><MessagesPage /></DashboardLayout>} />
           <Route path="/dashboard/jobs" element={<DashboardLayout allowedRoles={["employer"]}><EmployerJobs /></DashboardLayout>} />
