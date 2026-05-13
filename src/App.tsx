@@ -52,6 +52,7 @@ const App = () => (
           <Route path="/admin" element={<Admin />} />
           <Route path="/dashboard" element={<DashboardLayout><DashboardRouter /></DashboardLayout>} />
           <Route path="/dashboard/applications" element={<DashboardLayout><CandidateApplications /></DashboardLayout>} />
+          <Route path="/dashboard/salary" element={<DashboardLayout><CandidateSalary /></DashboardLayout>} />
           <Route path="/dashboard/cv-builder" element={<DashboardLayout><CvBuilder /></DashboardLayout>} />
           <Route path="/dashboard/messages" element={<DashboardLayout><MessagesPage /></DashboardLayout>} />
           <Route path="/dashboard/jobs" element={<DashboardLayout allowedRoles={["employer"]}><EmployerJobs /></DashboardLayout>} />

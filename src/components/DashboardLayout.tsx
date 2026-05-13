@@ -33,6 +33,7 @@ const candidateLinks = [
   { title: "Tableau de bord", url: "/dashboard", icon: LayoutDashboard },
   { title: "Voir les offres", url: "/jobs", icon: Search },
   { title: "Mes candidatures", url: "/dashboard/applications", icon: FileText },
+  { title: "Mon salaire", url: "/dashboard/salary", icon: DollarSign },
   { title: "Créer mon CV", url: "/dashboard/cv-builder", icon: FileText },
   { title: "Messages", url: "/dashboard/messages", icon: MessageSquare },
   { title: "Mon profil", url: "/dashboard/profile", icon: User },
