@@ -25,7 +25,7 @@ import { NavLink } from "@/components/NavLink";
 import Logo from "@/components/Logo";
 import { toast } from "sonner";
 import {
-  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare, Search,
+  Briefcase, LayoutDashboard, FileText, User, Building2, LogOut, Plus, Users, Loader2, MessageSquare, Search, DollarSign,
 } from "lucide-react";
 import { Navigate } from "react-router-dom";
 
