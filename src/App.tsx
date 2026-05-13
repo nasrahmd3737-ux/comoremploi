@@ -15,7 +15,7 @@ import Cgu from "./pages/Cgu";
 import Admin from "./pages/Admin";
 import DashboardLayout from "./components/DashboardLayout";
 import CandidateDashboard from "./pages/dashboard/CandidateDashboard";
-import CandidateApplications from "./pages/dashboard/CandidateApplications";
+import CandidateSalary from "./pages/dashboard/CandidateSalary";
 import CvBuilder from "./pages/dashboard/CvBuilder";
 import MessagesPage from "./pages/dashboard/MessagesPage";
 import EmployerDashboard from "./pages/dashboard/EmployerDashboard";
