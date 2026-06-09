@@ -93,6 +93,51 @@ const Admin = () => {
   const [taskForm, setTaskForm] = useState({ title: "", description: "", assigned_to: "", priority: "medium", due_date: "" });
   const [taskSubmitting, setTaskSubmitting] = useState(false);
 
+  // Ads (Pub) state
+  type Ad = { id: string; title: string; link_url: string; active: boolean; sort_order: number };
+  const [ads, setAds] = useState<Ad[]>([]);
+  const [adForm, setAdForm] = useState({ title: "", link_url: "", sort_order: "0" });
+  const [adSubmitting, setAdSubmitting] = useState(false);
+
+  const fetchAds = async () => {
+    const { data } = await (supabase as any)
+      .from("ads")
+      .select("id, title, link_url, active, sort_order")
+      .order("sort_order", { ascending: true });
+    setAds((data as Ad[]) ?? []);
+  };
+
+  useEffect(() => { if (isAdmin) fetchAds(); }, [role]);
+
+  const handleCreateAd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdSubmitting(true);
+    const { error } = await (supabase as any).from("ads").insert({
+      title: adForm.title,
+      link_url: adForm.link_url,
+      sort_order: parseInt(adForm.sort_order) || 0,
+      active: true,
+    });
+    setAdSubmitting(false);
+    if (error) { toast.error("Erreur: " + error.message); return; }
+    toast.success("Pub ajoutée");
+    setAdForm({ title: "", link_url: "", sort_order: "0" });
+    fetchAds();
+  };
+
+  const toggleAd = async (ad: Ad) => {
+    const { error } = await (supabase as any).from("ads").update({ active: !ad.active }).eq("id", ad.id);
+    if (error) { toast.error(error.message); return; }
+    fetchAds();
+  };
+
+  const deleteAd = async (id: string) => {
+    const { error } = await (supabase as any).from("ads").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Pub supprimée");
+    fetchAds();
+  };
+
   useEffect(() => {
     if (isAdmin || isModerator) fetchData();
   }, [role]);
