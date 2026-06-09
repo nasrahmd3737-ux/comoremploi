@@ -53,6 +53,36 @@ export type Database = {
         }
         Relationships: []
       }
+      ads: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          image_url: string | null
+          link_url: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link_url: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          link_url?: string
+          sort_order?: number
+          title?: string
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           candidate_id: string
