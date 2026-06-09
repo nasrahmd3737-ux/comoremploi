@@ -10,6 +10,8 @@ import Logo from "@/components/Logo";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import AdBanner from "@/components/AdBanner";
+
 import { toast } from "sonner";
 
 const Navbar = () => {
@@ -45,8 +47,11 @@ const Navbar = () => {
   const displayLocation = profile?.location ?? null;
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-primary backdrop-blur-md">
+    <div className="sticky top-0 z-50">
+      <AdBanner />
+      <nav className="border-b bg-primary backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between px-4">
+
         <Logo variant="light" />
 
         {/* Desktop */}
@@ -161,6 +166,7 @@ const Navbar = () => {
         </div>
       )}
     </nav>
+    </div>
   );
 };
 

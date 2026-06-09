@@ -93,6 +93,51 @@ const Admin = () => {
   const [taskForm, setTaskForm] = useState({ title: "", description: "", assigned_to: "", priority: "medium", due_date: "" });
   const [taskSubmitting, setTaskSubmitting] = useState(false);
 
+  // Ads (Pub) state
+  type Ad = { id: string; title: string; link_url: string; active: boolean; sort_order: number };
+  const [ads, setAds] = useState<Ad[]>([]);
+  const [adForm, setAdForm] = useState({ title: "", link_url: "", sort_order: "0" });
+  const [adSubmitting, setAdSubmitting] = useState(false);
+
+  const fetchAds = async () => {
+    const { data } = await (supabase as any)
+      .from("ads")
+      .select("id, title, link_url, active, sort_order")
+      .order("sort_order", { ascending: true });
+    setAds((data as Ad[]) ?? []);
+  };
+
+  useEffect(() => { if (isAdmin) fetchAds(); }, [role]);
+
+  const handleCreateAd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAdSubmitting(true);
+    const { error } = await (supabase as any).from("ads").insert({
+      title: adForm.title,
+      link_url: adForm.link_url,
+      sort_order: parseInt(adForm.sort_order) || 0,
+      active: true,
+    });
+    setAdSubmitting(false);
+    if (error) { toast.error("Erreur: " + error.message); return; }
+    toast.success("Pub ajoutée");
+    setAdForm({ title: "", link_url: "", sort_order: "0" });
+    fetchAds();
+  };
+
+  const toggleAd = async (ad: Ad) => {
+    const { error } = await (supabase as any).from("ads").update({ active: !ad.active }).eq("id", ad.id);
+    if (error) { toast.error(error.message); return; }
+    fetchAds();
+  };
+
+  const deleteAd = async (id: string) => {
+    const { error } = await (supabase as any).from("ads").delete().eq("id", id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Pub supprimée");
+    fetchAds();
+  };
+
   useEffect(() => {
     if (isAdmin || isModerator) fetchData();
   }, [role]);
@@ -342,6 +387,7 @@ const Admin = () => {
             {isAdmin && <TabsTrigger value="finance" className="gap-1"><DollarSign className="h-4 w-4" /> Finance</TabsTrigger>}
             {isAdmin && <TabsTrigger value="messages" className="gap-1"><MessageSquare className="h-4 w-4" /> Messages</TabsTrigger>}
             {isAdmin && <TabsTrigger value="create" className="gap-1"><Plus className="h-4 w-4" /> Publier</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="ads" className="gap-1"><Eye className="h-4 w-4" /> Pub</TabsTrigger>}
           </TabsList>
 
           {/* Users - Admin only */}
@@ -763,6 +809,55 @@ const Admin = () => {
                   </form>
                 </CardContent>
               </Card>
+            </TabsContent>
+          )}
+
+          {/* Ads / Pub - Admin only */}
+          {isAdmin && (
+            <TabsContent value="ads" className="mt-6">
+              <div className="grid gap-6 lg:grid-cols-2">
+                <Card>
+                  <CardHeader><CardTitle className="flex items-center gap-2"><Plus className="h-5 w-5" /> Ajouter une pub</CardTitle></CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleCreateAd} className="space-y-4">
+                      <div className="space-y-2"><Label>Texte de la pub</Label>
+                        <Input required value={adForm.title} onChange={e => setAdForm(f => ({ ...f, title: e.target.value }))} placeholder="Ex: 🌴 Découvrez Comorese.com" />
+                      </div>
+                      <div className="space-y-2"><Label>Lien (URL)</Label>
+                        <Input required type="url" value={adForm.link_url} onChange={e => setAdForm(f => ({ ...f, link_url: e.target.value }))} placeholder="https://..." />
+                      </div>
+                      <div className="space-y-2"><Label>Ordre d'affichage</Label>
+                        <Input type="number" value={adForm.sort_order} onChange={e => setAdForm(f => ({ ...f, sort_order: e.target.value }))} />
+                      </div>
+                      <Button type="submit" disabled={adSubmitting}>{adSubmitting ? "Ajout..." : "Ajouter la pub"}</Button>
+                    </form>
+                    <p className="mt-4 text-xs text-muted-foreground">Les pubs actives défilent en haut du site sur la bordure.</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader><CardTitle className="flex items-center gap-2"><Eye className="h-5 w-5" /> Pubs ({ads.length})</CardTitle></CardHeader>
+                  <CardContent>
+                    {ads.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">Aucune pub pour le moment.</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {ads.map(ad => (
+                          <div key={ad.id} className="flex items-center justify-between gap-2 rounded-lg border p-3">
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate font-medium text-sm">{ad.title}</p>
+                              <a href={ad.link_url} target="_blank" rel="noopener noreferrer" className="truncate block text-xs text-primary hover:underline">{ad.link_url}</a>
+                            </div>
+                            <Badge variant={ad.active ? "default" : "secondary"}>{ad.active ? "Active" : "Inactive"}</Badge>
+                            <Button size="sm" variant="outline" onClick={() => toggleAd(ad)}>{ad.active ? "Désactiver" : "Activer"}</Button>
+                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteAd(ad.id)}><Trash2 className="h-4 w-4" /></Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
             </TabsContent>
           )}
         </Tabs>
