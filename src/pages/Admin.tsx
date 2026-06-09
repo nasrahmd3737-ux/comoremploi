@@ -387,6 +387,7 @@ const Admin = () => {
             {isAdmin && <TabsTrigger value="finance" className="gap-1"><DollarSign className="h-4 w-4" /> Finance</TabsTrigger>}
             {isAdmin && <TabsTrigger value="messages" className="gap-1"><MessageSquare className="h-4 w-4" /> Messages</TabsTrigger>}
             {isAdmin && <TabsTrigger value="create" className="gap-1"><Plus className="h-4 w-4" /> Publier</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="ads" className="gap-1"><Eye className="h-4 w-4" /> Pub</TabsTrigger>}
           </TabsList>
 
           {/* Users - Admin only */}
