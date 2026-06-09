@@ -25,7 +25,7 @@ export default function AdBanner() {
   const items = [...ads, ...ads];
 
   return (
-    <div className="w-full bg-gradient-to-r from-comores-green via-primary to-gold border-b-2 border-gold/40 overflow-hidden">
+    <div className="w-full bg-gradient-to-r from-primary via-gold to-primary border-b-2 border-gold/60 overflow-hidden">
       <div className="relative flex whitespace-nowrap py-2">
         <div className="animate-marquee flex shrink-0 gap-12 pr-12">
           {items.map((ad, i) => (
