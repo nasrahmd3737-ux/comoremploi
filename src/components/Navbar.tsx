@@ -47,8 +47,11 @@ const Navbar = () => {
   const displayLocation = profile?.location ?? null;
 
   return (
-    <nav className="sticky top-0 z-50 border-b bg-primary backdrop-blur-md">
+    <div className="sticky top-0 z-50">
+      <AdBanner />
+      <nav className="border-b bg-primary backdrop-blur-md">
       <div className="container flex h-16 items-center justify-between px-4">
+
         <Logo variant="light" />
 
         {/* Desktop */}
