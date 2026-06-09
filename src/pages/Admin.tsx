@@ -811,6 +811,55 @@ const Admin = () => {
               </Card>
             </TabsContent>
           )}
+
+          {/* Ads / Pub - Admin only */}
+          {isAdmin && (
+            <TabsContent value="ads" className="mt-6">
+              <div className="grid gap-6 lg:grid-cols-2">
+                <Card>
+                  <CardHeader><CardTitle className="flex items-center gap-2"><Plus className="h-5 w-5" /> Ajouter une pub</CardTitle></CardHeader>
+                  <CardContent>
+                    <form onSubmit={handleCreateAd} className="space-y-4">
+                      <div className="space-y-2"><Label>Texte de la pub</Label>
+                        <Input required value={adForm.title} onChange={e => setAdForm(f => ({ ...f, title: e.target.value }))} placeholder="Ex: 🌴 Découvrez Comorese.com" />
+                      </div>
+                      <div className="space-y-2"><Label>Lien (URL)</Label>
+                        <Input required type="url" value={adForm.link_url} onChange={e => setAdForm(f => ({ ...f, link_url: e.target.value }))} placeholder="https://..." />
+                      </div>
+                      <div className="space-y-2"><Label>Ordre d'affichage</Label>
+                        <Input type="number" value={adForm.sort_order} onChange={e => setAdForm(f => ({ ...f, sort_order: e.target.value }))} />
+                      </div>
+                      <Button type="submit" disabled={adSubmitting}>{adSubmitting ? "Ajout..." : "Ajouter la pub"}</Button>
+                    </form>
+                    <p className="mt-4 text-xs text-muted-foreground">Les pubs actives défilent en haut du site sur la bordure.</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader><CardTitle className="flex items-center gap-2"><Eye className="h-5 w-5" /> Pubs ({ads.length})</CardTitle></CardHeader>
+                  <CardContent>
+                    {ads.length === 0 ? (
+                      <p className="text-sm text-muted-foreground">Aucune pub pour le moment.</p>
+                    ) : (
+                      <div className="space-y-3">
+                        {ads.map(ad => (
+                          <div key={ad.id} className="flex items-center justify-between gap-2 rounded-lg border p-3">
+                            <div className="min-w-0 flex-1">
+                              <p className="truncate font-medium text-sm">{ad.title}</p>
+                              <a href={ad.link_url} target="_blank" rel="noopener noreferrer" className="truncate block text-xs text-primary hover:underline">{ad.link_url}</a>
+                            </div>
+                            <Badge variant={ad.active ? "default" : "secondary"}>{ad.active ? "Active" : "Inactive"}</Badge>
+                            <Button size="sm" variant="outline" onClick={() => toggleAd(ad)}>{ad.active ? "Désactiver" : "Activer"}</Button>
+                            <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteAd(ad.id)}><Trash2 className="h-4 w-4" /></Button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
 
