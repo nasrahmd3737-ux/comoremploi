@@ -10,6 +10,8 @@ import Logo from "@/components/Logo";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import AdBanner from "@/components/AdBanner";
+
 import { toast } from "sonner";
 
 const Navbar = () => {
