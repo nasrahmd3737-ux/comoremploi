@@ -99,11 +99,11 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children, allowedRoles }: DashboardLayoutProps) {
   const { user, role, loading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [profile, setProfile] = useState<{ full_name: string; email: string | null; location: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ full_name: string; location: string | null } | null>(null);
 
   useEffect(() => {
     if (!user) return;
-    supabase.from("profiles").select("full_name, email, location").eq("user_id", user.id).maybeSingle()
+    supabase.from("profiles").select("full_name, location").eq("user_id", user.id).maybeSingle()
       .then(({ data }) => setProfile(data));
   }, [user]);
 
@@ -153,7 +153,7 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
                 <DropdownMenuLabel className="font-normal">
                   <div className="flex flex-col gap-1">
                     <p className="font-semibold">{profile?.full_name}</p>
-                    <p className="text-xs text-muted-foreground">{profile?.email}</p>
+                    <p className="text-xs text-muted-foreground">{user?.email}</p>
                     <div className="flex items-center gap-2 mt-1">
                       <Badge variant="secondary" className="text-xs">{roleLabel}</Badge>
                       {profile?.location && <span className="text-xs text-muted-foreground">{profile.location}</span>}

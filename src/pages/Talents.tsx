@@ -39,12 +39,13 @@ export default function Talents() {
   useEffect(() => {
     supabase
       .from("profiles")
-      .select("id, full_name, email, phone, location, bio, skills, experience_years, cv_url, cv_education, cv_experience, cv_languages")
+      .select("id, full_name, location, bio, skills, experience_years, cv_url, cv_education, cv_experience, cv_languages")
       .eq("role", "candidate")
       .eq("cv_published", true)
       .order("full_name")
       .then(({ data }) => {
-        setCandidates((data as unknown as CandidateProfile[]) ?? []);
+        const enriched = (data ?? []).map((c: any) => ({ ...c, email: null, phone: null }));
+        setCandidates(enriched as unknown as CandidateProfile[]);
         setLoading(false);
       });
   }, []);
