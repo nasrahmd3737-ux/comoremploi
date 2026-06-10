@@ -344,6 +344,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_contacts: {
+        Args: never
+        Returns: {
+          email: string
+          phone: string
+          user_id: string
+        }[]
+      }
+      get_user_contact: {
+        Args: { _user_id: string }
+        Returns: {
+          email: string
+          phone: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
