@@ -815,7 +815,19 @@ const Admin = () => {
 
           {/* Ads / Pub - Admin only */}
           {isAdmin && (
-            <TabsContent value="ads" className="mt-6">
+            <TabsContent value="ads" className="mt-6 space-y-6">
+              {/* Live preview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="h-5 w-5" /> Aperçu en direct de la bordure
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AdBannerPreview ads={ads} />
+                </CardContent>
+              </Card>
+
               <div className="grid gap-6 lg:grid-cols-2">
                 <Card>
                   <CardHeader><CardTitle className="flex items-center gap-2"><Plus className="h-5 w-5" /> Ajouter une pub</CardTitle></CardHeader>
