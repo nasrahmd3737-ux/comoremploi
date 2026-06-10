@@ -17,12 +17,12 @@ import { toast } from "sonner";
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const { user, role, loading, signOut } = useAuth();
-  const [profile, setProfile] = useState<{ full_name: string; email: string | null; location: string | null } | null>(null);
+  const [profile, setProfile] = useState<{ full_name: string; location: string | null } | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) { setProfile(null); return; }
-    supabase.from("profiles").select("full_name, email, location").eq("user_id", user.id).maybeSingle()
+    supabase.from("profiles").select("full_name, location").eq("user_id", user.id).maybeSingle()
       .then(({ data }) => setProfile(data));
   }, [user]);
 
@@ -43,7 +43,7 @@ const Navbar = () => {
   const dashboardUrl = role === "admin" || role === "moderator" ? "/admin" : "/dashboard";
   const roleLabel = role === "employer" ? "Employeur" : role === "admin" ? "Admin" : role === "moderator" ? "Modérateur" : "Candidat";
   const displayName = profile?.full_name || user?.user_metadata?.full_name || user?.email?.split("@")[0] || "Mon compte";
-  const displayEmail = profile?.email ?? user?.email ?? null;
+  const displayEmail = user?.email ?? null;
   const displayLocation = profile?.location ?? null;
 
   return (

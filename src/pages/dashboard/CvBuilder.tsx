@@ -44,21 +44,24 @@ export default function CvBuilder() {
 
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        if (data) {
-          setProfile(data);
-          setEducation(Array.isArray(data.cv_education) ? (data.cv_education as unknown as Education[]) : []);
-          setExperience(Array.isArray(data.cv_experience) ? (data.cv_experience as unknown as Experience[]) : []);
-          setLanguages((data.cv_languages ?? []).join(", "));
-          setPublished(data.cv_published ?? false);
-        }
-        setLoading(false);
-      });
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (data) {
+        const { data: contact } = await supabase.rpc("get_user_contact" as any, { _user_id: user.id });
+        const c = Array.isArray(contact) ? contact[0] : contact;
+        const merged: any = { ...data, email: c?.email ?? user.email ?? null, phone: c?.phone ?? null };
+        setProfile(merged);
+        setEducation(Array.isArray(data.cv_education) ? (data.cv_education as unknown as Education[]) : []);
+        setExperience(Array.isArray(data.cv_experience) ? (data.cv_experience as unknown as Experience[]) : []);
+        setLanguages((data.cv_languages ?? []).join(", "));
+        setPublished(data.cv_published ?? false);
+      }
+      setLoading(false);
+    })();
   }, [user]);
 
   const handleSave = async () => {

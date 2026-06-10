@@ -80,16 +80,22 @@ export default function ProfilePage() {
   };
   useEffect(() => {
     if (!user) return;
-    supabase
-      .from("profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle()
-      .then(({ data }) => {
-        setProfile(data);
-        setSkillsText((data?.skills ?? []).join(", "));
-        setLoading(false);
-      });
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      let merged: any = data;
+      if (data) {
+        const { data: contact } = await supabase.rpc("get_user_contact" as any, { _user_id: user.id });
+        const c = Array.isArray(contact) ? contact[0] : contact;
+        merged = { ...data, email: c?.email ?? user.email ?? null, phone: c?.phone ?? null };
+      }
+      setProfile(merged);
+      setSkillsText((merged?.skills ?? []).join(", "));
+      setLoading(false);
+    })();
   }, [user]);
 
   const handleSave = async (e: React.FormEvent) => {

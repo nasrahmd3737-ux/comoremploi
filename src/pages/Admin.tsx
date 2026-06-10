@@ -145,20 +145,27 @@ const Admin = () => {
 
   const fetchData = async () => {
     setLoadingData(true);
-    const [profilesRes, jobsRes, appsRes, tasksRes] = await Promise.all([
-      supabase.from("profiles").select("*").order("created_at", { ascending: false }),
+    const [profilesRes, jobsRes, appsRes, tasksRes, contactsRes] = await Promise.all([
+      supabase.from("profiles").select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at").order("created_at", { ascending: false }),
       supabase.from("jobs").select("*").order("created_at", { ascending: false }),
       supabase.from("applications").select("id, status, created_at, candidate_id, job_id, cover_letter").order("created_at", { ascending: false }),
       supabase.from("admin_tasks").select("*").order("created_at", { ascending: false }),
+      supabase.rpc("admin_list_contacts" as any),
     ]);
-    const allProfiles = profilesRes.data ?? [];
+    const contactMap = new Map<string, { email: string | null; phone: string | null }>();
+    ((contactsRes.data as any[]) ?? []).forEach((c: any) => contactMap.set(c.user_id, { email: c.email, phone: c.phone }));
+    const allProfiles = (profilesRes.data ?? []).map((p: any) => ({
+      ...p,
+      email: contactMap.get(p.user_id)?.email ?? null,
+      phone: contactMap.get(p.user_id)?.phone ?? null,
+    }));
     const allJobs = jobsRes.data ?? [];
-    setProfiles(allProfiles);
+    setProfiles(allProfiles as any);
     setJobs(allJobs);
     setAdminTasks((tasksRes.data as AdminTask[]) ?? []);
 
     const enrichedApps: ApplicationFull[] = (appsRes.data ?? []).map(a => {
-      const profile = allProfiles.find(p => p.user_id === a.candidate_id);
+      const profile = allProfiles.find((p: any) => p.user_id === a.candidate_id);
       const job = allJobs.find(j => j.id === a.job_id);
       return {
         ...a,

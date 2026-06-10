@@ -60,12 +60,13 @@ export default function EmployerApplicants() {
 
       if (!appsData) { setLoading(false); return; }
 
-      // Fetch candidate profiles
+      // Fetch candidate profiles (email/phone are restricted to admins)
       const candidateIds = [...new Set(appsData.map(a => a.candidate_id))];
-      const { data: profiles } = await supabase
+      const { data: profilesRaw } = await supabase
         .from("profiles")
-        .select("user_id, full_name, email, phone, location")
+        .select("user_id, full_name, location")
         .in("user_id", candidateIds);
+      const profiles = (profilesRaw ?? []).map(p => ({ ...p, email: null as string | null, phone: null as string | null }));
 
       const enriched: ApplicationWithDetails[] = appsData.map(a => {
         const profile = profiles?.find(p => p.user_id === a.candidate_id);
