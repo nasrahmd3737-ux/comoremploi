@@ -948,6 +948,86 @@ const Admin = () => {
               </div>
             </TabsContent>
           )}
+
+          {isAdmin && (
+            <TabsContent value="media" className="mt-6 space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><Upload className="h-5 w-5" /> Ajouter une photo ou vidéo</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <form onSubmit={handleUploadMedia} className="space-y-4">
+                    <div className="space-y-2">
+                      <Label>Titre (optionnel)</Label>
+                      <Input value={mediaForm.title} onChange={e => setMediaForm(f => ({ ...f, title: e.target.value }))} placeholder="Ex: Salon de l'emploi 2026" />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Fichier (image ou vidéo, max 50 Mo)</Label>
+                      <Input
+                        type="file"
+                        accept="image/*,video/*"
+                        onChange={e => setMediaFile(e.target.files?.[0] ?? null)}
+                        required
+                      />
+                      {mediaFile && (
+                        <p className="text-xs text-muted-foreground">
+                          {mediaFile.name} — {(mediaFile.size / (1024 * 1024)).toFixed(2)} Mo
+                        </p>
+                      )}
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Ordre d'affichage</Label>
+                      <Input type="number" value={mediaForm.sort_order} onChange={e => setMediaForm(f => ({ ...f, sort_order: e.target.value }))} />
+                    </div>
+                    <Button type="submit" disabled={mediaUploading || !mediaFile}>
+                      {mediaUploading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Envoi...</> : <><Upload className="mr-2 h-4 w-4" /> Publier sur la page d'accueil</>}
+                    </Button>
+                  </form>
+                  <p className="mt-3 text-xs text-muted-foreground">Les médias actifs apparaissent dans la section "Galerie médias" de la page d'accueil.</p>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2"><ImageIcon className="h-5 w-5" /> Médias ({media.length})</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {media.length === 0 ? (
+                    <p className="text-sm text-muted-foreground">Aucun média pour le moment.</p>
+                  ) : (
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {media.map(m => (
+                        <div key={m.id} className="rounded-lg border overflow-hidden bg-card">
+                          <div className="aspect-video bg-muted relative">
+                            {m.signedUrl && (
+                              m.media_type === "photo" ? (
+                                <img src={m.signedUrl} alt={m.title ?? ""} className="h-full w-full object-cover" />
+                              ) : (
+                                <video src={m.signedUrl} className="h-full w-full object-cover" controls preload="metadata" />
+                              )
+                            )}
+                            <Badge className="absolute top-2 left-2 gap-1" variant="secondary">
+                              {m.media_type === "video" ? <><Film className="h-3 w-3" /> Vidéo</> : <><ImageIcon className="h-3 w-3" /> Photo</>}
+                            </Badge>
+                          </div>
+                          <div className="p-3 space-y-2">
+                            <p className="text-sm font-medium truncate">{m.title || "Sans titre"}</p>
+                            <div className="flex items-center justify-between gap-2">
+                              <Badge variant={m.active ? "default" : "secondary"}>{m.active ? "Actif" : "Caché"}</Badge>
+                              <div className="flex gap-1">
+                                <Button size="sm" variant="outline" onClick={() => toggleMedia(m)}>{m.active ? "Cacher" : "Afficher"}</Button>
+                                <Button size="sm" variant="ghost" className="text-destructive" onClick={() => deleteMedia(m)}><Trash2 className="h-4 w-4" /></Button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
         </Tabs>
       </div>
 
