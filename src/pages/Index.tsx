@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import CategoriesSection from "@/components/CategoriesSection";
 import FeaturedJobsSection from "@/components/FeaturedJobsSection";
+import MediaGallerySection from "@/components/MediaGallerySection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
@@ -12,6 +13,7 @@ const Index = () => {
       <HeroSection />
       <CategoriesSection />
       <FeaturedJobsSection />
+      <MediaGallerySection />
       <CTASection />
       <Footer />
     </div>
@@ -19,3 +21,4 @@ const Index = () => {
 };
 
 export default Index;
+
