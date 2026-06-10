@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList, Phone, Mail, MapPinned, User as UserIcon } from "lucide-react";
+import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList, Phone, Mail, MapPinned, User as UserIcon, Image as ImageIcon, Film, Upload } from "lucide-react";
 import Logo from "@/components/Logo";
 import ChatWidget from "@/components/ChatWidget";
 import AdBannerPreview from "@/components/AdBannerPreview";
@@ -138,6 +138,73 @@ const Admin = () => {
     toast.success("Pub supprimée");
     fetchAds();
   };
+
+  // Media gallery state
+  type MediaItem = { id: string; title: string | null; media_type: "photo" | "video"; storage_path: string; active: boolean; sort_order: number; signedUrl?: string };
+  const [media, setMedia] = useState<MediaItem[]>([]);
+  const [mediaForm, setMediaForm] = useState({ title: "", sort_order: "0" });
+  const [mediaFile, setMediaFile] = useState<File | null>(null);
+  const [mediaUploading, setMediaUploading] = useState(false);
+
+  const fetchMedia = async () => {
+    const { data } = await (supabase as any)
+      .from("media_items")
+      .select("id, title, media_type, storage_path, active, sort_order")
+      .order("sort_order", { ascending: true })
+      .order("created_at", { ascending: false });
+    const rows = (data as MediaItem[]) ?? [];
+    const withUrls = await Promise.all(rows.map(async (r) => {
+      const { data: s } = await supabase.storage.from("media").createSignedUrl(r.storage_path, 3600);
+      return { ...r, signedUrl: s?.signedUrl };
+    }));
+    setMedia(withUrls);
+  };
+
+  useEffect(() => { if (isAdmin) fetchMedia(); }, [role]);
+
+  const handleUploadMedia = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!mediaFile || !user) return;
+    const isVideo = mediaFile.type.startsWith("video/");
+    const isImage = mediaFile.type.startsWith("image/");
+    if (!isVideo && !isImage) { toast.error("Format non supporté (image ou vidéo uniquement)"); return; }
+    if (mediaFile.size > 50 * 1024 * 1024) { toast.error("Fichier trop volumineux (max 50 Mo)"); return; }
+
+    setMediaUploading(true);
+    const ext = mediaFile.name.split(".").pop();
+    const path = `gallery/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+    const { error: upErr } = await supabase.storage.from("media").upload(path, mediaFile, { contentType: mediaFile.type });
+    if (upErr) { toast.error("Upload: " + upErr.message); setMediaUploading(false); return; }
+
+    const { error: insErr } = await (supabase as any).from("media_items").insert({
+      title: mediaForm.title || null,
+      media_type: isVideo ? "video" : "photo",
+      storage_path: path,
+      sort_order: parseInt(mediaForm.sort_order) || 0,
+      active: true,
+    });
+    setMediaUploading(false);
+    if (insErr) { toast.error("Erreur: " + insErr.message); return; }
+    toast.success("Média ajouté !");
+    setMediaForm({ title: "", sort_order: "0" });
+    setMediaFile(null);
+    fetchMedia();
+  };
+
+  const toggleMedia = async (m: MediaItem) => {
+    const { error } = await (supabase as any).from("media_items").update({ active: !m.active }).eq("id", m.id);
+    if (error) { toast.error(error.message); return; }
+    fetchMedia();
+  };
+
+  const deleteMedia = async (m: MediaItem) => {
+    await supabase.storage.from("media").remove([m.storage_path]);
+    const { error } = await (supabase as any).from("media_items").delete().eq("id", m.id);
+    if (error) { toast.error(error.message); return; }
+    toast.success("Média supprimé");
+    fetchMedia();
+  };
+
 
   useEffect(() => {
     if (isAdmin || isModerator) fetchData();
@@ -396,6 +463,7 @@ const Admin = () => {
             {isAdmin && <TabsTrigger value="messages" className="gap-1"><MessageSquare className="h-4 w-4" /> Messages</TabsTrigger>}
             {isAdmin && <TabsTrigger value="create" className="gap-1"><Plus className="h-4 w-4" /> Publier</TabsTrigger>}
             {isAdmin && <TabsTrigger value="ads" className="gap-1"><Eye className="h-4 w-4" /> Pub</TabsTrigger>}
+            {isAdmin && <TabsTrigger value="media" className="gap-1"><ImageIcon className="h-4 w-4" /> Médias</TabsTrigger>}
           </TabsList>
 
           {/* Users - Admin only */}
