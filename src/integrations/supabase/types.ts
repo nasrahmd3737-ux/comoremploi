@@ -214,6 +214,39 @@ export type Database = {
         }
         Relationships: []
       }
+      media_items: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          media_type: string
+          sort_order: number
+          storage_path: string
+          title: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          media_type: string
+          sort_order?: number
+          storage_path: string
+          title?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          media_type?: string
+          sort_order?: number
+          storage_path?: string
+          title?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       messages: {
         Row: {
           content: string
