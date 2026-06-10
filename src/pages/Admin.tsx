@@ -16,6 +16,7 @@ import { toast } from "sonner";
 import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList, Phone, Mail, MapPinned, User as UserIcon } from "lucide-react";
 import Logo from "@/components/Logo";
 import ChatWidget from "@/components/ChatWidget";
+import AdBannerPreview from "@/components/AdBannerPreview";
 import { ISLANDS, formatLocation } from "@/lib/locations";
 import { notifyAdminOnAccepted } from "@/lib/notifyAdmin";
 import type { Tables } from "@/integrations/supabase/types";
@@ -814,7 +815,19 @@ const Admin = () => {
 
           {/* Ads / Pub - Admin only */}
           {isAdmin && (
-            <TabsContent value="ads" className="mt-6">
+            <TabsContent value="ads" className="mt-6 space-y-6">
+              {/* Live preview */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Eye className="h-5 w-5" /> Aperçu en direct de la bordure
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <AdBannerPreview ads={ads} />
+                </CardContent>
+              </Card>
+
               <div className="grid gap-6 lg:grid-cols-2">
                 <Card>
                   <CardHeader><CardTitle className="flex items-center gap-2"><Plus className="h-5 w-5" /> Ajouter une pub</CardTitle></CardHeader>
