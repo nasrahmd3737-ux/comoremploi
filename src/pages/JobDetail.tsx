@@ -53,19 +53,26 @@ export default function JobDetail() {
 
   useEffect(() => {
     if (!user || !id) return;
-    Promise.all([
-      supabase.from("applications").select("id").eq("candidate_id", user.id).eq("job_id", id).maybeSingle(),
-      supabase.from("profiles").select("*").eq("user_id", user.id).maybeSingle(),
-    ]).then(([appRes, profRes]) => {
+    (async () => {
+      const [appRes, profRes] = await Promise.all([
+        supabase.from("applications").select("id").eq("candidate_id", user.id).eq("job_id", id).maybeSingle(),
+        supabase.from("profiles").select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at").eq("user_id", user.id).maybeSingle(),
+      ]);
       setHasApplied(!!appRes.data);
-      setProfileData(profRes.data);
-      setProfileCvUrl(profRes.data?.cv_url ?? null);
-      const edu = profRes.data?.cv_education;
-      const exp = profRes.data?.cv_experience;
+      let prof: any = profRes.data;
+      if (prof) {
+        const { data: contact } = await supabase.rpc("get_user_contact" as any, { _user_id: user.id });
+        const c = Array.isArray(contact) ? contact[0] : contact;
+        prof = { ...prof, email: c?.email ?? user.email ?? null, phone: c?.phone ?? null };
+      }
+      setProfileData(prof);
+      setProfileCvUrl(prof?.cv_url ?? null);
+      const edu = prof?.cv_education;
+      const exp = prof?.cv_experience;
       setHasBuiltCv(
         (Array.isArray(edu) && edu.length > 0) || (Array.isArray(exp) && exp.length > 0)
       );
-    });
+    })();
   }, [user, id]);
 
   const handleApply = async () => {
