@@ -166,7 +166,6 @@ export default function JobDetail() {
 
   const postedAgo = Math.floor((Date.now() - new Date(job.created_at).getTime()) / 86400000);
   const postedLabel = postedAgo === 0 ? "Aujourd'hui" : postedAgo === 1 ? "Hier" : `Il y a ${postedAgo} jours`;
-  const views = (job as any).views_count ?? 0;
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -255,10 +254,6 @@ export default function JobDetail() {
                   <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10"><Building2 className="h-4 w-4 text-primary" /></div>
                     <div><p className="text-muted-foreground">Entreprise</p><p className="font-medium">{job.company_name}</p></div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10"><Eye className="h-4 w-4 text-primary" /></div>
-                    <div><p className="text-muted-foreground">Consultations</p><p className="font-medium">{views} vue{views !== 1 ? "s" : ""}</p></div>
                   </div>
                   <div className="flex items-center gap-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10"><Clock className="h-4 w-4 text-primary" /></div>

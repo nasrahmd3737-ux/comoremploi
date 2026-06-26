@@ -71,7 +71,7 @@ const Navbar = () => {
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-foreground/20 text-primary-foreground font-bold text-sm">
                     {displayName.charAt(0).toUpperCase()}
                   </div>
-                  <span className="hidden lg:inline text-sm font-medium">{displayName}</span>
+                  <span className="hidden lg:inline text-sm font-medium">{role === "admin" ? "Admin" : "Tableau de bord"}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
@@ -93,7 +93,7 @@ const Navbar = () => {
                 {role !== "admin" && (
                   <>
                     <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
-                      <User className="mr-2 h-4 w-4" /> Mon profil
+                      <User className="mr-2 h-4 w-4" /> Mon Compte
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate("/dashboard/messages")}>
                       <MessageSquare className="mr-2 h-4 w-4" /> Messages
@@ -102,7 +102,7 @@ const Navbar = () => {
                 )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" /> Se déconnecter
+                  <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

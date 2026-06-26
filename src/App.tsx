@@ -9,6 +9,8 @@ import Talents from "./pages/Talents";
 import JobDetail from "./pages/JobDetail";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Cgu from "./pages/Cgu";
@@ -46,6 +48,8 @@ const App = () => (
           <Route path="/jobs/:id" element={<JobDetail />} />
           <Route path="/talents" element={<Talents />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/about" element={<About />} />
           <Route path="/cgu" element={<Cgu />} />
           <Route path="/signup" element={<Signup />} />

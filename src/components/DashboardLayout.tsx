@@ -75,7 +75,7 @@ function SidebarNav() {
                       to={item.url}
                       end={item.url === "/dashboard"}
                       className="hover:bg-muted/50"
-                      activeClassName="bg-muted text-primary font-medium"
+                      activeClassName="bg-blue-600 text-white font-medium hover:bg-blue-600"
                     >
                       <item.icon className="mr-2 h-4 w-4" />
                       {!collapsed && <span>{item.title}</span>}
@@ -146,7 +146,7 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
                   <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
                     {profile?.full_name?.charAt(0).toUpperCase() ?? "U"}
                   </div>
-                  <span className="hidden sm:inline text-sm font-medium">{profile?.full_name ?? "Mon compte"}</span>
+                  <span className="hidden sm:inline text-sm font-medium">Tableau de bord</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-64">
@@ -165,14 +165,14 @@ export default function DashboardLayout({ children, allowedRoles }: DashboardLay
                   <LayoutDashboard className="mr-2 h-4 w-4" /> Tableau de bord
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/dashboard/profile")}>
-                  <User className="mr-2 h-4 w-4" /> Mon profil
+                  <User className="mr-2 h-4 w-4" /> Mon Compte
                 </DropdownMenuItem>
                 <DropdownMenuItem onClick={() => navigate("/dashboard/messages")}>
                   <MessageSquare className="mr-2 h-4 w-4" /> Messages
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" /> Se déconnecter
+                  <LogOut className="mr-2 h-4 w-4" /> Déconnexion
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

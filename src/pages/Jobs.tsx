@@ -215,7 +215,6 @@ const Jobs = () => {
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filtered.map(job => {
               const hasApplied = appliedJobs.has(job.id);
-              const views = (job as any).views_count ?? 0;
               return (
                 <Card key={job.id} className="group transition-shadow hover:shadow-lg">
                   <CardContent className="p-5">
@@ -230,9 +229,6 @@ const Jobs = () => {
                     <div className="mt-3 flex flex-wrap gap-2 text-sm text-muted-foreground">
                       <span className="flex items-center gap-1"><MapPin className="h-3.5 w-3.5" />{job.location}</span>
                       <span className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" />{new Date(job.created_at).toLocaleDateString("fr-FR")}</span>
-                    </div>
-                    <div className="mt-2 flex items-center gap-1 text-xs text-muted-foreground">
-                      <Eye className="h-3.5 w-3.5" />{views} vue{views !== 1 ? "s" : ""}
                     </div>
                     <Badge variant="secondary" className="mt-3">{job.category}</Badge>
                     <p className="mt-3 text-sm text-muted-foreground line-clamp-2">{job.description}</p>

@@ -3,6 +3,10 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Navigate, Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import {
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
+  DropdownMenuSeparator, DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList, Phone, Mail, MapPinned, User as UserIcon, Image as ImageIcon, Film, Upload } from "lucide-react";
+import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList, Phone, Mail, MapPinned, User as UserIcon, Image as ImageIcon, Film, Upload, LogOut } from "lucide-react";
 import Logo from "@/components/Logo";
 import ChatWidget from "@/components/ChatWidget";
 import AdBannerPreview from "@/components/AdBannerPreview";
@@ -394,6 +398,7 @@ const Admin = () => {
   }
   if (!user || (!isAdmin && !isModerator)) return <Navigate to="/" replace />;
 
+  const myProfile = profiles.find(p => p.user_id === user.id);
   const acceptedApps = applications.filter(a => a.status === "accepted");
 
   const employerMap = new Map<string, string>();
@@ -419,7 +424,33 @@ const Admin = () => {
             <Badge variant="outline" className="gap-1">
               <Shield className="h-3 w-3" /> {isAdmin ? "Admin" : "Modérateur"}
             </Badge>
-            <Button variant="ghost" size="sm" onClick={handleLogout}>Déconnexion</Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="gap-2">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-bold text-sm">
+                    {myProfile?.full_name?.charAt(0).toUpperCase() ?? "A"}
+                  </div>
+                  <span className="hidden sm:inline text-sm font-medium">Mon compte</span>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-64">
+                <DropdownMenuLabel className="font-normal">
+                  <div className="flex flex-col gap-1">
+                    <p className="font-semibold">{myProfile?.full_name ?? (isAdmin ? "Admin" : "Modérateur")}</p>
+                    <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    <Badge variant="secondary" className="text-xs w-fit mt-1">{isAdmin ? "Admin" : "Modérateur"}</Badge>
+                  </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => myProfile && setViewingProfile(myProfile)}>
+                  <UserIcon className="mr-2 h-4 w-4" /> Mon Compte
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" /> Déconnexion
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </div>
       </header>
@@ -470,7 +501,7 @@ const Admin = () => {
           {isAdmin && (
             <TabsContent value="users" className="mt-6">
               <Card>
-                <CardHeader><CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" /> Profils ({profiles.length})</CardTitle></CardHeader>
+                <CardHeader><CardTitle className="flex items-center gap-2"><Users className="h-5 w-5" /> Utilisateurs ({profiles.length})</CardTitle></CardHeader>
                 <CardContent>
                   {loadingData ? <div className="flex justify-center py-8"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div> : (
                     <div className="overflow-x-auto">
