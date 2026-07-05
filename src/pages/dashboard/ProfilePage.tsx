@@ -194,8 +194,19 @@ export default function ProfilePage() {
     try {
       const { error: delProfileError } = await supabase.from("profiles").delete().eq("id", profile.id);
       if (delProfileError) throw delProfileError;
-      const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
-      if (authError) throw authError;
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token ?? "";
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? "Erreur lors de la suppression du compte");
+      }
       await supabase.auth.signOut();
       toast.success("Votre compte a été supprimé");
       window.location.href = "/";
