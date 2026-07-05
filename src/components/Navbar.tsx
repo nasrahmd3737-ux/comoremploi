@@ -130,6 +130,7 @@ const Navbar = () => {
             <Link to="/talents" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Talents</Link>
             <Link to="/about" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>À propos</Link>
             <Link to="/cgu" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>CGU</Link>
+            <Link to="/privacy" className="text-sm font-medium py-2" onClick={() => setMobileOpen(false)}>Confidentialité</Link>
 
             {loading ? (
               <div className="h-10 w-full rounded-md bg-muted" />
