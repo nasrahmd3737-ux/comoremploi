@@ -403,6 +403,30 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
+      {/* Delete Account Card */}
+      <Card className="max-w-2xl border-destructive/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="h-5 w-5" /> Zone dangereuse
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            La suppression de votre compte est irréversible. Toutes vos données (profil, CV, candidatures, messages) seront définitivement effacées.
+          </p>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              setDeleteConfirmText("");
+              setShowDeleteAccount(true);
+            }}
+          >
+            <UserX className="mr-2 h-4 w-4" /> Supprimer mon compte
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Built CV Preview Dialog */}
       <Dialog open={showBuiltCv} onOpenChange={setShowBuiltCv}>
         <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
