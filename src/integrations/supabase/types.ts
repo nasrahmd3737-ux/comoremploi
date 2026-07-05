@@ -83,6 +83,21 @@ export type Database = {
         }
         Relationships: []
       }
+      app_settings: {
+        Row: {
+          key: string
+          value: string | null
+        }
+        Insert: {
+          key: string
+          value?: string | null
+        }
+        Update: {
+          key?: string
+          value?: string | null
+        }
+        Relationships: []
+      }
       applications: {
         Row: {
           candidate_id: string
@@ -286,6 +301,9 @@ export type Database = {
         Row: {
           avatar_url: string | null
           bio: string | null
+          blocked: boolean
+          blocked_at: string | null
+          blocked_reason: string | null
           company_description: string | null
           company_name: string | null
           company_website: string | null
@@ -309,6 +327,9 @@ export type Database = {
         Insert: {
           avatar_url?: string | null
           bio?: string | null
+          blocked?: boolean
+          blocked_at?: string | null
+          blocked_reason?: string | null
           company_description?: string | null
           company_name?: string | null
           company_website?: string | null
@@ -332,6 +353,9 @@ export type Database = {
         Update: {
           avatar_url?: string | null
           bio?: string | null
+          blocked?: boolean
+          blocked_at?: string | null
+          blocked_reason?: string | null
           company_description?: string | null
           company_name?: string | null
           company_website?: string | null
@@ -351,6 +375,81 @@ export type Database = {
           skills?: string[] | null
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      service_requests: {
+        Row: {
+          city: string
+          contact_name: string
+          contact_phone: string
+          created_at: string
+          id: string
+          island: string
+          notes: string | null
+          requester_id: string
+          service_type: string
+          status: string
+        }
+        Insert: {
+          city: string
+          contact_name: string
+          contact_phone: string
+          created_at?: string
+          id?: string
+          island: string
+          notes?: string | null
+          requester_id: string
+          service_type: string
+          status?: string
+        }
+        Update: {
+          city?: string
+          contact_name?: string
+          contact_phone?: string
+          created_at?: string
+          id?: string
+          island?: string
+          notes?: string | null
+          requester_id?: string
+          service_type?: string
+          status?: string
+        }
+        Relationships: []
+      }
+      service_workers: {
+        Row: {
+          city: string
+          created_at: string
+          full_name: string
+          id: string
+          island: string
+          notes: string | null
+          owner_id: string
+          phone: string
+          worker_type: string
+        }
+        Insert: {
+          city: string
+          created_at?: string
+          full_name: string
+          id?: string
+          island: string
+          notes?: string | null
+          owner_id: string
+          phone: string
+          worker_type: string
+        }
+        Update: {
+          city?: string
+          created_at?: string
+          full_name?: string
+          id?: string
+          island?: string
+          notes?: string | null
+          owner_id?: string
+          phone?: string
+          worker_type?: string
         }
         Relationships: []
       }
