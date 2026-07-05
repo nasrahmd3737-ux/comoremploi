@@ -25,6 +25,9 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showBuiltCv, setShowBuiltCv] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   const buildCvData = () => {
     if (!profile) return null;
