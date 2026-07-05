@@ -14,6 +14,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Cgu from "./pages/Cgu";
+import Privacy from "./pages/Privacy";
 import Admin from "./pages/Admin";
 import DashboardLayout from "./components/DashboardLayout";
 import CandidateDashboard from "./pages/dashboard/CandidateDashboard";
@@ -52,6 +53,7 @@ const App = () => (
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/about" element={<About />} />
           <Route path="/cgu" element={<Cgu />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/dashboard" element={<DashboardLayout><DashboardRouter /></DashboardLayout>} />

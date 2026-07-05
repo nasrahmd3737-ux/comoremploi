@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
-import { Loader2, User, Upload, FileText, Trash2, ExternalLink, GraduationCap, Briefcase, Globe, Eye, Pencil, Download, Save } from "lucide-react";
+import { Loader2, User, Upload, FileText, Trash2, ExternalLink, GraduationCap, Briefcase, Globe, Eye, Pencil, Download, Save, AlertTriangle, UserX } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { Tables } from "@/integrations/supabase/types";
 import { generateCvPdf } from "@/lib/generateCvPdf";
@@ -25,6 +25,9 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [showBuiltCv, setShowBuiltCv] = useState(false);
   const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [showDeleteAccount, setShowDeleteAccount] = useState(false);
+  const [deleteConfirmText, setDeleteConfirmText] = useState("");
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   const buildCvData = () => {
     if (!profile) return null;
@@ -178,6 +181,39 @@ export default function ProfilePage() {
   const getCvSignedUrl = async (path: string) => {
     const { data } = await supabase.storage.from("cvs").createSignedUrl(path, 3600);
     return data?.signedUrl ?? null;
+  };
+
+  const handleDeleteAccount = async () => {
+    if (!user || !profile) return;
+    if (role === "admin") {
+      toast.error("Le compte administrateur ne peut pas être supprimé");
+      return;
+    }
+    if (deleteConfirmText !== "oui je veux supprimer mon compte") return;
+    setDeletingAccount(true);
+    try {
+      const { error: delProfileError } = await supabase.from("profiles").delete().eq("id", profile.id);
+      if (delProfileError) throw delProfileError;
+      const { data: sessionData } = await supabase.auth.getSession();
+      const accessToken = sessionData.session?.access_token ?? "";
+      const res = await fetch(`${import.meta.env.VITE_SUPABASE_URL}/functions/v1/delete-account`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        throw new Error(body.error ?? "Erreur lors de la suppression du compte");
+      }
+      await supabase.auth.signOut();
+      toast.success("Votre compte a été supprimé");
+      window.location.href = "/";
+    } catch (err: any) {
+      toast.error(err.message ?? "Erreur lors de la suppression");
+      setDeletingAccount(false);
+    }
   };
 
   const handleViewCv = async () => {
@@ -367,6 +403,30 @@ export default function ProfilePage() {
         </CardContent>
       </Card>
 
+      {/* Delete Account Card */}
+      <Card className="max-w-2xl border-destructive/20">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-destructive">
+            <AlertTriangle className="h-5 w-5" /> Zone dangereuse
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-sm text-muted-foreground mb-4">
+            La suppression de votre compte est irréversible. Toutes vos données (profil, CV, candidatures, messages) seront définitivement effacées.
+          </p>
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => {
+              setDeleteConfirmText("");
+              setShowDeleteAccount(true);
+            }}
+          >
+            <UserX className="mr-2 h-4 w-4" /> Supprimer mon compte
+          </Button>
+        </CardContent>
+      </Card>
+
       {/* Built CV Preview Dialog */}
       <Dialog open={showBuiltCv} onOpenChange={setShowBuiltCv}>
         <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-y-auto">
@@ -447,6 +507,41 @@ export default function ProfilePage() {
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setShowBuiltCv(false)}>Fermer</Button>
             <Button asChild><Link to="/dashboard/cv-builder"><Pencil className="mr-1 h-4 w-4" /> Modifier</Link></Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Account Confirmation Dialog */}
+      <Dialog open={showDeleteAccount} onOpenChange={setShowDeleteAccount}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5" /> Supprimer mon compte
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-2">
+            <p className="text-sm text-muted-foreground">
+              Cette action est irréversible. Toutes vos données personnelles, CV, candidatures et messages seront définitivement supprimés.
+            </p>
+            <div className="space-y-2">
+              <Label>Pour confirmer, écrivez : <strong className="text-destructive">oui je veux supprimer mon compte</strong></Label>
+              <Input
+                value={deleteConfirmText}
+                onChange={(e) => setDeleteConfirmText(e.target.value)}
+                placeholder="oui je veux supprimer mon compte"
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowDeleteAccount(false)}>Annuler</Button>
+            <Button
+              variant="destructive"
+              disabled={deleteConfirmText !== "oui je veux supprimer mon compte" || deletingAccount}
+              onClick={handleDeleteAccount}
+            >
+              {deletingAccount ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <UserX className="mr-2 h-4 w-4" />}
+              {deletingAccount ? "Suppression..." : "Confirmer la suppression"}
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
