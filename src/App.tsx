@@ -14,6 +14,7 @@ import ResetPassword from "./pages/ResetPassword";
 import NotFound from "./pages/NotFound";
 import About from "./pages/About";
 import Cgu from "./pages/Cgu";
+import Privacy from "./pages/Privacy";
 import Admin from "./pages/Admin";
 import DashboardLayout from "./components/DashboardLayout";
 import CandidateDashboard from "./pages/dashboard/CandidateDashboard";
