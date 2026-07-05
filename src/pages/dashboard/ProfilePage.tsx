@@ -183,6 +183,28 @@ export default function ProfilePage() {
     return data?.signedUrl ?? null;
   };
 
+  const handleDeleteAccount = async () => {
+    if (!user || !profile) return;
+    if (role === "admin") {
+      toast.error("Le compte administrateur ne peut pas être supprimé");
+      return;
+    }
+    if (deleteConfirmText !== "oui je veux supprimer mon compte") return;
+    setDeletingAccount(true);
+    try {
+      const { error: delProfileError } = await supabase.from("profiles").delete().eq("id", profile.id);
+      if (delProfileError) throw delProfileError;
+      const { error: authError } = await supabase.auth.admin.deleteUser(user.id);
+      if (authError) throw authError;
+      await supabase.auth.signOut();
+      toast.success("Votre compte a été supprimé");
+      window.location.href = "/";
+    } catch (err: any) {
+      toast.error(err.message ?? "Erreur lors de la suppression");
+      setDeletingAccount(false);
+    }
+  };
+
   const handleViewCv = async () => {
     if (!profile?.cv_url) return;
     const url = await getCvSignedUrl(profile.cv_url);
