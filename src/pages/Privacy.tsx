@@ -1,56 +1,6 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { Link } from "react-router-dom";
-import { Shield, UserX, Mail, Eye, Lock, Server, Globe, FileText } from "lucide-react";
-
-const sections = [
-  {
-    icon: Shield,
-    title: "1. Identité du responsable du traitement",
-    content:
-      "Le présent site, dénommé Comores Emploi, est édité et exploité dans le respect des principes européens de protection des données personnelles. Le responsable du traitement des données collectées est l’équipe d’administration de Comores Emploi, joignable via les canaux de contact mis à disposition sur la plateforme.",
-  },
-  {
-    icon: Eye,
-    title: "2. Données collectées et finalités",
-    content:
-      "Nous collectons et traitons les données strictement nécessaires à la fourniture du service : nom et prénom, adresse e-mail, numéro de téléphone, localisation géographique, parcours professionnel, formations, compétences, CV et documents joints. Ces données sont utilisées pour mettre en relation les candidats et les employeurs, assurer la modération, améliorer la qualité du service et garantir la sécurité des échanges. Les coordonnées des employeurs et des candidats ne sont visibles que par l’administration, sauf consentement explicite.",
-  },
-  {
-    icon: Lock,
-    title: "3. Base légale du traitement",
-    content:
-      "Le traitement de vos données repose sur l’exécution du contrat de mise à disposition de la plateforme (CGU), sur votre consentement lorsque la loi l’exige, et sur l’intérêt légitime consistant à assurer la sécurité, la modération et la lutte contre la fraude. Vous pouvez retirer votre consentement à tout moment, sans que cela n’affecte la licéité du traitement fondé sur votre consentement antérieur.",
-  },
-  {
-    icon: Server,
-    title: "4. Hébergement et transferts de données",
-    content:
-      "Les données sont hébergées sur une infrastructure cloud sécurisée (backend Lovable Cloud / Supabase) dont les serveurs peuvent être situés en dehors de l’Union européenne. Le cas échéant, des garanties contractuelles conformes aux clauses contractuelles types de la Commission européenne sont mises en place pour assurer un niveau de protection adéquat.",
-  },
-  {
-    icon: FileText,
-    title: "5. Durée de conservation",
-    content:
-      "Vos données sont conservées pendant toute la durée de votre inscription et jusqu’à douze (12) mois après la suppression de votre compte, afin de satisfaire aux obligations légales et de permettre la résolution des litiges éventuels. Passé ce délai, elles sont définitivement effacées ou anonymisées.",
-  },
-  {
-    icon: Globe,
-    title: "6. Cookies et traceurs",
-    content:
-      "La plateforme utilise des cookies strictement nécessaires au fonctionnement du service (authentification, sécurité) et, le cas échéant, des cookies d’analyse d’audience anonymisés. Aucun cookie publicitaire tiers n’est déposé sans votre consentement préalable.",
-  },
-];
-
-const rights = [
-  "Droit d’accès à vos données et à une copie portable ;",
-  "Droit de rectification des données inexactes ou incomplètes ;",
-  "Droit à l’effacement (droit à l’oubli) dans les conditions prévues par la réglementation ;",
-  "Droit à la limitation du traitement ;",
-  "Droit d’opposition au traitement fondé sur l’intérêt légitime ;",
-  "Droit de retirer votre consentement à tout moment ;",
-  "Droit de définir des directives relatives au sort de vos données après votre décès.",
-];
 
 const Privacy = () => {
   return (
@@ -60,81 +10,186 @@ const Privacy = () => {
       <section className="bg-hero-gradient py-16">
         <div className="container px-4 text-center">
           <h1 className="font-display text-3xl font-bold text-white md:text-4xl">
-            Politique de confidentialité
+            Politique de Confidentialité
           </h1>
-          <p className="mx-auto mt-4 max-w-3xl text-sm text-white/80 md:text-base">
-            Comores Emploi s’engage à protéger vos données personnelles conformément aux standards européens. Cette politique vous informe sur la manière dont nous collectons, utilisons et sécurisons vos informations.
-          </p>
+          <p className="mt-3 text-sm text-white/80">Dernière mise à jour : 1er juillet 2026</p>
         </div>
       </section>
 
       <main className="container px-4 py-12">
-        <div className="mx-auto max-w-4xl space-y-6">
+        <div className="mx-auto max-w-4xl space-y-8 text-sm leading-7 text-muted-foreground">
           <section className="rounded-2xl border bg-card p-6 shadow-sm">
-            <p className="text-sm leading-7 text-muted-foreground">
-              La présente politique de confidentialité s’applique à l’ensemble des services proposés par la plateforme Comores Emploi (site web et application mobile). Elle a pour objet de détailler les catégories de données traitées, les finalités poursuivies, les droits dont vous disposez et les mesures de sécurité mises en œuvre. En utilisant nos services, vous reconnaissez avoir pris connaissance de cette politique.
+            <h2 className="font-display text-lg font-semibold text-foreground">INTRODUCTION</h2>
+            <p className="mt-3">
+              Comores Emploi (« nous », « notre », « la Plateforme »), éditée par Samirou Abdillah, s'engage à protéger la confidentialité de vos données personnelles. La présente Politique de Confidentialité explique quelles données nous collectons, pourquoi nous les collectons, comment nous les utilisons et quels sont vos droits. Elle est conforme au Règlement Général sur la Protection des Données (RGPD) et aux exigences des plateformes de distribution Apple App Store et Google Play Store.
             </p>
           </section>
 
-          {sections.map((s) => (
-            <section key={s.title} className="rounded-2xl border bg-card p-6 shadow-sm">
-              <div className="flex items-center gap-3">
-                <s.icon className="h-5 w-5 text-primary" />
-                <h2 className="font-display text-xl font-semibold">{s.title}</h2>
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">1. RESPONSABLE DU TRAITEMENT</h2>
+            <p className="mt-3">
+              Samirou Abdillah — Comores Emploi<br />
+              Email de contact : contact.guinrese@gmail.com
+            </p>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">2. DONNÉES COLLECTÉES</h2>
+            <div className="mt-3 space-y-3">
+              <div>
+                <p className="font-medium text-foreground">2.1 Données que vous nous fournissez directement :</p>
+                <ul className="mt-1 list-disc pl-5 space-y-1">
+                  <li>Informations d'identification : nom complet, adresse email, numéro de téléphone</li>
+                  <li>Informations de profil : localisation (île / ville), photo de profil (optionnelle), biographie professionnelle</li>
+                  <li>Documents professionnels : CV, lettre de motivation, diplômes (candidats)</li>
+                  <li>Informations entreprise : nom, secteur d'activité, description (employeurs)</li>
+                  <li>Communications : messages échangés via la messagerie intégrée</li>
+                </ul>
               </div>
-              <p className="mt-3 text-sm leading-7 text-muted-foreground">{s.content}</p>
-            </section>
-          ))}
-
-          {/* Account deletion */}
-          <section className="rounded-2xl border bg-card p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <UserX className="h-5 w-5 text-destructive" />
-              <h2 className="font-display text-xl font-semibold">7. Suppression de compte</h2>
-            </div>
-            <div className="mt-3 text-sm leading-7 text-muted-foreground space-y-2">
-              <p>
-                Vous disposez à tout moment d’un droit de suppression de votre compte et de l’ensemble des données qui y sont associées. La suppression entraîne l’effacement définitif de votre profil, de vos CV, de vos candidatures, de vos messages et de toute donnée personnelle vous concernant, sous réserve des obligations légales de conservation.
-              </p>
-              <p className="font-medium text-foreground">
-                Pour exercer ce droit, rendez-vous dans{" "}
-                <Link to="/dashboard/profile" className="text-primary underline hover:text-primary/80">
-                  Mon Profil → Supprimer mon compte
-                </Link>
-                . Vous devrez confirmer votre demande en saisissant la phrase de validation affichée à l’écran.
-              </p>
+              <div>
+                <p className="font-medium text-foreground">2.2 Données collectées automatiquement :</p>
+                <ul className="mt-1 list-disc pl-5 space-y-1">
+                  <li>Données techniques de connexion : adresse IP, type d'appareil, système d'exploitation, version de l'application</li>
+                  <li>Données d'utilisation : fonctionnalités utilisées, pages consultées, durée des sessions</li>
+                </ul>
+                <p className="mt-1">Ces données sont collectées à des fins de sécurité et d'amélioration du service uniquement.</p>
+              </div>
+              <div>
+                <p className="font-medium text-foreground">2.3 Données que nous ne collectons PAS :</p>
+                <ul className="mt-1 list-disc pl-5 space-y-1">
+                  <li>Aucune donnée bancaire ou de paiement</li>
+                  <li>Aucune donnée de localisation GPS en temps réel</li>
+                  <li>Aucune donnée biométrique</li>
+                </ul>
+              </div>
             </div>
           </section>
 
-          {/* Data subject rights */}
           <section className="rounded-2xl border bg-card p-6 shadow-sm">
-            <div className="flex items-center gap-3">
-              <Mail className="h-5 w-5 text-primary" />
-              <h2 className="font-display text-xl font-semibold">8. Vos droits sur vos données</h2>
+            <h2 className="font-display text-lg font-semibold text-foreground">3. FINALITÉS ET BASE LÉGALE DU TRAITEMENT</h2>
+            <div className="mt-3 overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b text-foreground">
+                    <th className="py-2 pr-4 font-medium">Finalité</th>
+                    <th className="py-2 font-medium">Base légale</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y">
+                  <tr><td className="py-2 pr-4">Création et gestion de votre compte</td><td className="py-2">Exécution du contrat</td></tr>
+                  <tr><td className="py-2 pr-4">Mise en relation candidats / employeurs</td><td className="py-2">Exécution du contrat</td></tr>
+                  <tr><td className="py-2 pr-4">Modération des contenus</td><td className="py-2">Intérêt légitime</td></tr>
+                  <tr><td className="py-2 pr-4">Amélioration du service</td><td className="py-2">Intérêt légitime</td></tr>
+                  <tr><td className="py-2 pr-4">Publication de votre CV dans le vivier de talents</td><td className="py-2">Consentement explicite</td></tr>
+                  <tr><td className="py-2 pr-4">Envoi de notifications importantes</td><td className="py-2">Intérêt légitime / Consentement</td></tr>
+                  <tr><td className="py-2 pr-4">Respect des obligations légales</td><td className="py-2">Obligation légale</td></tr>
+                </tbody>
+              </table>
             </div>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              Conformément au Règlement général sur la protection des données (RGPD) et à la législation applicable, vous disposez des droits suivants :
-            </p>
-            <ul className="mt-3 list-disc space-y-1 pl-5 text-sm leading-7 text-muted-foreground">
-              {rights.map((r, i) => (
-                <li key={i}>{r}</li>
-              ))}
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">4. PARTAGE DES DONNÉES</h2>
+            <p className="mt-3 font-medium text-foreground">4.1 Nous ne vendons jamais vos données personnelles.</p>
+            <p className="mt-2 font-medium text-foreground">4.2 Partage limité dans les cas suivants :</p>
+            <ul className="mt-1 list-disc pl-5 space-y-1">
+              <li>Avec les Employeurs : uniquement les informations que vous choisissez de rendre publiques (nom, compétences, expérience). Vos coordonnées directes (email, téléphone) ne sont jamais communiquées à un Employeur sans votre consentement explicite.</li>
+              <li>Avec nos prestataires techniques : Supabase Inc. (hébergement et base de données sécurisée). Ces prestataires sont contractuellement tenus de respecter la confidentialité de vos données.</li>
+              <li>Sur ordre des autorités : uniquement si la loi l'exige expressément.</li>
             </ul>
-            <p className="mt-3 text-sm leading-7 text-muted-foreground">
-              Pour exercer ces droits, adressez votre demande à l’administration de Comores Emploi via les moyens de contact disponibles sur la plateforme. Une réponse vous sera adressée dans un délai maximum d’un (1) mois à compter de la réception de votre demande.
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">5. CONSERVATION DES DONNÉES</h2>
+            <ul className="mt-3 list-disc pl-5 space-y-1">
+              <li>Données de compte actif : conservées pendant toute la durée d'activité du compte</li>
+              <li>Après suppression du compte : suppression ou anonymisation dans un délai de 30 jours, sauf obligation légale de conservation plus longue</li>
+              <li>Données de connexion techniques : conservées maximum 12 mois</li>
+            </ul>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">6. SÉCURITÉ DES DONNÉES</h2>
+            <p className="mt-3">Nous mettons en œuvre les mesures de sécurité suivantes :</p>
+            <ul className="mt-1 list-disc pl-5 space-y-1">
+              <li>Chiffrement des données en transit (HTTPS / TLS)</li>
+              <li>Chiffrement des données au repos (Supabase)</li>
+              <li>Contrôle d'accès strict par rôle (candidat / employeur / admin)</li>
+              <li>Authentification sécurisée via token JWT</li>
+              <li>Aucun stockage de mot de passe en clair</li>
+            </ul>
+            <p className="mt-3">
+              En cas de violation de données susceptible d'affecter vos droits, nous vous en informerons dans les délais requis par la loi applicable.
+            </p>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">7. VOS DROITS</h2>
+            <p className="mt-3">Conformément au RGPD et aux lois applicables sur la protection des données, vous disposez des droits suivants :</p>
+            <ul className="mt-2 space-y-1">
+              <li>✓ Droit d'accès : obtenir une copie de vos données personnelles</li>
+              <li>✓ Droit de rectification : corriger des données inexactes</li>
+              <li>✓ Droit à l'effacement : demander la suppression de vos données</li>
+              <li>✓ Droit à la limitation : restreindre le traitement de vos données</li>
+              <li>✓ Droit à la portabilité : recevoir vos données dans un format structuré</li>
+              <li>✓ Droit d'opposition : vous opposer à certains traitements</li>
+              <li>✓ Droit de retirer votre consentement : à tout moment, sans affecter la légalité des traitements antérieurs</li>
+            </ul>
+            <p className="mt-3">
+              Pour exercer ces droits : supprimez votre compte depuis l'application (
+              <Link to="/dashboard/profile" className="text-primary underline hover:text-primary/80">
+                Profil &gt; Supprimer mon compte
+              </Link>
+              ) ou contactez-nous à contact.guinrese@gmail.com.
+            </p>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">8. PROTECTION DES MINEURS</h2>
+            <p className="mt-3">
+              La Plateforme est réservée aux personnes majeures (18 ans et plus). Nous ne collectons pas sciemment de données de mineurs. Si vous constatez qu'un mineur a créé un compte, veuillez nous contacter pour suppression immédiate.
+            </p>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">9. COOKIES ET TRACEURS</h2>
+            <p className="mt-3">
+              La version web de la Plateforme utilise uniquement des cookies strictement nécessaires au fonctionnement du service (authentification, sécurité). Aucun cookie publicitaire ou de suivi tiers n'est déposé sans votre consentement.
+            </p>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">10. TRANSFERTS INTERNATIONAUX</h2>
+            <p className="mt-3">
+              Vos données peuvent être stockées sur des serveurs situés hors des Comores (Union Européenne / États-Unis via Supabase). Ces transferts sont encadrés par des garanties appropriées conformes aux standards internationaux de protection des données.
+            </p>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">11. COOKIES ET TECHNOLOGIES SIMILAIRES</h2>
+            <p className="mt-3">
+              L'application mobile n'utilise pas de cookies. Des identifiants de session techniques sont utilisés exclusivement pour maintenir votre connexion sécurisée.
+            </p>
+          </section>
+
+          <section className="rounded-2xl border bg-card p-6 shadow-sm">
+            <h2 className="font-display text-lg font-semibold text-foreground">12. MODIFICATIONS DE CETTE POLITIQUE</h2>
+            <p className="mt-3">
+              Nous nous réservons le droit de modifier cette Politique à tout moment. La date de « dernière mise à jour » en tête de document sera actualisée. Pour les modifications substantielles, nous vous en informerons via l'application ou par email.
             </p>
           </section>
 
           <section className="rounded-2xl border bg-secondary p-6">
-            <h2 className="font-display text-xl font-semibold text-secondary-foreground">9. Contact</h2>
-            <p className="mt-3 text-sm leading-7 text-secondary-foreground/80">
-              Pour toute question relative à la présente politique de confidentialité ou à l’exercice de vos droits, veuillez contacter l’équipe d’administration de Comores Emploi via les canaux de contact disponibles sur la plateforme.
-            </p>
+            <h2 className="font-display text-lg font-semibold text-secondary-foreground">13. CONTACT ET RÉCLAMATIONS</h2>
+            <div className="mt-3 text-secondary-foreground/90 space-y-1">
+              <p>Pour toute question, demande d'exercice de droits ou réclamation :</p>
+              <p>Email : contact.guinrese@gmail.com</p>
+              <p>Messagerie : via la messagerie intégrée de l'application</p>
+              <p className="mt-3">
+                Vous avez également le droit d'introduire une réclamation auprès de l'autorité de protection des données compétente dans votre pays de résidence.
+              </p>
+            </div>
           </section>
-
-          <p className="text-center text-xs text-muted-foreground">
-            Dernière mise à jour : juillet 2026
-          </p>
         </div>
       </main>
 
