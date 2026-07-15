@@ -20,6 +20,7 @@ import { toast } from "sonner";
 import { Briefcase, Users, Plus, Trash2, Shield, Loader2, FileText, CheckCircle, DollarSign, MessageSquare, MapPin, Clock, Banknote, ListChecks, Eye, Building2, UserCog, ClipboardList, Phone, Mail, MapPinned, User as UserIcon, Image as ImageIcon, Film, Upload, LogOut } from "lucide-react";
 import Logo from "@/components/Logo";
 import ChatWidget from "@/components/ChatWidget";
+import BroadcastMessage from "@/components/admin/BroadcastMessage";
 import AdBannerPreview from "@/components/AdBannerPreview";
 import { ISLANDS, formatLocation } from "@/lib/locations";
 import { notifyAdminOnAccepted } from "@/lib/notifyAdmin";
@@ -869,7 +870,8 @@ const Admin = () => {
 
           {/* Messages - Admin only */}
           {isAdmin && (
-            <TabsContent value="messages" className="mt-6">
+            <TabsContent value="messages" className="mt-6 space-y-6">
+              {user && <BroadcastMessage adminId={user.id} />}
               <Card>
                 <CardHeader><CardTitle className="flex items-center gap-2"><MessageSquare className="h-5 w-5" /> Messagerie</CardTitle></CardHeader>
                 <CardContent>
