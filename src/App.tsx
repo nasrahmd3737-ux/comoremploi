@@ -28,6 +28,7 @@ import EmployerJobForm from "./pages/dashboard/EmployerJobForm";
 import EmployerApplicants from "./pages/dashboard/EmployerApplicants";
 import ProfilePage from "./pages/dashboard/ProfilePage";
 import { useAuth } from "./hooks/useAuth";
+import AppInstallBanner from "./components/AppInstallBanner";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <AppInstallBanner />
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/jobs" element={<Jobs />} />
