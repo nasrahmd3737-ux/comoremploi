@@ -332,6 +332,37 @@ const Jobs = () => {
               </div>
             )}
 
+            {/* Contact */}
+            <div className="space-y-3 rounded-lg border p-3">
+              <p className="text-sm font-medium">Vos coordonnées</p>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Phone className="h-3.5 w-3.5" /> Numéro de téléphone <span className="text-destructive">*</span>
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Ex : +269 3XX XX XX"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  maxLength={20}
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <MessageCircle className="h-3.5 w-3.5" /> WhatsApp (optionnel — si différent)
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Votre numéro WhatsApp"
+                  value={whatsapp}
+                  onChange={e => setWhatsapp(e.target.value)}
+                  maxLength={20}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Ces informations sont enregistrées sur votre profil et visibles uniquement par l'administration.</p>
+            </div>
+
             {/* Cover Letter */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Lettre de motivation (optionnelle)</label>
