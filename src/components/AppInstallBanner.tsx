@@ -27,9 +27,9 @@ export default function AppInstallBanner() {
         <div className="flex items-center gap-2 text-center sm:text-left">
           <Smartphone className="h-5 w-5 shrink-0" />
           <p className="text-sm font-medium leading-tight">
-            L'application <span className="font-bold">Comores Emploi</span> est disponible sur Play Store —{" "}
-            <span className="inline-flex items-center gap-1 opacity-90">
-              <Apple className="h-3.5 w-3.5" /> bientôt sur App Store
+            L'application <span className="font-bold">Comores Emploi</span> est disponible sur{" "}
+            <span className="inline-flex items-center gap-1">
+              Play Store <Apple className="h-3.5 w-3.5" /> App Store
             </span>
           </p>
         </div>
