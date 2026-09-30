@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { MapPin, Building2, Clock, Search, Briefcase, Loader2, Eye, Send, CheckCircle, FileText, AlertCircle } from "lucide-react";
+import { MapPin, Building2, Clock, Search, Briefcase, Loader2, Eye, Send, CheckCircle, FileText, AlertCircle, Phone, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -85,7 +85,15 @@ const Jobs = () => {
 
   const handleQuickApply = async () => {
     if (!user || !selectedJob) return;
+    const cleanPhone = phone.trim();
+    if (!cleanPhone || cleanPhone.replace(/[^\d]/g, "").length < 6) {
+      toast.error("Veuillez saisir un numéro de téléphone valide (obligatoire)");
+      return;
+    }
     setSubmitting(true);
+
+    // Enregistrer le téléphone / WhatsApp sur le profil
+    await supabase.from("profiles").update({ phone: cleanPhone, whatsapp: whatsapp.trim() || null } as any).eq("user_id", user.id);
 
     const cvToSend = selectedCvType === "uploaded" ? profileCvUrl : (selectedCvType === "built" ? "online-cv" : profileCvUrl);
     const { error } = await supabase.from("applications").insert({
