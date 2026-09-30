@@ -48,6 +48,8 @@ const Jobs = () => {
   const [hasBuiltCv, setHasBuiltCv] = useState(false);
   const [selectedCvType, setSelectedCvType] = useState<"uploaded" | "built" | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
   useEffect(() => {
     supabase
@@ -63,12 +65,16 @@ const Jobs = () => {
     if (!user) return;
     Promise.all([
       supabase.from("applications").select("job_id").eq("candidate_id", user.id),
-      supabase.from("profiles").select("cv_url, cv_education, cv_experience").eq("user_id", user.id).maybeSingle(),
-    ]).then(([appsRes, profileRes]) => {
+      supabase.from("profiles").select("cv_url, cv_education, cv_experience, whatsapp").eq("user_id", user.id).maybeSingle(),
+      supabase.rpc("get_user_contact" as any, { _user_id: user.id }),
+    ]).then(([appsRes, profileRes, contactRes]) => {
       if (appsRes.data) {
         setAppliedJobs(new Set(appsRes.data.map(a => a.job_id)));
       }
       setProfileCvUrl(profileRes.data?.cv_url ?? null);
+      setWhatsapp((profileRes.data as any)?.whatsapp ?? "");
+      const contact = Array.isArray(contactRes.data) ? contactRes.data[0] : contactRes.data;
+      setPhone((contact as any)?.phone ?? "");
       const edu = profileRes.data?.cv_education;
       const exp = profileRes.data?.cv_experience;
       setHasBuiltCv(
