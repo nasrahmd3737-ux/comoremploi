@@ -82,7 +82,15 @@ export default function JobDetail() {
 
   const handleApply = async () => {
     if (!user || !job) return;
+    const cleanPhone = phone.trim();
+    if (!cleanPhone || cleanPhone.replace(/[^\d]/g, "").length < 6) {
+      toast.error("Veuillez saisir un numéro de téléphone valide (obligatoire)");
+      return;
+    }
     setSubmitting(true);
+
+    // Enregistrer le téléphone / WhatsApp sur le profil
+    await supabase.from("profiles").update({ phone: cleanPhone, whatsapp: whatsapp.trim() || null } as any).eq("user_id", user.id);
 
     let cvToSend = profileCvUrl;
     const useBuiltCv = selectedCvType === "built" || (!profileCvUrl && hasBuiltCv);
@@ -333,6 +341,37 @@ export default function JobDetail() {
                 )}
               </div>
             )}
+
+            {/* Contact */}
+            <div className="space-y-3 rounded-lg border p-3">
+              <p className="text-sm font-medium">Vos coordonnées</p>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Phone className="h-3.5 w-3.5" /> Numéro de téléphone <span className="text-destructive">*</span>
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Ex : +269 3XX XX XX"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  maxLength={20}
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <MessageCircle className="h-3.5 w-3.5" /> WhatsApp (optionnel — si différent)
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Votre numéro WhatsApp"
+                  value={whatsapp}
+                  onChange={e => setWhatsapp(e.target.value)}
+                  maxLength={20}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Ces informations sont enregistrées sur votre profil et visibles uniquement par l'administration.</p>
+            </div>
 
             <div className="space-y-2">
               <label className="text-sm font-medium">Lettre de motivation (optionnelle)</label>
