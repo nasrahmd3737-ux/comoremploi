@@ -9,7 +9,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { MapPin, Building2, Clock, Eye, Send, CheckCircle, FileText, AlertCircle, Loader2, ArrowLeft, Briefcase, ListChecks } from "lucide-react";
+import { MapPin, Building2, Clock, Eye, Send, CheckCircle, FileText, AlertCircle, Loader2, ArrowLeft, Briefcase, ListChecks, Phone, MessageCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
 import { generateCvPdf } from "@/lib/generateCvPdf";
@@ -40,6 +41,8 @@ export default function JobDetail() {
   const [showApply, setShowApply] = useState(false);
   const [coverLetter, setCoverLetter] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
   useEffect(() => {
     if (!id) return;
@@ -56,7 +59,7 @@ export default function JobDetail() {
     (async () => {
       const [appRes, profRes] = await Promise.all([
         supabase.from("applications").select("id").eq("candidate_id", user.id).eq("job_id", id).maybeSingle(),
-        supabase.from("profiles").select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at, whatsapp").eq("user_id", user.id).maybeSingle(),
       ]);
       setHasApplied(!!appRes.data);
       let prof: any = profRes.data;
@@ -65,6 +68,8 @@ export default function JobDetail() {
         const c = Array.isArray(contact) ? contact[0] : contact;
         prof = { ...prof, email: c?.email ?? user.email ?? null, phone: c?.phone ?? null };
       }
+      setPhone(prof?.phone ?? "");
+      setWhatsapp(prof?.whatsapp ?? "");
       setProfileData(prof);
       setProfileCvUrl(prof?.cv_url ?? null);
       const edu = prof?.cv_education;
@@ -77,7 +82,15 @@ export default function JobDetail() {
 
   const handleApply = async () => {
     if (!user || !job) return;
+    const cleanPhone = phone.trim();
+    if (!cleanPhone || cleanPhone.replace(/[^\d]/g, "").length < 6) {
+      toast.error("Veuillez saisir un numéro de téléphone valide (obligatoire)");
+      return;
+    }
     setSubmitting(true);
+
+    // Enregistrer le téléphone / WhatsApp sur le profil
+    await supabase.from("profiles").update({ phone: cleanPhone, whatsapp: whatsapp.trim() || null } as any).eq("user_id", user.id);
 
     let cvToSend = profileCvUrl;
     const useBuiltCv = selectedCvType === "built" || (!profileCvUrl && hasBuiltCv);
@@ -329,6 +342,37 @@ export default function JobDetail() {
               </div>
             )}
 
+            {/* Contact */}
+            <div className="space-y-3 rounded-lg border p-3">
+              <p className="text-sm font-medium">Vos coordonnées</p>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Phone className="h-3.5 w-3.5" /> Numéro de téléphone <span className="text-destructive">*</span>
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Ex : +269 3XX XX XX"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  maxLength={20}
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <MessageCircle className="h-3.5 w-3.5" /> WhatsApp (optionnel — si différent)
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Votre numéro WhatsApp"
+                  value={whatsapp}
+                  onChange={e => setWhatsapp(e.target.value)}
+                  maxLength={20}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Ces informations sont enregistrées sur votre profil et visibles uniquement par l'administration.</p>
+            </div>
+
             <div className="space-y-2">
               <label className="text-sm font-medium">Lettre de motivation (optionnelle)</label>
               <Textarea rows={4} value={coverLetter} onChange={e => setCoverLetter(e.target.value)} placeholder="Expliquez pourquoi ce poste vous intéresse..." maxLength={2000} />
@@ -337,7 +381,7 @@ export default function JobDetail() {
           </div>
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setShowApply(false)}>Annuler</Button>
-            <Button onClick={handleApply} disabled={submitting || (profileCvUrl && hasBuiltCv && !selectedCvType)}>
+            <Button onClick={handleApply} disabled={submitting || !phone.trim() || (profileCvUrl && hasBuiltCv && !selectedCvType)}>
               {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               {submitting ? "Envoi..." : "Envoyer"}
             </Button>

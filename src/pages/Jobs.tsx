@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
-import { MapPin, Building2, Clock, Search, Briefcase, Loader2, Eye, Send, CheckCircle, FileText, AlertCircle } from "lucide-react";
+import { MapPin, Building2, Clock, Search, Briefcase, Loader2, Eye, Send, CheckCircle, FileText, AlertCircle, Phone, MessageCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { toast } from "sonner";
 import type { Tables } from "@/integrations/supabase/types";
@@ -48,6 +48,8 @@ const Jobs = () => {
   const [hasBuiltCv, setHasBuiltCv] = useState(false);
   const [selectedCvType, setSelectedCvType] = useState<"uploaded" | "built" | null>(null);
   const [selectedJob, setSelectedJob] = useState<Job | null>(null);
+  const [phone, setPhone] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
   useEffect(() => {
     supabase
@@ -63,12 +65,16 @@ const Jobs = () => {
     if (!user) return;
     Promise.all([
       supabase.from("applications").select("job_id").eq("candidate_id", user.id),
-      supabase.from("profiles").select("cv_url, cv_education, cv_experience").eq("user_id", user.id).maybeSingle(),
-    ]).then(([appsRes, profileRes]) => {
+      supabase.from("profiles").select("cv_url, cv_education, cv_experience, whatsapp").eq("user_id", user.id).maybeSingle(),
+      supabase.rpc("get_user_contact" as any, { _user_id: user.id }),
+    ]).then(([appsRes, profileRes, contactRes]) => {
       if (appsRes.data) {
         setAppliedJobs(new Set(appsRes.data.map(a => a.job_id)));
       }
       setProfileCvUrl(profileRes.data?.cv_url ?? null);
+      setWhatsapp((profileRes.data as any)?.whatsapp ?? "");
+      const contact = Array.isArray(contactRes.data) ? contactRes.data[0] : contactRes.data;
+      setPhone((contact as any)?.phone ?? "");
       const edu = profileRes.data?.cv_education;
       const exp = profileRes.data?.cv_experience;
       setHasBuiltCv(
@@ -79,7 +85,15 @@ const Jobs = () => {
 
   const handleQuickApply = async () => {
     if (!user || !selectedJob) return;
+    const cleanPhone = phone.trim();
+    if (!cleanPhone || cleanPhone.replace(/[^\d]/g, "").length < 6) {
+      toast.error("Veuillez saisir un numéro de téléphone valide (obligatoire)");
+      return;
+    }
     setSubmitting(true);
+
+    // Enregistrer le téléphone / WhatsApp sur le profil
+    await supabase.from("profiles").update({ phone: cleanPhone, whatsapp: whatsapp.trim() || null } as any).eq("user_id", user.id);
 
     const cvToSend = selectedCvType === "uploaded" ? profileCvUrl : (selectedCvType === "built" ? "online-cv" : profileCvUrl);
     const { error } = await supabase.from("applications").insert({
@@ -318,6 +332,37 @@ const Jobs = () => {
               </div>
             )}
 
+            {/* Contact */}
+            <div className="space-y-3 rounded-lg border p-3">
+              <p className="text-sm font-medium">Vos coordonnées</p>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Phone className="h-3.5 w-3.5" /> Numéro de téléphone <span className="text-destructive">*</span>
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Ex : +269 3XX XX XX"
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  maxLength={20}
+                  required
+                />
+              </div>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground flex items-center gap-1">
+                  <MessageCircle className="h-3.5 w-3.5" /> WhatsApp (optionnel — si différent)
+                </label>
+                <Input
+                  type="tel"
+                  placeholder="Votre numéro WhatsApp"
+                  value={whatsapp}
+                  onChange={e => setWhatsapp(e.target.value)}
+                  maxLength={20}
+                />
+              </div>
+              <p className="text-xs text-muted-foreground">Ces informations sont enregistrées sur votre profil et visibles uniquement par l'administration.</p>
+            </div>
+
             {/* Cover Letter */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Lettre de motivation (optionnelle)</label>
@@ -334,7 +379,7 @@ const Jobs = () => {
 
           <DialogFooter className="gap-2 sm:gap-0">
             <Button variant="outline" onClick={() => setSelectedJob(null)}>Annuler</Button>
-            <Button onClick={handleQuickApply} disabled={submitting || (profileCvUrl && hasBuiltCv && !selectedCvType)}>
+            <Button onClick={handleQuickApply} disabled={submitting || !phone.trim() || (profileCvUrl && hasBuiltCv && !selectedCvType)}>
               {submitting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Send className="mr-2 h-4 w-4" />}
               {submitting ? "Envoi..." : "Envoyer ma candidature"}
             </Button>
