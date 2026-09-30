@@ -59,7 +59,7 @@ export default function JobDetail() {
     (async () => {
       const [appRes, profRes] = await Promise.all([
         supabase.from("applications").select("id").eq("candidate_id", user.id).eq("job_id", id).maybeSingle(),
-        supabase.from("profiles").select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("id, user_id, role, full_name, location, bio, avatar_url, cv_url, cv_published, cv_education, cv_experience, cv_languages, skills, experience_years, company_name, company_website, company_description, created_at, updated_at, whatsapp").eq("user_id", user.id).maybeSingle(),
       ]);
       setHasApplied(!!appRes.data);
       let prof: any = profRes.data;
@@ -68,6 +68,8 @@ export default function JobDetail() {
         const c = Array.isArray(contact) ? contact[0] : contact;
         prof = { ...prof, email: c?.email ?? user.email ?? null, phone: c?.phone ?? null };
       }
+      setPhone(prof?.phone ?? "");
+      setWhatsapp(prof?.whatsapp ?? "");
       setProfileData(prof);
       setProfileCvUrl(prof?.cv_url ?? null);
       const edu = prof?.cv_education;
